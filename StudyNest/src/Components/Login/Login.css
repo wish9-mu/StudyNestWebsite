@@ -1,11 +1,126 @@
-.login-container{
-  text-align: center;
-    font-size: 25px;
-    font-weight: 600;
-    
-    margin: 70px 0 30px;
-}
 
-.h1{
-  
-}
+  .login-container {
+    min-height: 100vh;
+    background-color: #fff;
+  }
+
+  .navbar {
+    background-color: #c41e3a;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .logo {
+    height: 2rem;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .tutor-login {
+    background-color: white;
+    color: #c41e3a;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .login-card {
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  h1 {
+    color: #c41e3a;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: #c41e3a;
+    box-shadow: 0 0 0 2px rgba(196, 30, 58, 0.1);
+  }
+
+  .form-footer {
+    text-align: center;
+    margin: 1rem 0;
+  }
+
+  .register-link {
+    color: #666;
+    text-decoration: none;
+  }
+
+  .register-link:hover {
+    color: #c41e3a;
+  }
+
+  .login-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #c41e3a;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .login-button:hover {
+    background-color: #a01830;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+    }
+
+    .login-card {
+      margin: 2rem 1rem;
+    }
+  }

@@ -6,6 +6,8 @@ import About from "./Components/About/About";
 import Title from "./Components/Title/Title";
 import Video from "./Components/Video/Video";
 import Request from "./Components/Request/Request";
+import Login from "./Components/Login/Login";
+import Register from "./Components/Register/Register";
 
 const App = () => {
   const HomePage = () => (
@@ -31,7 +33,8 @@ const App = () => {
           <Route path="/about" element={<About />} />
           <Route path="/request" element={<Request />} />
           <Route path="/developers" element={<div>Developers Page</div>} />
-          <Route path="/login" element={<div>Login Page</div>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </div>
     </Router>
