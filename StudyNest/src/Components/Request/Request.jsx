@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import "./Request.css";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Request = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,10 @@ const Request = () => {
     message: "",
   });
 
+  const navigate = useNavigate();
+
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
   const subjects = [
     "PHYS108-2",
     "PHYS108-1",
@@ -24,7 +29,10 @@ const Request = () => {
     "Other",
   ];
 
-  const years = ["YEAR 1", "YEAR 2", "YEAR 3", "YEAR 4"];
+  const time = ["7:00 AM", "7:30 AM", "8:00 AM", "8:30 AM", "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM",
+  "11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM", "3:00 PM",
+  "3:30 PM", "4:00 PM", "4:30 PM", "5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM", "7:00 PM"
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,31 +60,20 @@ const Request = () => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="form-grid">
-            <div className="form-row">
-              <div className="form-group">
-                <label className="form-label">Full Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="form-input"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="form-input"
-                  required
-                />
-              </div>
-            </div>
+          <form
+            className="form-grid"
+            onSubmit={(e) => {
+              e.preventDefault();
+              //no setLoggedIn yet, so always false isLoggedIn
+              if (isLoggedIn == true) {
+                handleSubmit();
+              }
+              else {
+                alert("Please login to submit.");
+                navigate("/login");
+              }
+            }}
+          >
 
             <div className="form-row">
               <div className="form-group">
@@ -92,23 +89,6 @@ const Request = () => {
                   {subjects.map((subject) => (
                     <option key={subject} value={subject}>
                       {subject}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label">Year</label>
-                <select
-                  name="year"
-                  value={formData.year}
-                  onChange={handleChange}
-                  className="form-select"
-                  required
-                >
-                  <option value="">Select year level</option>
-                  {years.map((year) => (
-                    <option key={year} value={year}>
-                      {year}
                     </option>
                   ))}
                 </select>
@@ -139,17 +119,20 @@ const Request = () => {
               <div className="form-group">
                 <label className="form-label">Preferred Time</label>
                 <div className="time-input-container">
-                  <input
-                    type="time"
+                  <select
                     name="preferredTime"
                     value={formData.preferredTime}
                     onChange={handleChange}
-                    min="09:00"
-                    max="17:00"
-                    step="1800" // 30-minute intervals
                     className="form-input"
                     required
-                  />
+                  >
+                  <option value=""> Select time schedule</option>
+                  {time.map((time) => (
+                    <option key={time} value={time}>
+                      {time}
+                    </option>
+                  ))}
+                  </select>
                   <small className="helper-text">
                     Available hours: 7:00 AM - 7:00 PM
                   </small>
