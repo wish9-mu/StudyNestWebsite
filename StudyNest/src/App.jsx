@@ -8,6 +8,9 @@ import Video from "./Components/Video/Video";
 import Request from "./Components/Request/Request";
 import Login from "./Components/Login/Login";
 import Register from "./Components/Register/Register";
+import Developers from "./Components/Developers/Developers";
+import TutorProfile from "./Components/Tutor Profile/Tutor Profile";
+import TutorHome from "./Components/Tutor Home/Tutor Home";
 
 const App = () => {
   const HomePage = () => (
@@ -20,6 +23,8 @@ const App = () => {
         />
         <About />
         <Video />
+        <Register />
+        <TutorProfile />
       </div>
     </>
   );
@@ -32,9 +37,8 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<About />} />
           <Route path="/request" element={<Request />} />
-          <Route path="/developers" element={<div>Developers Page</div>} />
+          <Route path="/developers" element={<Developers />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
         </Routes>
       </div>
     </Router>

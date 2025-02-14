@@ -1,7 +1,7 @@
 
   .login-container {
     min-height: 100vh;
-    background-color: #fff;
+    background-color: #fff\;
   }
 
   .navbar {
@@ -36,7 +36,7 @@
     text-decoration: none;
   }
 
-  .tutor-login {
+  .login {
     background-color: white;
     color: #c41e3a;
     border: none;

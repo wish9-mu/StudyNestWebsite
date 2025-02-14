@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Add this import
 import "./Login.css";
 
 const LoginPage = () => {
+  const navigate = useNavigate(); // Add this hook
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -15,29 +17,24 @@ const LoginPage = () => {
     }));
   };
 
+  //Mali to, dont mind this muna
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle login logic here
     console.log("Login attempted with:", formData);
+
+    // Add basic validation
+    if (formData.email && formData.password) {
+      // You would typically verify credentials here
+
+      //Mali to, dont mind the links muna
+      // After successful login, navigate to tutor-home
+      navigate("/tutor-home");
+    }
   };
 
   return (
     <div className="login-container">
-      {/* Navigation Bar */}
-      <nav className="navbar">
-        <div className="nav-brand">
-          <img src="/logo.png" alt="StudyNest" className="logo" />
-          <span>StudyNest</span>
-        </div>
-        <div className="nav-links">
-          <a href="#home">Home</a>
-          <a href="#about">About</a>
-          <a href="#request">Request</a>
-          <a href="#developers">Developers</a>
-          <button className="tutor-login">Tutor Login</button>
-        </div>
-      </nav>
-
       {/* Login Card */}
       <div className="login-card">
         <h1>Share. Learn. Grow</h1>
@@ -51,6 +48,7 @@ const LoginPage = () => {
               placeholder="Input your Mapua email..."
               value={formData.email}
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -62,6 +60,7 @@ const LoginPage = () => {
               placeholder="Password..."
               value={formData.password}
               onChange={handleChange}
+              required
             />
           </div>
 

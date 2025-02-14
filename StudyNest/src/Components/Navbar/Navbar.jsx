@@ -47,7 +47,7 @@ const Navbar = () => {
         </li>
         <li>
           <Link to="/login" className="btnlog">
-            Tutor Login
+            Login
           </Link>
         </li>
       </ul>

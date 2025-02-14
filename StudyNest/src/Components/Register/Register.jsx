@@ -9,6 +9,7 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    role: "tutee", // Default role
   });
 
   const [errors, setErrors] = useState({});
@@ -150,6 +151,32 @@ const Register = () => {
             {errors.confirmPassword && (
               <p className="error">{errors.confirmPassword}</p>
             )}
+          </div>
+
+          <div className="form-group">
+            <label>Role:</label>
+            <div className="role-options">
+              <label>
+                <input
+                  type="radio"
+                  name="role"
+                  value="tutee"
+                  checked={formData.role === "tutee"}
+                  onChange={handleChange}
+                />
+                Tutee
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="role"
+                  value="tutor"
+                  checked={formData.role === "tutor"}
+                  onChange={handleChange}
+                />
+                Tutor
+              </label>
+            </div>
           </div>
 
           <button type="submit">Register</button>

@@ -1,0 +1,80 @@
+.developers {
+    min-height: 100vh;
+    background-color: white;
+    padding: 2rem;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 4rem;
+  }
+
+  .developers-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .developers-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .developer-card {
+    display: flex;
+    gap: 1rem;
+    background-color: #f8f8f8;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .profile-image {
+    width: 96px;
+    height: 96px;
+    background-color: #e2e2e2;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .developer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .developer-info h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .developer-info .role {
+    color: #666;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .developer-info .description {
+    color: #777;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    text-align: center;
+    color: #666;
+    border-top: 1px solid #eee;
+  }

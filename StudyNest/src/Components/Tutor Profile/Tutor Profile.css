@@ -1,0 +1,119 @@
+
+    .tutor-profile {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .profile-header {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .profile-image {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background-color: #f0f0f0;
+      border: 2px solid #4299e1;
+    }
+
+    .profile-info {
+      flex: 1;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-info h1 {
+      font-size: 2.5rem;
+      color: #f4b41a;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .education-tag {
+      display: inline-block;
+      color: #e53e3e;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .bio {
+      color: #4a5568;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .edit-button, .add-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: white;
+      border: 1px solid #e2e8f0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #718096;
+    }
+
+    .logout-button {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      background: #e53e3e;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    section {
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+    }
+
+    section p {
+      color: #718096;
+      margin-bottom: 1rem;
+    }
+
+    .schedule-placeholder {
+      width: 100%;
+      height: 200px;
+      background-color: #f0f0f0;
+      border-radius: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .profile-image {
+        width: 150px;
+        height: 150px;
+      }
+
+      .logout-button {
+        position: static;
+        margin-bottom: 2rem;
+      }
+    }
+  
