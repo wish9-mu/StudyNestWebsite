@@ -1,9 +1,9 @@
 import React from "react";
-import "./Tutee Home.css";
+import "./Tutee Request.css";
 
 const TuteeHome = () => {
   return (
-    <div className="tutee-home">
+    <div className="tutee-request">
       <div className="center">
         <h1>Find your tutor.</h1>
         <input type="text" className="search-box" 
@@ -16,4 +16,4 @@ const TuteeHome = () => {
   );
 };
 
-export default TuteeHome;
+export default TuteeRequest;
