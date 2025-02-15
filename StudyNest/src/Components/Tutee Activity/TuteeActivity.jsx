@@ -1,5 +1,5 @@
 import React from "react";
-import "./Tutee Activity.css";
+import "./TuteeActivity.css";
 
 const TuteeActivity = () => {
   return (

@@ -1,5 +1,5 @@
 import React from "react";
-import "./Tutor Bookings.css";
+import "./TutorBookings.css";
 
 const TutorBookings = () => {
   return (

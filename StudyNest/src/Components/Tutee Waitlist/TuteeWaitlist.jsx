@@ -1,5 +1,5 @@
 import React from "react";
-import "./Tutee Waitlist.css";
+import "./TuteeWaitlist.css";
 
 const TuteeWaitlist = () => {
   return (

@@ -1,5 +1,5 @@
 import React from "react";
-import "./Tutee Request.css";
+import "./TuteeRequest.css";
 
 const TuteeHome = () => {
   return (

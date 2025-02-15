@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Register.css";
+import { supabase } from "../../client";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +10,7 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "tutee", // Default role
+    role: "", 
   });
 
   const [errors, setErrors] = useState({});
@@ -31,49 +32,95 @@ const Register = () => {
 
   const validateForm = () => {
     const newErrors = {};
-
+  
     if (!formData.firstName.trim()) {
       newErrors.firstName = "First name is required";
     }
-
+  
     if (!formData.lastName.trim()) {
       newErrors.lastName = "Last name is required";
     }
-
+  
     if (!formData.studentNumber.trim()) {
       newErrors.studentNumber = "Student number is required";
     }
+  
+    // if (!formData.email.trim()) {
+    //   newErrors.email = "Email is required";
+    // } else if (!/^[a-zA-Z0-9._%+-]+@mymail\.mapua\.edu\.ph$/.test(formData.email)) {
+    //   newErrors.email = "Please enter a valid Mapua email (@mymail.mapua.edu.ph)";
+    // }
 
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Please enter a valid email";
     }
-
+  
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     }
-
+  
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
+    }
+ 
+    if (!formData.role) {
+      newErrors.role = "Please select a role";
     }
 
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = validateForm();
-
+  
     if (Object.keys(newErrors).length === 0) {
-      // Handle successful form submission here
-      console.log("Form submitted:", formData);
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+      });
+  
+      if (error) {
+        if (error.message.includes("duplicate key value violates unique constraint")) {
+          setErrors({ email: "Email is already registered" });
+          return;
+        } else {
+          setErrors({ email: error.message });
+          return;
+        }
+      }
+
+      const { user } = data;
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .insert([
+          {
+            id: user.id,
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            student_number: formData.studentNumber,
+            role: formData.role,
+            email: formData.email,
+          },
+        ]);
+      
+      if (profileError) {
+        console.error("Error creating profile:", profileError.message);
+        return;
+      }
+
+      alert("Registration successful! Please check your email to verify your account.");
+      window.location.href = "/login";
+
     } else {
       setErrors(newErrors);
     }
   };
+  
 
   return (
     <div className="signup-container">

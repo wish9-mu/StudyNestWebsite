@@ -9,8 +9,10 @@ import Request from "./Components/Request/Request";
 import Login from "./Components/Login/Login";
 import Register from "./Components/Register/Register";
 import Developers from "./Components/Developers/Developers";
-import TutorProfile from "./Components/Tutor Profile/Tutor Profile";
-import TutorHome from "./Components/Tutor Home/Tutor Home";
+import TutorProfile from "./Components/Tutor Profile/TutorProfile";
+import TutorHome from "./Components/Tutor Home/TutorHome";
+import AdminHome from "./Components/Admin Home/AdminHome";
+import TuteeHome from "./Components/Tutee Home/TuteeHome";
 
 const App = () => {
   const HomePage = () => (
@@ -39,6 +41,10 @@ const App = () => {
           <Route path="/request" element={<Request />} />
           <Route path="/developers" element={<Developers />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/tutorhome" element={<TutorHome />} />
+          <Route path="/adminhome" element={<AdminHome />} />
+          <Route path="/tuteehome" element={<TuteeHome />} />
         </Routes>
       </div>
     </Router>

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Add this import
+import { useNavigate } from "react-router-dom"; 
+import { supabase } from "../../client";
 import "./Login.css";
 
 const LoginPage = () => {
-  const navigate = useNavigate(); // Add this hook
+  const navigate = useNavigate(); 
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -17,25 +19,54 @@ const LoginPage = () => {
     }));
   };
 
-  //Mali to, dont mind this muna
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
     console.log("Login attempted with:", formData);
 
-    // Add basic validation
-    if (formData.email && formData.password) {
-      // You would typically verify credentials here
+    // Authenticate user
+    const { data: authData, error: authError } = supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.password,
+    });
 
-      //Mali to, dont mind the links muna
-      // After successful login, navigate to tutor-home
-      navigate("/tutor-home");
+    if (authError) {
+      alert("Login failed:" + authError.message);
+      return;
     }
+
+    // Fetch user's role from Supabase profiles table
+    const { data: profileData, error: profileError } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("email", formData.email)
+      .single();
+
+    if (profileError || !profileData) {
+      alert("Error fetching user profile:" + profileError.message);
+      return;
+    }
+
+    // Redirect user based on role
+    const userRole = profileData.role;
+
+    if (userRole === "admin") {
+      navigate("/adminhome");
+    } else if (userRole === "tutor") {
+      navigate("/tutorhome");
+    } else if (userRole === "tutee") {
+      navigate("/tuteehome");
+    } else {
+      alert("Invalid role. Contact support.");
+    }
+    
+  };
+
+  const handleRegisterClick = () => {
+    navigate("/register");
   };
 
   return (
     <div className="login-container">
-      {/* Login Card */}
       <div className="login-card">
         <h1>Share. Learn. Grow</h1>
 
@@ -65,9 +96,9 @@ const LoginPage = () => {
           </div>
 
           <div className="form-footer">
-            <a href="/register" className="register-link">
+            <span className="register-link" onClick={handleRegisterClick}>
               Not yet registered?
-            </a>
+            </span>
           </div>
 
           <button type="submit" className="login-button">

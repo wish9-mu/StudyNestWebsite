@@ -1,12 +1,12 @@
 import React from "react";
-import "./Admin Home.css";
+import "./TuteeHome.css";
 
-const AdminHome = () => {
+const TuteeHome = () => {
   return (
-    <div className="admin-home">
+    <div className="tutee-home">
       <div className="header">
         <div className="header-text">
-            <h1>Hello Admin.</h1>
+            <h1>Learning begins now.</h1>
         </div>
         <div className="header-info">
           <p>StudyNest is a student-led tutoring platform exclusively for Mapúans, connecting knowledgeable upper-year students 
@@ -31,4 +31,4 @@ const AdminHome = () => {
   );
 };
 
-export default AdminHome;
+export default TuteeHome;
