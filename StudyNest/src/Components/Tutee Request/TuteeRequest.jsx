@@ -1,7 +1,7 @@
 import React from "react";
 import "./TuteeRequest.css";
 
-const TuteeHome = () => {
+const TuteeRequest = () => {
   return (
     <div className="tutee-request">
       <div className="center">

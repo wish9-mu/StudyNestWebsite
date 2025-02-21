@@ -1,0 +1,27 @@
+/*diff css styles to display for each status*/
+.status {
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+.status.accepted {
+    color: green;
+}
+
+.status.rejected {
+    color: red;
+}
+
+.booking-card {
+    margin: 5px;
+}
+
+/*diff css styles for cards that have been accepted and rejected*/
+.booking-card.accepted {
+    padding: 5px;
+}
+
+.booking-card.rejected {
+    padding: 10px;
+}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import "./Request.css";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -7,8 +7,8 @@ const Request = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    subject: "",
     year: "",
+    course: "",
     preferredDate: "",
     preferredTime: "",
     message: "",
@@ -18,7 +18,44 @@ const Request = () => {
 
   const [isLoggedIn, setLoggedIn] = useState(false);
 
-  const subjects = [
+  const [tutee, setTutee] = useState(null);
+
+  useEffect(() => {
+    //To check if user is logged in
+    const user = null; //JSON parse to get user data
+
+    if (user) {
+      setLoggedIn(true);
+      fetchTuteeDetails(user.id); //gets user id
+    }
+
+  }, []);
+
+  const fetchTuteeDetails = async (tuteeID) => {
+    try{
+      //add fetch url here
+      const response = await fetch();
+      
+      if (response.ok) {
+        const data = await response
+        setTutee(data); 
+
+        setFormData((prevState) => ({
+          ...prevState,
+          name: data.name,
+          email: data.email,
+          year: data.year,
+        }));
+      }
+      else {
+        console.error("Failed to fetch tutee details.");
+      }
+    } catch (error) {
+      console.error("Error fetching tutee details:", error);
+    }
+  };
+
+  const courses = [
     "PHYS108-2",
     "PHYS108-1",
     "CHEM107-2",
@@ -42,10 +79,41 @@ const Request = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the form data to your backend
-    console.log("Form submitted:", formData);
+
+    if (!isLoggedIn) {
+      alert("Please login to submit.")
+      navigate("/login");
+    }
+    
+    const requestData = {
+      name: formData.name,
+      email: formData.email,
+      year: formData.year,
+      course: formData.course,
+      date: formData.preferredDate,
+      time: formData.preferredTime,
+      message: formData.message,
+    };
+
+    try {
+      //add fetch url here
+      const response = await fetch(null, {method: "POST", body: JSON.stringify(requestData)});
+
+      if (response.ok) {
+        alert("Request submitted successfully!");
+        setFormData({course: "", preferredDate: "", preferredTime: "", message: ""});
+      }
+  
+      else {
+        alert("Failed to submit request. Please try again.");
+      }
+
+    } catch (error) {
+      console.error("Error submitting request:", error);
+      alert("An error occured. Please try again later.")
+    }
   };
 
   return (
@@ -79,16 +147,16 @@ const Request = () => {
               <div className="form-group">
                 <label className="form-label">Course</label>
                 <select
-                  name="subject"
-                  value={formData.subject}
+                  name="course"
+                  value={formData.course}
                   onChange={handleChange}
                   className="form-select"
                   required
                 >
-                  <option value="">Select a subject</option>
-                  {subjects.map((subject) => (
-                    <option key={subject} value={subject}>
-                      {subject}
+                  <option value="">Select a course</option>
+                  {courses.map((course) => (
+                    <option key={course} value={course}>
+                      {course}
                     </option>
                   ))}
                 </select>
