@@ -1,31 +1,79 @@
-.hero{
-    width:100%;
+.hero {
+    width: 100%;
     min-height: 100vh;
-    background: linear-gradient(rgba(196, 0, 0, 0.63),rgba(128, 0, 0, 0.774)),url('../../assets/hero.jpg');
+    background: linear-gradient(rgba(255, 0, 0, 0.63), rgba(199, 0, 0, 0.774)), url('../../assets/MapuaHeroCover.png');
     background-size: cover;
     background-position: center;
+    background-blend-mode: multiply;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 40px 16px; /* Adjusted padding */
 }
 
-.hero-text{
+.hero-text {
     text-align: center;
     max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.hero-text h1{
-    font-size: 60px;
-    font-weight: 600;
-    color:rgb(255, 238, 0)
+.hero-text h1 {
+    font-size: 4rem; /* Adjusted font size */
+    font-weight: 800; /* Adjusted font weight */
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 16px;
 }
 
-.hero-text p{
-    font-size: 20px;
-    margin: 10px auto;
-    line-height: 1.4;
+.hero-text h1 span {
+    color: rgb(255, 238, 0); /* Yellow color for specific text */
+}
+
+.hero-text p {
+    font-size: 1.25rem; /* Adjusted font size */
+    color: rgba(255, 255, 255, 0.9); /* Light gray text */
+    margin: 16px auto;
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 16px; /* Space between buttons */
+    margin-top: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn {
+    background: white;
+    color: #212121;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    border: 0;
+    outline: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    white-space: nowrap;
+    transition: background 0.3s ease;
 }
 
+.btn:hover {
+    background: #ffee00;
+}
 
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
