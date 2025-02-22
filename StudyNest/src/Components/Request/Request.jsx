@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../Navbar/Navbar";
+import Nav from "../Nav/Nav";
 import "./Request.css";
 import { Navigate, useNavigate } from "react-router-dom";
 
@@ -28,17 +28,16 @@ const Request = () => {
       setLoggedIn(true);
       fetchTuteeDetails(user.id); //gets user id
     }
-
   }, []);
 
   const fetchTuteeDetails = async (tuteeID) => {
-    try{
+    try {
       //add fetch url here
       const response = await fetch();
-      
+
       if (response.ok) {
-        const data = await response
-        setTutee(data); 
+        const data = await response;
+        setTutee(data);
 
         setFormData((prevState) => ({
           ...prevState,
@@ -46,8 +45,7 @@ const Request = () => {
           email: data.email,
           year: data.year,
         }));
-      }
-      else {
+      } else {
         console.error("Failed to fetch tutee details.");
       }
     } catch (error) {
@@ -66,9 +64,32 @@ const Request = () => {
     "Other",
   ];
 
-  const time = ["7:00 AM", "7:30 AM", "8:00 AM", "8:30 AM", "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM",
-  "11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM", "3:00 PM",
-  "3:30 PM", "4:00 PM", "4:30 PM", "5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM", "7:00 PM"
+  const time = [
+    "7:00 AM",
+    "7:30 AM",
+    "8:00 AM",
+    "8:30 AM",
+    "9:00 AM",
+    "9:30 AM",
+    "10:00 AM",
+    "10:30 AM",
+    "11:00 AM",
+    "11:30 AM",
+    "12:00 PM",
+    "12:30 PM",
+    "1:00 PM",
+    "1:30 PM",
+    "2:00 PM",
+    "2:30 PM",
+    "3:00 PM",
+    "3:30 PM",
+    "4:00 PM",
+    "4:30 PM",
+    "5:00 PM",
+    "5:30 PM",
+    "6:00 PM",
+    "6:30 PM",
+    "7:00 PM",
   ];
 
   const handleChange = (e) => {
@@ -83,10 +104,10 @@ const Request = () => {
     e.preventDefault();
 
     if (!isLoggedIn) {
-      alert("Please login to submit.")
+      alert("Please login to submit.");
       navigate("/login");
     }
-    
+
     const requestData = {
       name: formData.name,
       email: formData.email,
@@ -99,26 +120,30 @@ const Request = () => {
 
     try {
       //add fetch url here
-      const response = await fetch(null, {method: "POST", body: JSON.stringify(requestData)});
+      const response = await fetch(null, {
+        method: "POST",
+        body: JSON.stringify(requestData),
+      });
 
       if (response.ok) {
         alert("Request submitted successfully!");
-        setFormData({course: "", preferredDate: "", preferredTime: "", message: ""});
-      }
-  
-      else {
+        setFormData({
+          course: "",
+          preferredDate: "",
+          preferredTime: "",
+          message: "",
+        });
+      } else {
         alert("Failed to submit request. Please try again.");
       }
-
     } catch (error) {
       console.error("Error submitting request:", error);
-      alert("An error occured. Please try again later.")
+      alert("An error occured. Please try again later.");
     }
   };
 
   return (
     <>
-      <Navbar />
       <div className="request-container">
         <div className="request-card">
           <div className="request-header">
@@ -135,14 +160,12 @@ const Request = () => {
               //no setLoggedIn yet, so always false isLoggedIn
               if (isLoggedIn == true) {
                 handleSubmit();
-              }
-              else {
+              } else {
                 alert("Please login to submit.");
                 navigate("/login");
               }
             }}
           >
-
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">Course</label>
@@ -194,12 +217,12 @@ const Request = () => {
                     className="form-input"
                     required
                   >
-                  <option value=""> Select time schedule</option>
-                  {time.map((time) => (
-                    <option key={time} value={time}>
-                      {time}
-                    </option>
-                  ))}
+                    <option value=""> Select time schedule</option>
+                    {time.map((time) => (
+                      <option key={time} value={time}>
+                        {time}
+                      </option>
+                    ))}
                   </select>
                   <small className="helper-text">
                     Available hours: 7:00 AM - 7:00 PM

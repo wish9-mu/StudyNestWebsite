@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
+:root {
+  --red: #ca0000; 
+  --yellow: rgb(255, 187, 0); 
+  --yellow2: #e0e400;
+  --red2: #b50000;  
+}
 
 *{
   margin: 0;
@@ -80,4 +86,26 @@ a{
 .btn:hover{
   background: #ffee00;
   transition: ease 0.5s;
+}
+
+footer {
+  background-color: var(--red2); /* Light gray background */
+  color: #ffffff; /* Dark gray text color */
+  text-align: center; /* Center-align the text */
+  padding: 1rem 0; /* Add some padding */
+  font-size: 0.875rem; /* Smaller font size */
+  border-top: 1px solid #ddd; /* Add a border on top */
+  
+  left: 0;
+  bottom: 0;
+  width: 100%; /* Full width */
+}
+
+footer a {
+  color:  var(--red); /* Link color */
+  text-decoration: none; /* Remove underline */
+}
+
+footer a:hover {
+  text-decoration: underline; /* Add underline on hover */
 }

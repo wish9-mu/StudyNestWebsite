@@ -1,7 +1,12 @@
 .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    background-color: #ca0000;
     padding: 1rem 0;
+    background-color: transparent;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
   }
   
@@ -17,14 +22,9 @@
   
   .wrapper {
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Center items horizontally */
     align-items: center;
-  }
-  
-  .left-section {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
+    gap: 2rem; /* Add gap between items */
   }
   
   .logo {
@@ -45,6 +45,10 @@
     color: #fff;
   }
   
+  .nav-link:hover {
+    color: #ffee00;
+  }
+  
   .btnlog {
     text-decoration: none;
     color: #1b1b1b;
@@ -55,7 +59,7 @@
   }
   
   .btnlog:hover {
-    background-color: rgb(255, 238, 0)
+    background-color: #ffee00;
   }
   
   .mobile-menu-button {

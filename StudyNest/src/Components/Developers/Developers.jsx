@@ -30,26 +30,26 @@ const Developers = () => {
   ];
 
   return (
-    <div className="developers">
-      <div className="container">
-        <h1>Meet the Developers.</h1>
+    <>
+      <div className="developers">
+        <div className="container">
+          <h1>Meet the Developers.</h1>
 
-        <div className="developers-grid">
-          {developers.map((dev, index) => (
-            <div key={index} className="developer-card">
-              <div className="profile-image"></div>
-              <div className="developer-info">
-                <h2>{dev.name}</h2>
-                <p className="role">{dev.role}</p>
-                <p className="description">{dev.description}</p>
+          <div className="developers-grid">
+            {developers.map((dev, index) => (
+              <div key={index} className="developer-card">
+                <div className="profile-image"></div>
+                <div className="developer-info">
+                  <h2>{dev.name}</h2>
+                  <p className="role">{dev.role}</p>
+                  <p className="description">{dev.description}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-
-        <footer>© StudyNest 2025. All Rights Reserved.</footer>
       </div>
-    </div>
+    </>
   );
 };
 export default Developers;

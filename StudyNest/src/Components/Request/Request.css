@@ -1,17 +1,29 @@
+body {
+  background-color: white; /* Set the entire page background to white */
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+}
+
 .request-container {
-    padding-top: 80px; /* Adjust this value based on your navbar height */
-    min-height: 100vh;
-  }
+  padding-top: 80px; /* Adjust this value based on your navbar height */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  background-color: white; /* Optional: Add a background color */
+}
   
+ 
   .request-card {
     max-width: 600px;
+    width: 100%; /* Ensure it takes full width */
     margin: 0 auto;
     background: white;
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     padding: 2rem;
-  }
-  
+}
+
   .request-header {
     text-align: center;
     margin-bottom: 2rem;

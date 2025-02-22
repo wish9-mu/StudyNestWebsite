@@ -17,7 +17,6 @@ const App = () => {
   const HomePage = () => (
     <>
       <Hero />
-
       <div>
         <Title
           subTitle="Takot Bumagsak?"
@@ -31,23 +30,26 @@ const App = () => {
   );
 
   return (
-    <Router>
-      <div>
-        <Nav />
+    <>
+      <Router>
+        <div>
+          <Nav />
 
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/request" element={<Request />} />
-          <Route path="/developers" element={<Developers />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/tutorhome" element={<TutorHome />} />
-          <Route path="/adminhome" element={<AdminHome />} />
-          <Route path="/tuteehome" element={<TuteeHome />} />
-        </Routes>
-      </div>
-    </Router>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/request" element={<Request />} />
+            <Route path="/developers" element={<Developers />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/tutorhome" element={<TutorHome />} />
+            <Route path="/adminhome" element={<AdminHome />} />
+            <Route path="/tuteehome" element={<TuteeHome />} />
+          </Routes>
+        </div>
+      </Router>
+      <footer>© StudyNest 2025. All Rights Reserved.</footer>
+    </>
   );
 };
 
