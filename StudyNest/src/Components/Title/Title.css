@@ -8,7 +8,15 @@
 
 .title h2{
     font-size: 32px;
-    color: rgb(223, 182, 0);
+    color: var(--red);
     margin-top: 5px;
     text-transform: none;
+}
+
+.title p{
+    font-size: 30px;
+    color: rgb(192, 157, 0);
+    margin-top: 5px;
+    text-transform: none;
+
 }

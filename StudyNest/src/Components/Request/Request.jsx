@@ -144,6 +144,7 @@ const Request = () => {
 
   return (
     <>
+      <Nav />
       <div className="request-container">
         <div className="request-card">
           <div className="request-header">

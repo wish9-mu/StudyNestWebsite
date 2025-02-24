@@ -1,26 +1,30 @@
 import React from "react";
 import "./TuteeActivity.css";
+import TuteeNav from "../Nav/TuteeNav";
 
 const TuteeActivity = () => {
   return (
-    <div className="tutee-activity">
-      <div className="header">
-        <div className="header-text">
+    <>
+      <TuteeNav />
+      <div className="tutee-activity">
+        <div className="header">
+          <div className="header-text">
             <h1>Welcome to Activity.</h1>
+          </div>
+          <div className="header-info">
+            <p>Here in Activity, you can track your progress.</p>
+          </div>
         </div>
-        <div className="header-info">
-          <p>Here in Activity, you can track your progress.</p>
-        </div>
-      </div>
 
-      <div className="activity-content">
-        <div className="book-image-logo"></div>
-        <div className="card-1">
+        <div className="activity-content">
+          <div className="book-image-logo"></div>
+          <div className="card-1">
             <h2>Course</h2>
             <p>Instructor Name</p>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

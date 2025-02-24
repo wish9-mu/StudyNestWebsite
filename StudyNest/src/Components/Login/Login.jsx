@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../../client";
 import "./Login.css";
+import Nav from "../Nav/Nav";
 
-const LoginPage = () => {
-  const navigate = useNavigate(); 
+const LoginPage = ({ setUser }) => {
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -24,10 +25,11 @@ const LoginPage = () => {
     console.log("Login attempted with:", formData);
 
     // Authenticate user
-    const { data: authData, error: authError } = supabase.auth.signInWithPassword({
-      email: formData.email,
-      password: formData.password,
-    });
+    const { data: authData, error: authError } =
+      supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
 
     if (authError) {
       alert("Login failed:" + authError.message);
@@ -58,7 +60,6 @@ const LoginPage = () => {
     } else {
       alert("Invalid role. Contact support.");
     }
-    
   };
 
   const handleRegisterClick = () => {
@@ -67,6 +68,7 @@ const LoginPage = () => {
 
   return (
     <div className="login-container">
+      <Nav />
       <div className="login-card">
         <h1>Share. Learn. Grow</h1>
 

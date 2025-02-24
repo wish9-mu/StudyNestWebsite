@@ -1,22 +1,11 @@
 import React from "react";
 import "./TutorHome.css";
+import TutorNav from "../Nav/TutorNav";
 
 const TutorHome = () => {
   return (
     <div className="tutor-home">
-      <nav className="navbar">
-        <div className="nav-left">
-          <div className="logo">StudyNest</div>
-        </div>
-        <div className="nav-right">
-          <a href="/request">Request</a>
-          <a href="/activity">Activity</a>
-          <a href="/waitlist">Waitlist</a>
-          <div className="user-profile">
-            <span>Juan Student</span>
-          </div>
-        </div>
-      </nav>
+      <TutorNav />
 
       <main className="main-content">
         <h1>Learning begins now.</h1>
@@ -43,8 +32,6 @@ const TutorHome = () => {
           </div>
         </div>
       </main>
-
-      <footer>© StudyNest 2025. All Rights Reserved.</footer>
     </div>
   );
 };

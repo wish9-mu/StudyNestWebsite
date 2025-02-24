@@ -1,4 +1,5 @@
 import React from "react";
+import Nav from "../Nav/Nav";
 
 import "./About.css";
 import program_1 from "../../assets/Rayleen.png";
@@ -20,32 +21,35 @@ import VideoBackground from "../VideoBackground/VideoBackground";
 
 const About = () => {
   return (
-    <div className="content-wrapper">
-      <div className="abouts">
-        <div className="about">
-          <img src={program_1} alt="" />
-          <div className="caption">
-            <img src={program_icon_1} alt="" />
-            <p>Learn with Us!</p>
+    <>
+      <Nav />
+      <div className="content-wrapper">
+        <div className="abouts">
+          <div className="about">
+            <img src={program_1} alt="" />
+            <div className="caption">
+              <img src={program_icon_1} alt="" />
+              <p>Learn with Us!</p>
+            </div>
+          </div>
+          <div className="about">
+            <img src={program_2} alt="" />
+            <div className="caption">
+              <img src={program_icon_2} alt="" />
+              <p>How you can excel.</p>
+            </div>
+          </div>
+          <div className="about">
+            <img src={program_3} alt="" />
+            <div className="caption">
+              <img src={program_icon_3} alt="" />
+              <p>Courses</p>
+            </div>
           </div>
         </div>
-        <div className="about">
-          <img src={program_2} alt="" />
-          <div className="caption">
-            <img src={program_icon_2} alt="" />
-            <p>How you can excel.</p>
-          </div>
-        </div>
-        <div className="about">
-          <img src={program_3} alt="" />
-          <div className="caption">
-            <img src={program_icon_3} alt="" />
-            <p>Courses</p>
-          </div>
-        </div>
+        <VideoBackground />
       </div>
-      <VideoBackground />
-    </div>
+    </>
   );
 };
 

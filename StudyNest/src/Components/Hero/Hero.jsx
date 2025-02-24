@@ -3,8 +3,9 @@ import "./Hero.css";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
+  console.log("Hero component rendered");
   return (
-    <div className="hero container">
+    <div className="hero">
       <div className="hero-text">
         <h1>Your Study Partner.</h1>
         <p>
