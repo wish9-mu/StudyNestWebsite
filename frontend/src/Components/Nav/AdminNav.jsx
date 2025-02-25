@@ -1,15 +1,29 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import "./Nav.css";
 import logo from "../../assets/SNHome.png";
 import userImage from "../../assets/user.png";
+import { useAuth } from "../Login/AuthContext";
+import { supabase } from "../../supabaseClient";
 
 const AdminNav = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error("Log out error:", error);
+    else {
+      setUser(null);
+      navigate("/login");
+    }
+  }
+
   return (
     <nav className="nav nav-colored">
       <div className="container">
@@ -40,9 +54,9 @@ const AdminNav = () => {
                 <Link to="/adminprofile" className="dropdown-item">
                   Profile
                 </Link>
-                <Link to="/" className="dropdown-item">
+                <button onClick={handleLogout} className="dropdown-item logout-btn">
                   Logout
-                </Link>
+                </button>
               </div>
             )}
           </div>

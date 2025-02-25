@@ -15,11 +15,13 @@ import TutorBookings from "./Components/Tutor Bookings/TutorBookings";
 import TuteeWaitlist from "./Components/Tutee Waitlist/TuteeWaitlist";
 import TuteeActivity from "./Components/Tutee Activity/TuteeActivity";
 import AdminProfile from "./Components/Admin Profile/AdminProfile";
+import ProtectedRoute from "./Components/Login/ProtectedRoute";
+import { AuthProvider } from "./Components/Login/AuthContext";
 
 const App = () => {
   //const [loggedIn, setLoggedIn] = useState(false);  for checking log ins
   return (
-    <>
+    <AuthProvider>
       <Router>
         <div>
           {/* Include the Nav component */}
@@ -30,9 +32,6 @@ const App = () => {
             <Route path="/developers" element={<Developers />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/tutorhome" element={<TutorHome />} />
-            <Route path="/adminhome" element={<AdminHome />} />
-            <Route path="/tuteehome" element={<TuteeHome />} />
             <Route path="/tutorprofile" element={<TutorProfile />} />
             <Route path="/logout" element={<HomePage />} />
             <Route path="/tuteeprofile" element={<TuteeProfile />} />
@@ -40,12 +39,18 @@ const App = () => {
             <Route path="/tuteewaitlist" element={<TuteeWaitlist />} />
             <Route path="/tuteeactivity" element={<TuteeActivity />} />
             <Route path="/adminprofile" element={<AdminProfile />} />
+
+            {/* Protected Routes */}
+            <Route path="/tutorhome" element={<ProtectedRoute role="tutor"><TutorHome /></ProtectedRoute>} />
+            <Route path="/adminhome" element={<ProtectedRoute role="admin"><AdminHome /></ProtectedRoute>} />
+            <Route path="/tuteehome" element={<ProtectedRoute role="tutee"><TuteeHome /></ProtectedRoute>} />
+
           </Routes>
         </div>
       </Router>
 
       <footer>© StudyNest 2025. All Rights Reserved.</footer>
-    </>
+    </AuthProvider>
   );
 };
 

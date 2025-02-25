@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import "./Login.css";
 import Nav from "../Nav/Nav";
+import { useAuth } from "./AuthContext";
 
-const LoginPage = ({ setUser }) => {
+const LoginPage = () => {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
+  const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -22,44 +25,56 @@ const LoginPage = ({ setUser }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login attempted with:", formData);
+    setError("");
 
     // Authenticate user
-    const { data: authData, error: authError } =
-      supabase.auth.signInWithPassword({
+    try {
+      console.log("Login attempted with:", formData);
+
+      // Sign in with email and password
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       });
 
-    if (authError) {
-      alert("Login failed:" + authError.message);
-      return;
-    }
+      if (authError || !authData.user) {
+        setError("Login failed: " + (authError?.message || "Invalid credentials"));
+        return;
+      }
 
-    // Fetch user's role from Supabase profiles table
-    const { data: profileData, error: profileError } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("email", formData.email)
-      .single();
+      const userId = authData.user.id;
 
-    if (profileError || !profileData) {
-      alert("Error fetching user profile:" + profileError.message);
-      return;
-    }
+      // Fetch user's role from Supabase profiles table
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("email", formData.email)
+        .single();
 
-    // Redirect user based on role
-    const userRole = profileData.role;
+      if (profileError || !profileData) {
+        setError("Error fetching user profile: " + (profileError?.message || "Profile not found"));
+        return;
+      }
 
-    if (userRole === "admin") {
-      navigate("/adminhome");
-    } else if (userRole === "tutor") {
-      navigate("/tutorhome");
-    } else if (userRole === "tutee") {
-      navigate("/tuteehome");
-    } else {
-      alert("Invalid role. Contact support.");
-    }
+      // Redirect user based on role
+      const userRole = profileData.role;
+
+      // Save user session
+      setUser({ id: userId, email: formData.email, role: userRole });
+
+      if (userRole === "admin") {
+        navigate("/adminhome");
+      } else if (userRole === "tutor") {
+        navigate("/tutorhome");
+      } else if (userRole === "tutee") {
+        navigate("/tuteehome");
+      } else {
+        alert("Invalid role. Contact support.");
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      setError("An unexpected error occurred. Please try again.");
+    } 
   };
 
   const handleRegisterClick = () => {
