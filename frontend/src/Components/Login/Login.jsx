@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../../client";
+import { supabase } from "../../supabaseClient";
 import "./Login.css";
 import Nav from "../Nav/Nav";
 

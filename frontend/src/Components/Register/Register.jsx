@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Register.css";
-import { supabase } from "../../client";
+import { supabase } from "../../supabaseClient";
 
 const Register = () => {
   const [formData, setFormData] = useState({
