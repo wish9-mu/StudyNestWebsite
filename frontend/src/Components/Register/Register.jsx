@@ -10,10 +10,11 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "", 
+    role: "",
   });
 
   const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,7 +22,6 @@ const Register = () => {
       ...prev,
       [name]: value,
     }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -32,44 +32,36 @@ const Register = () => {
 
   const validateForm = () => {
     const newErrors = {};
-  
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "First name is required";
-    }
-  
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Last name is required";
-    }
-  
-    if (!formData.studentNumber.trim()) {
-      newErrors.studentNumber = "Student number is required";
-    }
-  
-    // if (!formData.email.trim()) {
-    //   newErrors.email = "Email is required";
-    // } else if (!/^[a-zA-Z0-9._%+-]+@mymail\.mapua\.edu\.ph$/.test(formData.email)) {
-    //   newErrors.email = "Please enter a valid Mapua email (@mymail.mapua.edu.ph)";
-    // }
+
+    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+    
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+
+    if (!formData.studentNumber.trim()) newErrors.studentNumber = "Student number is required";
 
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Please enter a valid email";
     }
-  
+
+    // if (!formData.email.trim()) {
+    //   newErrors.email = "Email is required";
+    // } else if (!/^[a-zA-Z0-9._%+-]+@mymail\.mapua\.edu\.ph$/.test(formData.email)) {
+    //   newErrors.email = "Please enter a valid Mapua email (@mymail.mapua.edu.ph)";
+    // }
+
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     }
-  
+
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
- 
-    if (!formData.role) {
-      newErrors.role = "Please select a role";
-    }
+
+    if (!formData.role) newErrors.role = "Please select a role";
 
     return newErrors;
   };
@@ -79,43 +71,53 @@ const Register = () => {
     const newErrors = validateForm();
   
     if (Object.keys(newErrors).length === 0) {
-      const { data, error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-      });
+      try {
+        console.log("Attempting to register user...");
   
-      if (error) {
-        if (error.message.includes("duplicate key value violates unique constraint")) {
-          setErrors({ email: "Email is already registered" });
-          return;
-        } else {
+        // Register user with Supabase
+        const { data, error } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+        });
+  
+        console.log("Supabase response:", { data, error }); // Debugging
+  
+        if (error) {
+          console.error("Registration error:", error.message);
           setErrors({ email: error.message });
           return;
         }
+  
+        if (data.user) {
+          console.log("User created successfully:", data.user);
+  
+          // Insert additional user data into Supabase database
+          const { error: dbError } = await supabase.from("profiles").insert([
+            {
+              id: data.user.id,
+              first_name: formData.firstName,
+              last_name: formData.lastName,
+              student_number: formData.studentNumber,
+              role: formData.role,
+              email: formData.email,
+            },
+          ]);
+  
+          if (dbError) {
+            console.error("Database insert error:", dbError.message);
+            setErrors({ database: dbError.message });
+            return;
+          }
+  
+          setMessage("Registration successful! Check your email to verify your account.");
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 3000);
+        }
+      } catch (error) {
+        console.error("Unexpected registration error:", error);
+        setMessage("Something went wrong. Please try again.");
       }
-
-      const { user } = data;
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiles")
-        .insert([
-          {
-            id: user.id,
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            student_number: formData.studentNumber,
-            role: formData.role,
-            email: formData.email,
-          },
-        ]);
-      
-      if (profileError) {
-        console.error("Error creating profile:", profileError.message);
-        return;
-      }
-
-      alert("Registration successful! Please check your email to verify your account.");
-      window.location.href = "/login";
-
     } else {
       setErrors(newErrors);
     }
@@ -126,6 +128,8 @@ const Register = () => {
     <div className="signup-container">
       <div className="signup-card">
         <h1>Be part of the nest.</h1>
+
+        {message && <p className="success">{message}</p>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-row">
@@ -160,9 +164,7 @@ const Register = () => {
               value={formData.studentNumber}
               onChange={handleChange}
             />
-            {errors.studentNumber && (
-              <p className="error">{errors.studentNumber}</p>
-            )}
+            {errors.studentNumber && <p className="error">{errors.studentNumber}</p>}
           </div>
 
           <div className="form-group">
@@ -195,9 +197,7 @@ const Register = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
             />
-            {errors.confirmPassword && (
-              <p className="error">{errors.confirmPassword}</p>
-            )}
+            {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
           </div>
 
           <div className="form-group">
@@ -224,6 +224,7 @@ const Register = () => {
                 Tutor
               </label>
             </div>
+            {errors.role && <p className="error">{errors.role}</p>}
           </div>
 
           <button type="submit">Register</button>

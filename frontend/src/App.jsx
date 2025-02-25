@@ -10,8 +10,6 @@ import TutorProfile from "./Components/Tutor Profile/TutorProfile";
 import TutorHome from "./Components/Tutor Home/TutorHome";
 import AdminHome from "./Components/Admin Home/AdminHome";
 import TuteeHome from "./Components/Tutee Home/TuteeHome";
-import Nav from "./Components/Nav/Nav";
-import Hero from "./Components/Hero/Hero";
 import TuteeProfile from "./Components/Tutee Profile/TuteeProfile";
 import TutorBookings from "./Components/Tutor Bookings/TutorBookings";
 import TuteeWaitlist from "./Components/Tutee Waitlist/TuteeWaitlist";
