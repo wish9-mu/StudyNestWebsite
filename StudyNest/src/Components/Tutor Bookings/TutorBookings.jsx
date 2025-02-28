@@ -1,47 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./TutorBookings.css";
 import TutorNav from "../Nav/TutorNav";
+import "./BookingsCard.jsx";
+import BookingsCard from "./BookingsCard.jsx";
+import AcceptedCard from "./AcceptedCard.jsx";
 
 const TutorBookings = () => {
-  const [bookingsList, setBookingsList] = useState([]);
-
-  useEffect(() => {
-    //add fetch url here
-    fetch()
-      .then((response) => response.json())
-      .then((data) => setBookingsList(data))
-      .catch((error) => console.error("Error fetching bookings:", error));
-  }, []);
-
-  useEffect(() => {
-    setBookingsList([
-      {
-        id: 1,
-        name: "John Doe",
-        course: "Math",
-        date: "2025-02-25",
-        time: "10:00 AM",
-        message: "Looking forward!",
-        status: "pending",
-      },
-    ]);
-  }, []);
-
-  const handleAccept = (id) => {
-    setBookingsList((prevBookingsList) =>
-      prevBookingsList.map((booking) =>
-        booking.id === id ? { ...booking, status: "accepted" } : booking
-      )
-    );
-  };
-
-  const handleReject = (id) => {
-    setBookingsList((prevBookingsList) =>
-      prevBookingsList.map((booking) =>
-        booking.id === id ? { ...booking, status: "rejected" } : booking
-      )
-    );
-  };
+  const [acceptedBList, setAcceptedBList] = useState([]);
 
   return (
     <>
@@ -59,38 +24,24 @@ const TutorBookings = () => {
           </div>
         </div>
 
-        <div className="bookings-cards">
-          {bookingsList.map((booking) => (
-            <div key={booking.id} className={`booking-card ${booking.status}`}>
-              <div className="profile-img"></div>
-              <h3>{booking.name}</h3>
-              <p>{booking.course}</p>
-              <p>{booking.date}</p>
-              <p>{booking.time}</p>
-              <p>{booking.message}</p>
-              {booking.status === "pending" ? (
-                <>
-                  <button
-                    className="accept-button"
-                    onClick={() => handleAccept(booking.id)}
-                  >
-                    Accept
-                  </button>
-                  <button
-                    className="reject-button"
-                    onClick={() => handleReject(booking.id)}
-                  >
-                    Reject
-                  </button>
-                </>
+        <div className="accepted-cards">
+            {(acceptedBList.length > 0) ? (
+              <>
+                <h2>Accepted Bookings</h2>
+                <AcceptedCard acceptedBList={acceptedBList} setAcceptedBList={setAcceptedBList} />
+              </>
               ) : (
-                <p className={`status ${booking.status}`}>
-                  This booking has been {booking.status}.
-                </p>
-              )}
-            </div>
-          ))}
+                <p>&nbsp;</p>
+              )
+            }
+            
         </div>
+
+        <div className="bookings-cards">
+            <h2>Bookings</h2>
+            <BookingsCard setAcceptedBList={setAcceptedBList} />
+        </div>
+
       </div>
     </>
   );
