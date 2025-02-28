@@ -1,9 +1,9 @@
 import React from "react";
 import "./TutorProfile.css";
 import TutorNav from "../Nav/TutorNav";
-import AccountInformation from "./AccountInformation"; 
-import BookingPreferences from "./BookingPreferences"; 
-import SignInSecurity from "./SignInSecurity"; 
+import AccountInformation from "../ProfileContent/AccountInformation"; 
+import BookingPreferences from "../ProfileContent/BookingPreferences_Tutor"; 
+import SignInSecurity from "../ProfileContent/SignInSecurity"; 
 
 const TutorProfile = () => {
   return (

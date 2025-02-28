@@ -12,8 +12,10 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
     "react": "^19.0.0",
+    "react-calendar-timeline": "^0.30.0-beta.3",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5",
+    "react-select": "^5.10.0",
     "studynest": "file:"
   },
   "devDependencies": {
