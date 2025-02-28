@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import "./Login.css";
 import Nav from "../Nav/Nav";
@@ -45,6 +45,7 @@ const LoginPage = () => {
       }
 
       const userId = authData.user.id;
+      await trackUserSession(userId); 
 
       // Fetch user's role from Supabase profiles table
       const { data: profileData, error: profileError } = await supabase
@@ -84,6 +85,43 @@ const LoginPage = () => {
   const handleRegisterClick = () => {
     navigate("/register");
   };
+
+  const trackUserSession = async (userId) => {
+    const timestamp = new Date().toISOString();
+  
+    // Fetch current session history
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("session_history")
+      .eq("id", userId)
+      .single();
+  
+    if (error) {
+      console.error("❌ Error fetching session history:", error);
+      return;
+    }
+  
+    const currentHistory = data?.session_history || [];
+  
+    // Add new session entry
+    const updatedHistory = [
+      ...currentHistory,
+      { login_time: timestamp, device: "Web App" },
+    ];
+  
+    // Update session history in Supabase
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({ session_history: updatedHistory })
+      .eq("id", userId);
+  
+    if (updateError) {
+      console.error("❌ Error updating session history:", updateError);
+    } else {
+      console.log("✅ Session history updated successfully!");
+    }
+  };
+  
 
   return (
     <div className="login-container">

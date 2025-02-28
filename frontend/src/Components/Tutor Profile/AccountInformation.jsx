@@ -13,6 +13,7 @@ const AccountInformation = () => {
     year: "",
     program: "",
     about_me: "",
+    session_history: [],
   });
 
   const [editMode, setEditMode] = useState(false);
@@ -34,23 +35,41 @@ const AccountInformation = () => {
     }, []);
 
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user?.id)
-        .single();
-
-      if (error) console.error("Error fetching data:", error);
-      else setUserData(data);
-
-      setLoading(false);
-    };
-
-    fetchUserData();
-  }, [user?.id]);
+    useEffect(() => {
+      const fetchUserData = async () => {
+        setLoading(true);
+    
+        // ✅ Get the authenticated user
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        if (userError || !userData?.user?.id) {
+          console.error("❌ Error fetching user:", userError || "User not found");
+          setLoading(false);
+          return;
+        }
+    
+        const userId = userData.user.id; // ✅ Store user ID safely
+        console.log("🔹 Retrieved user ID:", userId);
+    
+        // ✅ Now, safely query the profiles table
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", userId)
+          .single();
+    
+        if (error) {
+          console.error("❌ Error fetching user profile:", error);
+        } else {
+          setUserData(data);
+          console.log("✅ User profile loaded:", data);
+        }
+    
+        setLoading(false);
+      };
+    
+      fetchUserData();
+    }, []);
+    
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
