@@ -3,15 +3,22 @@ import { Link, useNavigate } from "react-router-dom";
 import "./TutorNav.css";
 import userImage from "../../assets/user.png";
 import logo from "../../assets/SNHome.png";
+import { supabase } from "../../supabaseClient";
+import { useAuth } from "../Login/AuthContext";
 
-const TutorNav = ({ setUser }) => {
-  const navigate = useNavigate();
+const TutorNav = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    setUser({ role: "guest" }); // Reset user role to "guest"
-    navigate("/"); // Redirect to home page
-  };
+  const handleLogout = async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) console.error("Log out error:", error);
+      else {
+        setUser(null);
+        navigate("/login");
+      }
+    }
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
@@ -50,9 +57,9 @@ const TutorNav = ({ setUser }) => {
                 <Link to="/TutorProfile" className="dropdown-item">
                   Profile
                 </Link>
-                <Link to="/" className="dropdown-item">
+                <button onClick={handleLogout} className="dropdown-item logout-btn">
                   Logout
-                </Link>
+                </button>
               </div>
             )}
           </div>

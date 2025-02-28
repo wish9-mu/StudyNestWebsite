@@ -1,21 +1,34 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Nav.css";
 import logo from "../../assets/SNHome.png";
 import userImage from "../../assets/user.png";
+import { supabase } from "../../supabaseClient";
+import { useAuth } from "../Login/AuthContext";
 
 const TuteeNav = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
+  const handleLogout = async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) console.error("Log out error:", error);
+      else {
+        setUser(null);
+        navigate("/login");
+      }
+    }
+
   return (
     <nav className="nav nav-colored">
       <div className="container">
         <div className="wrapper">
-          <Link to="/tutee">
+          <Link to="/tuteehome">
             <img src={logo} alt="Logo" className="logo" />
           </Link>
           <ul className="nav-list">
@@ -46,9 +59,9 @@ const TuteeNav = () => {
                 <Link to="/tuteeprofile" className="dropdown-item">
                   Profile
                 </Link>
-                <Link to="/" className="dropdown-item">
+                <button onClick={handleLogout} className="dropdown-item logout-btn">
                   Logout
-                </Link>
+                </button>
               </div>
             )}
           </div>

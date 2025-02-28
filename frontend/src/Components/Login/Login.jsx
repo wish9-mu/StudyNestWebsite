@@ -40,6 +40,8 @@ const LoginPage = () => {
       if (authError || !authData.user) {
         setError("Login failed: " + (authError?.message || "Invalid credentials"));
         return;
+      } else {
+        console.log("Login successful:", authData.user);  
       }
 
       const userId = authData.user.id;
@@ -54,6 +56,8 @@ const LoginPage = () => {
       if (profileError || !profileData) {
         setError("Error fetching user profile: " + (profileError?.message || "Profile not found"));
         return;
+      } else {
+        console.log("Profile data:", profileData);
       }
 
       // Redirect user based on role

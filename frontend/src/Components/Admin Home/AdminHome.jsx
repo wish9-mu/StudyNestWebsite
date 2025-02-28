@@ -3,6 +3,8 @@ import "./AdminHome.css";
 import AdminNav from "../Nav/AdminNav";
 
 const AdminHome = () => {
+  console.log("Admin Home Page");
+  
   return (
     <>
       <AdminNav />
