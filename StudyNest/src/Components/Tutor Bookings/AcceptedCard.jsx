@@ -50,7 +50,7 @@ const AcceptedCard = ({ acceptedBList, setAcceptedBList }) => {
             {acceptedBList.map((booking) => (
                 <div key={booking.id} className={`booking-card ${booking.status}`}>
                     <div className="profile-img"></div>
-                    <h3>{booking.name}</h3>
+                    <h3>{booking.lastName}, {booking.firstName}</h3>
                     <p>{booking.course}</p>
                     <p>{booking.date}</p>
                     <p>{booking.time}</p>

@@ -26,7 +26,8 @@ const BookingsCard = ( {setAcceptedBList}) => {
         setBookingsList([
         {
             id: 1,
-            name: "John Doe",
+            firstName: "John",
+            lastName: "Doe",
             course: "Math",
             date: "2025-02-25",
             time: "10:00 AM",
@@ -90,7 +91,7 @@ const BookingsCard = ( {setAcceptedBList}) => {
                 bookingsList.map((booking) => (
                     <div key={booking.id} className={`booking-card ${booking.status}`}>
                         <div className="profile-img"></div>
-                        <h3>{booking.name}</h3>
+                        <h3>{booking.lastName}, {booking.firstName}</h3>
                         <p>{booking.course}</p>
                         <p>{booking.date}</p>
                         <p>{booking.time}</p>
