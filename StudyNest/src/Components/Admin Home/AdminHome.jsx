@@ -1,6 +1,7 @@
 import React from "react";
 import "./AdminHome.css";
 import AdminNav from "../Nav/AdminNav";
+import AdminCard from "./AdminCard.jsx";
 
 const AdminHome = () => {
   return (
@@ -23,15 +24,7 @@ const AdminHome = () => {
         </div>
 
         <div className="box-placeholders">
-          <div className="card-1">
-            <p>Card 1</p>
-          </div>
-          <div className="card-2">
-            <p>Card 2</p>
-          </div>
-          <div className="card-3">
-            <p>Card 3</p>
-          </div>
+          //<AdminCard></AdminCard>
         </div>
       </div>
     </>

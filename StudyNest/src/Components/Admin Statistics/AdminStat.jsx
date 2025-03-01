@@ -1,7 +1,43 @@
 import React from "react";
 import "./AdminStat.css";
+import PerformanceCard from "./PerformanceCard";
+import { supabase } from "../../supabaseClient";
 
 const AdminStat = () => {
+   const [tutorList, setTutorList] = useState([]);
+  
+    useEffect(() => {
+        //for backend
+        const fetchBookings = async () => {
+            const {data, error} = await supabase
+            .from("tutor_table") //table name for tutors
+            .select("*"); //for filter
+
+            if (error) {
+                console.error("Error fetching tutors:", error);
+            } else {
+                setTutorList(data);
+            }
+        };
+
+        fetchBookings();
+    }, []);
+
+    useEffect(() => {
+        setTutorList([
+            {
+                id: 1,
+                lName: "Alberich",
+                fName: "Kaeya",
+                studNum: 2023107803
+            }
+        ])
+    }, []);
+
+  const generateReport = () => {
+
+  };
+
   return (
     <div className="admin-stat">
       <div className="header">
@@ -20,23 +56,12 @@ const AdminStat = () => {
                 <small>Click a tutor to access their Performance Metrics</small>
             </div>
             <div>
-                <button className="generate-report-button">Generate Report</button>
+                <button className="generate-report-button" onClick={generateReport}>Generate Report</button>
                 <small>Click to generate performance rating report.</small>
             </div>
         </div>
         <div className="tutor-display">
-            <div className="card-1">
-                <h3>Lastname, Firstname</h3>
-                <p>Student Number</p>
-            </div>
-            <div className="card-2">
-                <h3>Lastname, Firstname</h3>
-                <p>Student Number</p>
-            </div>
-            <div className="card-3">
-                <h3>Lastname, Firstname</h3>
-                <p>Student Number</p>
-            </div>
+            <PerformanceCard tutorList={tutorList}/>
         </div>
       </div>
     </div>
@@ -44,3 +69,6 @@ const AdminStat = () => {
 };
 
 export default AdminStat;
+
+//generate csv file
+//add onClick to per card
