@@ -41,43 +41,32 @@ const AvailabilitySchedule = () => {
     useEffect(() => {
         const fetchAvailability = async () => {
             if (!userId) return;
-
+    
             const { data, error } = await supabase
                 .from("availability_schedule")
                 .select("*")
                 .eq("user_id", userId);
-
+    
             if (error) {
                 console.error("❌ Error fetching availability:", error);
                 return;
             }
-
+    
             setAvailability(data);
         };
-
+    
         fetchAvailability();
+    
+        // Listen for database changes (optional real-time updates)
+        const subscription = supabase
+            .channel('availability_changes')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'availability_schedule' }, fetchAvailability)
+            .subscribe();
+    
+        return () => {
+            supabase.removeChannel(subscription);
+        };
     }, [userId]);
-
-    // 🔹 Check for Overlapping Slots
-    const isOverlapping = (day, start, end, id = null) => {
-        return availability.some((slot) => {
-            if (slot.day_of_week !== day || slot.id === id) return false;
-    
-            const slotStart = new Date(`1970-01-01T${slot.start_time}`);
-            const slotEnd = new Date(`1970-01-01T${slot.end_time}`);
-            const newStart = new Date(`1970-01-01T${start}`);
-            const newEnd = new Date(`1970-01-01T${end}`);
-    
-            return (
-                (newStart >= slotStart && newStart < slotEnd) || // New start falls inside existing slot
-                (newEnd > slotStart && newEnd <= slotEnd) || // New end falls inside existing slot
-                (newStart <= slotStart && newEnd >= slotEnd) // New slot completely covers existing slot
-            );
-        });
-    };
-    
-
-    
 
     // 🔹 Handle Save (Insert or Update)
     const handleSave = async () => {
@@ -101,12 +90,6 @@ const AvailabilitySchedule = () => {
             return;
         }
     
-        // Check for overlapping slots before saving
-        if (isOverlapping(selectedDay.value, startTime, endTime, editingId)) {
-            alert("❌ This time slot overlaps with an existing availability slot.");
-            return;
-        }
-    
         const newSlot = {
             user_id: userId,
             day_of_week: selectedDay.value,
@@ -114,71 +97,95 @@ const AvailabilitySchedule = () => {
             end_time: endTime,
         };
     
-        let data, error;
-        if (editingId) {
-            // Update existing slot
-            ({ data, error } = await supabase
-                .from("availability_schedule")
-                .update(newSlot)
-                .eq("id", editingId)
-                .eq("user_id", userId));
+        try {
+            let data, error;
+            if (editingId) {
+                // Attempt to update an existing slot
+                ({ data, error } = await supabase
+                    .from("availability_schedule")
+                    .update(newSlot)
+                    .eq("id", editingId)
+                    .eq("user_id", userId));
     
-            if (!error) {
-                // ✅ Replace the updated slot in the state instead of adding it
-                setAvailability((prevAvailability) =>
-                    prevAvailability.map((slot) =>
-                        slot.id === editingId ? { ...slot, ...newSlot } : slot
-                    )
-                );
+                if (!error) {
+                    setAvailability((prevAvailability) =>
+                        prevAvailability.map((slot) =>
+                            slot.id === editingId ? { ...slot, ...newSlot } : slot
+                        )
+                    );
+                }
+            } else {
+                // Attempt to insert a new slot
+                ({ data, error } = await supabase
+                    .from("availability_schedule")
+                    .insert([newSlot])
+                    .select());
+    
+                if (!error && data && data.length > 0) {
+                    setAvailability([...availability, { ...newSlot, id: data[0].id }]);
+                }
             }
-        } else {
-            // Insert new slot
-            ({ data, error } = await supabase
-                .from("availability_schedule")
-                .insert([newSlot])
-                .select());
     
-            if (!error && data && data.length > 0) {
-                setAvailability([...availability, { ...newSlot, id: data[0].id }]);
+            if (error) {
+                throw error;
             }
-        }
     
-        if (error) {
-            console.error("❌ Error saving availability:", error);
-        } else {
             console.log("✅ Availability updated successfully.");
-        }
+            resetForm();
     
-        resetForm();
+        } catch (err) {
+            console.error("❌ Database error:", err);
+            alert("❌ This time slot conflicts with an existing availability or class schedule slot.");
+        }
     };
     
     
-    
-
     // 🔹 Handle Delete Confirmation
     const handleConfirmDelete = async () => {
-        const { error } = await supabase
-            .from("availability_schedule")
-            .delete()
-            .eq("id", deletingId)
-            .eq("user_id", userId);
-
-        if (error) {
-            console.error("❌ Error deleting availability:", error);
-        } else {
+        try {
+            const { error } = await supabase
+                .from("availability_schedule")
+                .delete()
+                .eq("id", deletingId)
+                .eq("user_id", userId);
+    
+            if (error) throw error;
+    
+            // Update UI to remove the deleted slot
             setAvailability(availability.filter((slot) => slot.id !== deletingId));
             setShowDeleteModal(false);
+    
+            console.log("✅ Availability slot deleted successfully.");
+        } catch (err) {
+            console.error("❌ Error deleting availability:", err);
+            alert("❌ Failed to delete slot.");
         }
     };
+    
+    
 
     // 🔹 Handle Edit
-    const handleEdit = (slot) => {
+    const handleEdit = async (slot) => {
         setSelectedDay(weekdays.find((d) => d.value === slot.day_of_week));
         setStartTime(slot.start_time);
         setEndTime(slot.end_time);
         setEditingId(slot.id);
         setShowModal(true);
+        
+        // Fetch latest slot data from Supabase
+        const { data, error } = await supabase
+            .from("availability_schedule")
+            .select("*")
+            .eq("id", slot.id)
+            .single();
+    
+        if (!error && data) {
+            setStartTime(data.start_time);
+            setEndTime(data.end_time);
+        }
     };
+    
+    
 
     // 🔹 Reset Form
     const resetForm = () => {

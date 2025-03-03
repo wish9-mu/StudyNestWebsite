@@ -5,6 +5,7 @@ import AccountInformation from "../ProfileContent/AccountInformation";
 import PreferredCourses from "../ProfileContent/PreferredCourses";
 import AvailabilitySchedule from "../ProfileContent/AvailabilitySchedule";
 import SignInSecurity from "../ProfileContent/SignInSecurity"; 
+import ClassSchedule from "../ProfileContent/ClassSchedule";
 
 const TutorProfile = () => {
   return (
@@ -22,6 +23,7 @@ const TutorProfile = () => {
         <h2>Booking Preferences</h2>
           <PreferredCourses />
           <AvailabilitySchedule />
+          <ClassSchedule />
         </section>
 
         {/* ✅ Insert Sign-In & Security Component */}
