@@ -38,7 +38,7 @@ const AdminNav = () => {
               </Link>
             </li>
             <li>
-              <Link to="/tutor/sessions" className="nav-link">
+              <Link to="/adminstat" className="nav-link">
                 Statistics
               </Link>
             </li>

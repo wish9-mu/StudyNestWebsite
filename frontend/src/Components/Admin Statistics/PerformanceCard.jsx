@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./AdminStat.css";
 
 
-const PerformanceCard = ( {tutorList}) => {
+const PerformanceCard = ({tutorList}) => {
 
     return (
         <>
@@ -12,9 +12,9 @@ const PerformanceCard = ( {tutorList}) => {
                 <div key={tutor.id} className="tutor-card"
                 /*onClick={redirect to perf stat}*/>
                     <div className="profile-img"></div>
-                    <h3>{tutor.lName}</h3>
-                    <h3>{tutor.fName}</h3>
-                    <p>{tutor.studNum}</p>
+                    <h3>{tutor.last_name}</h3>
+                    <h3>{tutor.first_name}</h3>
+                    <p>{tutor.student_number}</p>
                 </div>
             ))
         ) : (

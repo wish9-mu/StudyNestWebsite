@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./AdminStat.css";
 import PerformanceCard from "./PerformanceCard";
 import { supabase } from "../../supabaseClient";
+import AdminNav from "../Nav/AdminNav";
 
 const AdminStat = () => {
    const [tutorList, setTutorList] = useState([]);
   
     useEffect(() => {
-        //for backend
         const fetchBookings = async () => {
             const {data, error} = await supabase
-            .from("tutor_table") //table name for tutors
-            .select("*"); //for filter
+            .from("profiles") 
+            .select("*")
+            .eq("role", "tutor");
 
             if (error) {
                 console.error("Error fetching tutors:", error);
@@ -23,22 +24,13 @@ const AdminStat = () => {
         fetchBookings();
     }, []);
 
-    useEffect(() => {
-        setTutorList([
-            {
-                id: 1,
-                lName: "Alberich",
-                fName: "Kaeya",
-                studNum: 2023107803
-            }
-        ])
-    }, []);
-
   const generateReport = () => {
-
+    //pls help
   };
 
   return (
+    <>
+    <AdminNav />
     <div className="admin-stat">
       <div className="header">
         <div className="header-text">
@@ -60,11 +52,12 @@ const AdminStat = () => {
                 <small>Click to generate performance rating report.</small>
             </div>
         </div>
-        <div className="tutor-display">
+        <div className="tutors-display">
             <PerformanceCard tutorList={tutorList}/>
         </div>
       </div>
     </div>
+    </>
   );
 };
 

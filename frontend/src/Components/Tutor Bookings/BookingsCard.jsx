@@ -9,8 +9,9 @@ const BookingsCard = ( {setAcceptedBList}) => {
         //for backend
         const fetchBookings = async () => {
             const { data, error } = await supabase
-            .from("table_name") //table name for bookings
-            .select("*"); //for filter
+            .from("bookings") 
+            .select("*")
+            .eq("status", "pending"); //for filter
         
             if (error) {
                 console.error("Error fetching bookings:", error);
@@ -40,7 +41,7 @@ const BookingsCard = ( {setAcceptedBList}) => {
     const handleAccept = async (id) => {
         /*
             const { error } = await supabase
-            .from("table_name")
+            .from("bookings")
             .update({ status: "accepted" })
             .eq("id", id);
         */
@@ -69,7 +70,7 @@ const BookingsCard = ( {setAcceptedBList}) => {
     const handleReject = async(id) => {
         /*
             const { error } = await supabase
-            .from("table_name")
+            .from("bookings")
             .update({ status: "rejected" })
             .eq("id", id);
         */

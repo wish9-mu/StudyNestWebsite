@@ -21,6 +21,7 @@ import TutorBookings from "./Components/Tutor Bookings/TutorBookings";
 import TuteeWaitlist from "./Components/Tutee Waitlist/TuteeWaitlist";
 import TuteeActivity from "./Components/Tutee Activity/TuteeActivity";
 import AdminProfile from "./Components/Admin Profile/AdminProfile";
+import AdminStat from "./Components/Admin Statistics/AdminStat";
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
@@ -55,6 +56,7 @@ const AppRoutes = () => {
       <Route path="/tuteewaitlist" element={<TuteeWaitlist />} />
       <Route path="/tuteeactivity" element={<TuteeActivity />} />
       <Route path="/adminprofile" element={<AdminProfile />} />
+      <Route path="/adminstat" element={<AdminStat />}  />
 
       {/* Protected Routes */}
       <Route path="/tutorhome" element={<ProtectedRoute role="tutor"><TutorHome /></ProtectedRoute>} />
