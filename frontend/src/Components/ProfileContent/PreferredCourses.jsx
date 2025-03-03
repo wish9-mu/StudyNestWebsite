@@ -117,8 +117,7 @@ const BookingPreferences = () => {
   };
 
   return (
-    <div className="profile-section">
-      <h2>Booking Preferences</h2>
+    <div>
 
       {/* 🔹 Preferred Courses Dropdown with Auto-Suggestions */}
       <label>Preferred Courses:</label>

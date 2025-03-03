@@ -15,7 +15,6 @@ const AccountInformation = () => {
     about_me: "",
     session_history: [],
   });
-
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -31,44 +30,43 @@ const AccountInformation = () => {
         }
     };
 
-    fetchUser();
-    }, []);
+  fetchUser();
+  }, []);
 
-
-    useEffect(() => {
-      const fetchUserData = async () => {
-        setLoading(true);
-    
-        // ✅ Get the authenticated user
-        const { data: userData, error: userError } = await supabase.auth.getUser();
-        if (userError || !userData?.user?.id) {
-          console.error("❌ Error fetching user:", userError || "User not found");
-          setLoading(false);
-          return;
-        }
-    
-        const userId = userData.user.id; // ✅ Store user ID safely
-        console.log("🔹 Retrieved user ID:", userId);
-    
-        // ✅ Now, safely query the profiles table
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", userId)
-          .single();
-    
-        if (error) {
-          console.error("❌ Error fetching user profile:", error);
-        } else {
-          setUserData(data);
-          console.log("✅ User profile loaded:", data);
-        }
-    
+  useEffect(() => {
+    const fetchUserData = async () => {
+      setLoading(true);
+  
+      // ✅ Get the authenticated user
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError || !userData?.user?.id) {
+        console.error("❌ Error fetching user:", userError || "User not found");
         setLoading(false);
-      };
-    
-      fetchUserData();
-    }, []);
+        return;
+      }
+  
+      const userId = userData.user.id; // ✅ Store user ID safely
+      console.log("🔹 Retrieved user ID:", userId);
+  
+      // ✅ Now, safely query the profiles table
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+  
+      if (error) {
+        console.error("❌ Error fetching user profile:", error);
+      } else {
+        setUserData(data);
+        console.log("✅ User profile loaded:", data);
+      }
+  
+      setLoading(false);
+    };
+  
+    fetchUserData();
+  }, []);
     
 
   const handleChange = (e) => {
@@ -98,7 +96,7 @@ const AccountInformation = () => {
     setLoading(false);
   };
 
-  // 📌 Handle Profile Picture Upload
+  // Handle Profile Picture Upload
   const handleUpload = async (event) => {
     setUploading(true);
     const file = event.target.files[0];
@@ -159,7 +157,6 @@ const AccountInformation = () => {
     setUploading(false);
   };
   
-
   // Handle Profile Picture Removal
   const handleRemovePicture = async () => {
     setUploading(true);

@@ -40,7 +40,7 @@ const SignInSecurity = () => {
 
   const handlePasswordReset = async () => {
     console.log("🔄 Attempting password reset for:", securityInfo.email);
-  
+    
     if (!securityInfo.email) {
       console.error("❌ Error: Email is missing.");
       alert("Error: No email found. Please log in again.");

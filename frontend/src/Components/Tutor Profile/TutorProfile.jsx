@@ -2,7 +2,8 @@ import React from "react";
 import "./TutorProfile.css";
 import TutorNav from "../Nav/TutorNav";
 import AccountInformation from "../ProfileContent/AccountInformation"; 
-import BookingPreferences from "../ProfileContent/BookingPreferences_Tutor"; 
+import PreferredCourses from "../ProfileContent/PreferredCourses";
+import AvailabilitySchedule from "../ProfileContent/AvailabilitySchedule";
 import SignInSecurity from "../ProfileContent/SignInSecurity"; 
 
 const TutorProfile = () => {
@@ -18,7 +19,9 @@ const TutorProfile = () => {
 
         {/* ✅ Insert Booking Preferences Component */}
         <section className="profile-section">
-          <BookingPreferences />
+        <h2>Booking Preferences</h2>
+          <PreferredCourses />
+          <AvailabilitySchedule />
         </section>
 
         {/* ✅ Insert Sign-In & Security Component */}
