@@ -128,28 +128,6 @@ const LoginPage = () => {
     }
   };
 
-  const handleResetPasswordClick = async () => {
-    console.log("🔄 Attempting password reset for:", securityInfo.email);
-
-    if (!securityInfo.email) {
-      console.error("❌ Error: Email is missing.");
-      alert("Error: No email found. Please log in again.");
-      return;
-    }
-
-    const { error } = await supabase.auth.resetPasswordForEmail(
-      securityInfo.email
-    );
-
-    if (error) {
-      console.error("❌ Failed to send reset email:", error.message);
-      alert("Failed to send password reset email. Please try again.");
-    } else {
-      console.log("✅ Password reset email sent to:", securityInfo.email);
-      alert("Password reset link sent to your email.");
-    }
-  };
-
   return (
     <div className="login-container">
       <Nav />
@@ -188,7 +166,7 @@ const LoginPage = () => {
           </div>
 
           <div className="form-footer">
-            <span className="register-link" onClick={handleResetPasswordClick}>
+            <span className="register-link" onClick={() => navigate("/forgotpassword")}>
               Forgot your password?
             </span>
           </div>

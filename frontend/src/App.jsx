@@ -22,6 +22,8 @@ import TuteeWaitlist from "./Components/Tutee Waitlist/TuteeWaitlist";
 import TuteeActivity from "./Components/Tutee Activity/TuteeActivity";
 import AdminProfile from "./Components/Admin Profile/AdminProfile";
 import VisionMissionSection from "./Components/VisionMissionSection/VisionMissionSection";
+import ForgotPassword from "./Components/ResetPassword/ForgotPassword";
+import UpdateYourPassword from "./Components/ResetPassword/UpdateYourPassword";
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
@@ -57,6 +59,8 @@ const AppRoutes = () => {
       <Route path="/tuteeactivity" element={<TuteeActivity />} />
       <Route path="/adminprofile" element={<AdminProfile />} />
       <Route path="/visionmission" element={<VisionMissionSection />} />
+      <Route path="/updateyourpassword" element={<UpdateYourPassword />} />
+      <Route path="/forgotpassword" element={<ForgotPassword />} />
 
       {/* Protected Routes */}
       <Route
