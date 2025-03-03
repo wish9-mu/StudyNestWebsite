@@ -62,13 +62,22 @@ const AvailabilitySchedule = () => {
     const isOverlapping = (day, start, end, id = null) => {
         return availability.some((slot) => {
             if (slot.day_of_week !== day || slot.id === id) return false;
+    
+            const slotStart = new Date(`1970-01-01T${slot.start_time}`);
+            const slotEnd = new Date(`1970-01-01T${slot.end_time}`);
+            const newStart = new Date(`1970-01-01T${start}`);
+            const newEnd = new Date(`1970-01-01T${end}`);
+    
             return (
-                (start >= slot.start_time && start < slot.end_time) || 
-                (end > slot.start_time && end <= slot.end_time) || 
-                (start <= slot.start_time && end >= slot.end_time)
+                (newStart >= slotStart && newStart < slotEnd) || // New start falls inside existing slot
+                (newEnd > slotStart && newEnd <= slotEnd) || // New end falls inside existing slot
+                (newStart <= slotStart && newEnd >= slotEnd) // New slot completely covers existing slot
             );
         });
     };
+    
+
+    
 
     // 🔹 Handle Save (Insert or Update)
     const handleSave = async () => {
@@ -89,6 +98,12 @@ const AvailabilitySchedule = () => {
     
         if (userId === null) {
             console.error("❌ User ID not found.");
+            return;
+        }
+    
+        // Check for overlapping slots before saving
+        if (isOverlapping(selectedDay.value, startTime, endTime, editingId)) {
+            alert("❌ This time slot overlaps with an existing availability slot.");
             return;
         }
     
@@ -121,7 +136,7 @@ const AvailabilitySchedule = () => {
             ({ data, error } = await supabase
                 .from("availability_schedule")
                 .insert([newSlot])
-                .select()); 
+                .select());
     
             if (!error && data && data.length > 0) {
                 setAvailability([...availability, { ...newSlot, id: data[0].id }]);
@@ -136,6 +151,7 @@ const AvailabilitySchedule = () => {
     
         resetForm();
     };
+    
     
     
 
