@@ -4,6 +4,7 @@ import TuteeNav from "../Nav/TutorNav";
 import AccountInformation from "../ProfileContent/AccountInformation"; 
 import SignInSecurity from "../ProfileContent/SignInSecurity"; 
 import AvailabilitySchedule from "../ProfileContent/AvailabilitySchedule";
+import ClassSchedule from "../ProfileContent/ClassSchedule";
 
 const TuteeProfile = () => {
   return (
@@ -20,6 +21,7 @@ const TuteeProfile = () => {
         <section className="profile-section">
         <h2>Booking Preferences</h2>
           <AvailabilitySchedule />
+          <ClassSchedule />
         </section>
 
         {/* ✅ Insert Sign-In & Security Component */}

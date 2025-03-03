@@ -75,8 +75,8 @@ const AvailabilitySchedule = () => {
             return;
         }
     
-        if (startTime < "07:00" || endTime > "21:00") {
-            alert("Time must be between 7:00 AM and 9:00 PM.");
+        if (startTime < "07:00" || endTime > "19:00") {
+            alert("Time must be between 7:00 AM and 7:00 PM.");
             return;
         }
     

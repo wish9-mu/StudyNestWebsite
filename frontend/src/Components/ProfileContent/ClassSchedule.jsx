@@ -40,27 +40,24 @@ const ClassSchedule = () => {
 
     // 🔹 Fetch Courses Schedule
     // 🔹 Fetch Available Courses from Supabase
-      useEffect(() => {
+    useEffect(() => {
         const fetchCourses = async () => {
-          const { data, error } = await supabase
-            .from("courses")
-            .select("course_code, course_name");
+            const { data, error } = await supabase
+                .from("courses")
+                .select("course_code, course_name");
     
-          if (error) {
-            console.error("❌ Error fetching courses:", error);
-          } else {
-            console.log("✅ Courses loaded:", data);
-            setCourses(
-              data.map((course) => ({
-                value: course.course_code,
-                label: `${course.course_code} - ${course.course_name}`,
-              }))
-            );
-          }
+            if (error) {
+                console.error("❌ Error fetching courses:", error);
+                return;
+            }
+    
+            // Ensure data is mapped correctly
+            setCourses(data.map(course => ({ value: course.course_code, label: course.course_name })));
         };
     
         fetchCourses();
-      }, []);
+    }, []);
+    
 
     // 🔹 Fetch Class Schedule with Course Names
     useEffect(() => {
@@ -104,8 +101,8 @@ const ClassSchedule = () => {
             return;
         }
 
-        if (startTime < "07:00" || endTime > "21:00") {
-            alert("Time must be between 7:00 AM and 9:00 PM.");
+        if (startTime < "07:00" || endTime > "19:00") {
+            alert("Time must be between 7:00 AM and 7:00 PM.");
             return;
         }
 
@@ -186,10 +183,17 @@ const ClassSchedule = () => {
         setSelectedDay(weekdays.find((d) => d.value === slot.day_of_week));
         setStartTime(slot.start_time);
         setEndTime(slot.end_time);
-        setSelectedCourse(courses.find((c) => c.value === slot.course_id) || null);
+    
+        // Ensure courses are available before setting the selected course
+        if (courses.length > 0) {
+            const foundCourse = courses.find((c) => c.value === slot.course_id);
+            setSelectedCourse(foundCourse || null);
+        }
+    
         setEditingId(slot.id);
         setShowModal(true);
-    };   
+    };
+       
 
     // 🔹 Reset Form
     const resetForm = () => {
