@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Nav from "../Nav/Nav";
+import TuteeNav from "../Nav/TuteeNav";
 import "./Request.css";
 import { Navigate, useNavigate } from "react-router-dom";
 
@@ -147,7 +147,7 @@ const Request = () => {
 
   return (
     <>
-      <Nav />
+      <TuteeNav />
       <div className="request-container">
         <div className="request-card">
           <div className="request-header">
