@@ -1,0 +1,200 @@
+/* AccountInformation.css */
+.account-info-container {
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+  }
+  
+  .account-info-container h2 {
+    font-size: 1.25rem;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  /* Profile picture section */
+  .profile-pic {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #4299e1;
+    margin-bottom: 1rem;
+  }
+  
+  .profile-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .upload-button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #4299e1;
+    color: white;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s;
+    border: none;
+  }
+  
+  .upload-button:hover {
+    background-color: #3182ce;
+  }
+  
+  .remove-button {
+    padding: 0.5rem 1rem;
+    background-color: #f56565;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s;
+  }
+  
+  .remove-button:hover {
+    background-color: #e53e3e;
+  }
+  
+  /* Form styling */
+  .account-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 0.25rem;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 0.625rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    background-color: #f7fafc;
+    color: #4a5568;
+  }
+  
+  .form-control:disabled {
+    background-color: #f7fafc;
+    color: #718096;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+  }
+  
+  textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  .about-me {
+    grid-column: 1 / -1;
+  }
+  
+  /* Action buttons */
+  .action-buttons {
+    display: flex;
+    justify-content: flex-start;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .edit-button, .save-button {
+    padding: 0.5rem 1.5rem;
+    background-color: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+    min-width: 110px;
+    text-align: center;
+  }
+  
+  .edit-button:hover, .save-button:hover {
+    background-color: #3182ce;
+  }
+  
+  .cancel-button {
+    padding: 0.5rem 1rem;
+    background-color: #e2e8f0;
+    color: #4a5568;
+    border: none;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .cancel-button:hover {
+    background-color: #cbd5e0;
+  }
+  
+  .action-buttons button:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+  }
+  
+  /* Responsive styles */
+  @media (min-width: 768px) {
+    .account-form {
+      grid-template-columns: 1fr 1fr;
+      column-gap: 2rem;
+    }
+    
+    .about-me {
+      grid-column: span 2;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .profile-buttons {
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .upload-button,
+    .remove-button {
+      width: 100%;
+      text-align: center;
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .action-buttons button {
+      width: 100%;
+    }
+  }

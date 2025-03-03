@@ -3,28 +3,43 @@ import "./TuteeHome.css";
 import TuteeNav from "../Nav/TuteeNav";
 
 const TuteeHome = () => {
+  const handleBoxClick = (boxNumber) => {
+    alert(`Box ${boxNumber} clicked!`);
+    // You can replace the alert with any action you want
+  };
+
   return (
     <>
       <TuteeNav />
       <div className="tutee-home">
-        <div className="header">
-          <div className="header-text">
-            <h1>Learning begins now.</h1>
-          </div>
-          <div className="header-info">
-            <p>Find yout tutor!</p>
-          </div>
-        </div>
-
-        <div className="box-placeholders">
-          <div className="card-1">
-            <p>Card 1</p>
-          </div>
-          <div className="card-2">
-            <p>Card 2</p>
-          </div>
-          <div className="card-3">
-            <p>Card 3</p>
+        <div className="tutee-home-container">
+          <h1 className="tutee-home-title">Learning begins now.</h1>
+          <p className="tutee-home-description">
+            StudyNest is a student-led tutoring platform exclusively for
+            Mapúans, connecting knowledgeable upper-year students with those
+            seeking academic support. Whether you’re struggling with Calculus,
+            Physics, or Engineering subjects, find a qualified peer tutor who's
+            been in your shoes.
+          </p>
+          <div className="tutee-home-boxes">
+            <div className="box-container">
+              <div
+                className="tutee-box box-1"
+                onClick={() => handleBoxClick(1)}
+              ></div>
+            </div>
+            <div className="box-container">
+              <div
+                className="tutee-box box-2"
+                onClick={() => handleBoxClick(2)}
+              ></div>
+            </div>
+            <div className="box-container">
+              <div
+                className="tutee-box box-3"
+                onClick={() => handleBoxClick(3)}
+              ></div>
+            </div>
           </div>
         </div>
       </div>
