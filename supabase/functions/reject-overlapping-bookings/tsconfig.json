@@ -1,0 +1,7 @@
+{
+    "compilerOptions": {
+        "lib": ["ESNext"],
+        "types": ["https://deno.land/x/types@2.0.0/deno.d.ts"],
+        "strict": false
+    }
+}

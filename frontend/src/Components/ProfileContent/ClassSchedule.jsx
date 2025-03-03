@@ -39,7 +39,6 @@ const ClassSchedule = () => {
     }, []);
 
     // 🔹 Fetch Courses Schedule
-    // 🔹 Fetch Available Courses from Supabase
     useEffect(() => {
         const fetchCourses = async () => {
             const { data, error } = await supabase
