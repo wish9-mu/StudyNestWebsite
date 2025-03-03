@@ -8,6 +8,7 @@ const Register = () => {
     firstName: "",
     lastName: "",
     studentNumber: "",
+    mobileNumber: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -38,7 +39,17 @@ const Register = () => {
     
     if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
 
-    if (!formData.studentNumber.trim()) newErrors.studentNumber = "Student number is required";
+    if (!formData.studentNumber.trim()) {
+      newErrors.studentNumber = "Student number is required";
+    } else if (!/^(9\d{9})$/.test(formData.studentNumberNumber)) {
+      newErrors.studentNumber = "Enter a valid student number";
+    }
+
+    if (!formData.mobileNumber.trim()) {
+      newErrors.mobileNumber = "Mobile number is required";
+    } else if (!/^(9\d{9})$/.test(formData.mobileNumber)) {
+      newErrors.mobileNumber = "Enter a valid 10-digit PH mobile number";
+    }
 
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
@@ -99,6 +110,7 @@ const Register = () => {
               first_name: formData.firstName,
               last_name: formData.lastName,
               student_number: formData.studentNumber,
+              mobile_number: formData.mobileNumber,
               role: formData.role,
               email: formData.email,
             },
@@ -165,10 +177,25 @@ const Register = () => {
                 type="text"
                 name="studentNumber"
                 placeholder="Student Number"
-                value={formData.studentNumber}
+                value={formData.studentNumber.replace(/\D/g, "").slice(0, 10)}
                 onChange={handleChange}
               />
               {errors.studentNumber && <p className="error">{errors.studentNumber}</p>}
+            </div>
+
+            <div className="form-group">
+              <div className="mobile-con">
+                <span className="mobile-prefix">+63</span>
+                <input
+                type="text"
+                name="mobileNumber"
+                placeholder="Mobile Number"
+                value={formData.mobileNumber.replace(/\D/g, "").slice(0, 10)}
+                onChange={handleChange}
+                maxLength="10"
+              />
+              </div>
+              {errors.mobileNumber && <p className="error">{errors.mobileNumber}</p>}
             </div>
 
             <div className="form-group">

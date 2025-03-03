@@ -5,7 +5,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 const Request = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     year: "",
     course: "",
@@ -41,7 +42,8 @@ const Request = () => {
 
         setFormData((prevState) => ({
           ...prevState,
-          name: data.name,
+          firstName: data.firstName,
+          lastName: data.lastName,
           email: data.email,
           year: data.year,
         }));
@@ -109,7 +111,8 @@ const Request = () => {
     }
 
     const requestData = {
-      name: formData.name,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
       email: formData.email,
       year: formData.year,
       course: formData.course,
