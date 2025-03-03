@@ -4,6 +4,8 @@ import AdminNav from "../Nav/AdminNav";
 import AdminCard from "./AdminCard.jsx";
 
 const AdminHome = () => {
+  console.log("Admin Home Page");
+  
   return (
     <>
       <AdminNav />

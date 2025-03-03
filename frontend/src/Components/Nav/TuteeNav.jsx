@@ -1,31 +1,50 @@
-import { Link } from "react-router-dom";
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./Nav.css";
 import logo from "../../assets/SNHome.png";
 import userImage from "../../assets/user.png";
+import { supabase } from "../../supabaseClient";
+import { useAuth } from "../Login/AuthContext";
 
-const AdminNav = () => {
+const TuteeNav = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
+
+  const handleLogout = async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) console.error("Log out error:", error);
+      else {
+        setUser(null);
+        navigate("/login");
+      }
+    }
+
   return (
     <nav className="nav nav-colored">
       <div className="container">
         <div className="wrapper">
-          <Link to="/tutor">
+          <Link to="/tuteehome">
             <img src={logo} alt="Logo" className="logo" />
           </Link>
           <ul className="nav-list">
             <li>
-              <Link to="/adminhome" className="nav-link">
-                Home
+              <Link to="/request" className="nav-link">
+                Request
               </Link>
             </li>
             <li>
-              <Link to="/tutor/sessions" className="nav-link">
-                Statistics
+              <Link to="/tuteeactivity" className="nav-link">
+                Activity
+              </Link>
+            </li>
+            <li>
+              <Link to="/tuteewaitlist" className="nav-link">
+                Waitlist
               </Link>
             </li>
           </ul>
@@ -33,16 +52,16 @@ const AdminNav = () => {
           <div className="profile-dropdown">
             <button onClick={toggleDropdown} className="btnlog">
               <img src={userImage} alt="User" className="user-image" />
-              Admin Dela Cruz
+              Tutee Dela Cruz
             </button>
             {dropdownOpen && (
               <div className="dropdown-menu">
-                <Link to="/adminprofile" className="dropdown-item">
+                <Link to="/tuteeprofile" className="dropdown-item">
                   Profile
                 </Link>
-                <Link to="/" className="dropdown-item">
+                <button onClick={handleLogout} className="dropdown-item logout-btn">
                   Logout
-                </Link>
+                </button>
               </div>
             )}
           </div>
@@ -52,4 +71,4 @@ const AdminNav = () => {
   );
 };
 
-export default AdminNav;
+export default TuteeNav;
