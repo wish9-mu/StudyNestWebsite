@@ -26,7 +26,7 @@ const AdminHome = () => {
         </div>
 
         <div className="box-placeholders">
-          //<AdminCard></AdminCard>
+          <AdminCard></AdminCard>
         </div>
       </div>
     </>
