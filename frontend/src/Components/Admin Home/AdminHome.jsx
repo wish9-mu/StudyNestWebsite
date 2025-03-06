@@ -5,31 +5,29 @@ import AdminCard from "./AdminCard.jsx";
 
 const AdminHome = () => {
   console.log("Admin Home Page");
-  
+
   return (
-    <>
+    <div className="page-wrapper">
       <AdminNav />
       <div className="admin-home">
-        <div className="header">
-          <div className="header-text">
-            <h1>Hello Admin.</h1>
-          </div>
-          <div className="header-info">
-            <p>
-              StudyNest is a student-led tutoring platform exclusively for
-              Mapúans, connecting knowledgeable upper-year students with those
-              seeking academic support. Whether you're struggling with Calculus,
-              Physics, or Engineering subjects, find a qualified peer tutor
-              who's been in your shoes.
-            </p>
-          </div>
-        </div>
+        <div className="admin-home-container">
+          <h1 className="admin-title">Hello Admin.</h1>
+          <p className="admin-home-description">
+            StudyNest is a student-led tutoring platform exclusively for
+            Mapúans, connecting knowledgeable upper-year students with those
+            seeking academic support. Whether you're struggling with Calculus,
+            Physics, or Engineering subjects, find a qualified peer tutor who's
+            been in your shoes.
+          </p>
 
-        <div className="box-placeholders">
-          //<AdminCard></AdminCard>
+          <div className="admin-home-boxes">
+            <AdminCard className="box-1" />
+            <AdminCard className="box-2" />
+            <AdminCard className="box-3" />
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

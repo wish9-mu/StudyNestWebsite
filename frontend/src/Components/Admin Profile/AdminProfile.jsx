@@ -1,30 +1,34 @@
 import React from "react";
 import "./AdminProfile.css";
-import NavAdmin from "../Nav/AdminNav";
+import { Link } from "react-router-dom"; // Assuming you're using React Router
 import AvailableCourses from "./AvailableCourses";
 import { useAuth } from "../Login/AuthContext";
 import { supabase } from "../../supabaseClient";
-import "../ProfileContent/AccountInformation.css";
+import AdminNav from "../Nav/AdminNav";
 
 const AdminProfile = () => {
+  const { user } = useAuth();
+
   return (
-    <>
-      <NavAdmin />
-      <div className="admin-profile-container">
-        <div className="profile-card">
-          <div className="profile-image"></div>
-          <div className="profile-info">
-            <h1>StudyNest Admin</h1>
-            <p>This is an admin view exclusive for Admins under StudyNest.</p>
-          </div>
+    <div className="admin-profile-page">
+      <AdminNav />
+      {/* Main Content */}
+      <main className="main-content">
+        <div className="admin-header">
+          <h1 className="admin-title">StudyNest Admin</h1>
+          <p className="admin-subtitle">
+            This is an admin view exclusive for Admins under StudyNest.
+          </p>
         </div>
 
-        <h2 className="section-title">Tutoring Courses</h2>
-        <div className="courses-container">
-          <AvailableCourses />
-        </div>
-      </div>
-    </>
+        <section className="courses-section">
+          <h2 className="section-title">Tutoring Courses</h2>
+          <div className="courses-container">
+            <AvailableCourses />
+          </div>
+        </section>
+      </main>
+    </div>
   );
 };
 

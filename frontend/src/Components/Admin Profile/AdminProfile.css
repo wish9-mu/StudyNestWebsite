@@ -1,84 +1,78 @@
-/* TuteeProfile.css */
-.tutee-profile-container {
+.admin-profile-page {
+  padding: 20px;
+  padding-top: 80px;
+}
+
+.main-content {
+  padding: 20px;
+}
+
+.admin-header {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background-color: #f7fafc;
-  margin-top: 100px;
+  justify-content: center;
+  padding: 50px 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
-.tutee-profile-content {
-  max-width: 1000px;
-  width: 100%;
-  margin: 2rem auto;
-  padding: 0 1.5rem;
-  margin-bottom: 100px;
+
+.admin-title {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+
 }
 
-.profile-tabs {
+.admin-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.courses-section {
+  margin-top: 30px;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.courses-container {
   display: flex;
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-.tab-button {
-  background: none;
-  border: none;
-  padding: 0.75rem 1.5rem;
+/* These styles below match what you had in your original CSS but are renamed to work with your component */
+
+/* You might need these for the AvailableCourses component if it uses card-style layouts */
+.course-card {
+  flex: 1;
+  min-width: 300px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.course-card img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.course-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.course-card p {
   font-size: 1rem;
-  font-weight: 500;
-  color: #718096;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-bottom: 2px solid transparent;
-}
-
-.tab-button:hover {
-  color: #4299e1;
-}
-
-.tab-button.active {
-  color: #4299e1;
-  border-bottom: 2px solid #4299e1;
-}
-
-.profile-content {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive styles */
-@media (max-width: 768px) {
-  .profile-tabs {
-    overflow-x: auto;
-    white-space: nowrap;
-    padding-bottom: 0.5rem;
-  }
-  
-  .tab-button {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-  }
-  
-  .tutee-profile-content {
-    padding: 0 1rem;
-    margin: 1rem auto;
-  }
-}
-
-@media (max-width: 480px) {
-  .tab-button {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
-  }
+  color: #666;
 }

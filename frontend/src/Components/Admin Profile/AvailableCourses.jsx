@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
-import "./AdminProfile.css";
+import "./AvailableCourses.css";
+import "./Modal.css";
 
 const AvailableCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -137,7 +138,7 @@ const AvailableCourses = () => {
             <div className="modal-content">
               <h2>Add Course</h2>
 
-              {error && <p>{error}</p>}
+              {error && <p className="error-message">{error}</p>}
 
               <form onSubmit={handleDuplicate}>
                 <div className="form-group">
@@ -162,19 +163,24 @@ const AvailableCourses = () => {
                   />
                 </div>
 
-                <button type="submit">Add course</button>
-                <button
-                  onClick={() => {
-                    setModalType(null);
-                    setFormData({
-                      course_name: "",
-                      course_code: "",
-                    });
-                    setError("");
-                  }}
-                >
-                  Cancel
-                </button>
+                <div className="button-group">
+                  <button type="submit" className="submit-btn">
+                    Add course
+                  </button>
+                  <button
+                    className="cancel-btn"
+                    onClick={() => {
+                      setModalType(null);
+                      setFormData({
+                        course_name: "",
+                        course_code: "",
+                      });
+                      setError("");
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </form>
             </div>
           </div>
@@ -228,24 +234,26 @@ const AvailableCourses = () => {
             <div className="modal-content">
               <h2>Are you sure you want to remove this course?</h2>
 
-              {error && <p>{error}</p>}
+              {error && <p className="error-message">{error}</p>}
 
-              <button
-                className="yes-btn"
-                onClick={() => deleteCourse(selectedCourseID)}
-              >
-                Yes
-              </button>
-              <button
-                className="no-btn"
-                onClick={() => {
-                  setModalType(null);
-                  setSelectedCourseID(null);
-                  setError("");
-                }}
-              >
-                No
-              </button>
+              <div className="button-group">
+                <button
+                  className="delete-confirm-btn"
+                  onClick={() => deleteCourse(selectedCourseID)}
+                >
+                  Yes
+                </button>
+                <button
+                  className="cancel-btn"
+                  onClick={() => {
+                    setModalType(null);
+                    setSelectedCourseID(null);
+                    setError("");
+                  }}
+                >
+                  No
+                </button>
+              </div>
             </div>
           </div>
         )}
