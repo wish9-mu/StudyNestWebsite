@@ -11,7 +11,7 @@ const Request = () => {
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [tutors, setTutors] = useState([]);
-  const [tutor_id, setTutorId] = useState(null);
+  const [selectedTutor, setSelectedTutor] = useState(null);
   const [session_date, setSessionDate] = useState("");
   const [start_time, setStartTime] = useState("");
   const [end_time, setEndTime] = useState("");
@@ -68,6 +68,7 @@ const Request = () => {
     try {
       // Convert session_date to week day format (e.g., "Monday")
       const sessionDay = new Date(session_date).toLocaleString('en-us', { weekday: 'long' });
+      console.log("🔹 Converted session date to weekday:", sessionDay);
   
       // Fetch tutor availability
       const { data: availabilityData, error: availabilityError } = await supabase
@@ -78,6 +79,9 @@ const Request = () => {
         .gte("end_time", end_time);
   
       if (availabilityError) throw availabilityError;
+
+      console.log("✅ Tutor availability data fetched:", availabilityData);
+
       if (!availabilityData || availabilityData.length === 0) {
         setTutors([]); // No tutors available
         console.log("No tutors available for the selected time slot.");
@@ -86,6 +90,31 @@ const Request = () => {
   
       // Extract tutor IDs
       const tutorIds = availabilityData.map((row) => row.user_id);
+      console.log("🆔 Tutor IDs matching availability:", tutorIds);
+
+      if (tutorIds.length === 0) {
+        console.warn("⚠️ No tutor IDs were extracted.");
+        setTutors([]);
+        return;
+      }
+
+      // 🛠 Fetch tutors who teach the selected course
+      const { data: tutorsTeachingCourse, error: courseError } = await supabase
+        .from("tutor_courses")
+        .select("tutor_id")
+        .eq("course_code", selectedCourse.value)
+        .in("tutor_id", tutorIds); // Filter tutors that match both availability and course
+
+      if (courseError) throw courseError;
+      console.log("📚 Tutors who teach this course:", tutorsTeachingCourse);
+
+      const finalTutorIds = tutorsTeachingCourse.map(t => t.tutor_id);
+
+      if (finalTutorIds.length === 0) {
+        console.warn("⚠️ No tutors found who teach this course.");
+        setTutors([]);
+        return;
+      }
   
       // Fetch tutor details
       const { data: tutorData, error: tutorError } = await supabase
@@ -95,13 +124,23 @@ const Request = () => {
         .eq("role", "tutor");
   
       if (tutorError) throw tutorError;
+      console.log("✅ Tutors fetched after filtering:", tutorData);
+      
+      // Convert tutor data to react-select format
+      const formattedTutors = tutorData.map(tutor => ({
+        value: tutor.id, 
+        label: `${tutor.first_name} ${tutor.last_name}` // Display full name
+      }));
   
       // Ensure data is always an array
-      setTutors(tutorData || []);
+      setTutors(formattedTutors || []);
+
     } catch (error) {
       console.error("❌ Error fetching tutors:", error);
       setTutors([]); // Reset if there's an error
-    }
+    } finally { 
+      setLoadingTutors(false);
+    } 
   };
   
 
@@ -111,14 +150,15 @@ const Request = () => {
       alert("Please complete the form before selecting a tutor.");
       return;
     }
-    setTutorId(selectedTutor);
+    console.log("🎯 Selected Tutor:", selectedTutor);
+    setSelectedTutor(selectedTutor); // Store only the tutor ID
   };
 
   // 🔹 Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectedCourse || !tutor_id || !session_date || !start_time || !end_time) {
+    if (!selectedCourse || !selectedTutor || !session_date || !start_time || !end_time) {
       alert("Please fill in all fields.");
       return;
     }
@@ -135,21 +175,25 @@ const Request = () => {
 
     const newBooking = {
       tutee_id: userId,
-      tutor_id: tutor_id.value,
+      tutor_id: selectedTutor.value,
       course_code: selectedCourse.value,
       session_date,
       start_time,
       end_time,
       notes,
+      status: "pending",
     };
 
     try {
+      console.log("📤 Submitting new booking:", newBooking);
+
       const { error } = await supabase.from("bookings").insert([newBooking]);
 
       if (error) throw error;
 
       alert("Request submitted successfully!");
       resetForm();
+
     } catch (error) {
       console.error("Error submitting request:", error);
       alert("An error occurred. Please try again later.");
@@ -161,12 +205,16 @@ const Request = () => {
     const { name, value } = e.target;
     switch (name) {
       case "session_date":
+        // If a tutor is selected, reset the tutor selection to fetch new tutors
+        if (selectedTutor) setSelectedTutor(null);
         setSessionDate(value);
         break;
       case "start_time":
+        if (selectedTutor) setSelectedTutor(null);
         setStartTime(value);
         break;
       case "end_time":
+        if (selectedTutor) setSelectedTutor(null);
         setEndTime(value);
         break;
       case "notes":
@@ -179,7 +227,7 @@ const Request = () => {
 
   const resetForm = () => {
     setSelectedCourse(null);
-    setTutorId(null);
+    setSelectedTutor(null);
     setSessionDate("");
     setStartTime("");
     setEndTime("");
@@ -200,7 +248,14 @@ const Request = () => {
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">Course</label>
-                <Select options={courses} value={selectedCourse} onChange={setSelectedCourse} />
+                <Select 
+                  options={courses} 
+                  value={selectedCourse} 
+                  onChange={(selectedOption) => {
+                    setSelectedCourse(selectedOption);
+                    if (selectedTutor) setSelectedTutor(null);
+                  }} 
+                />
               </div>
 
               <div className="form-group">
@@ -232,7 +287,7 @@ const Request = () => {
 
             <div className="form-group">
               <label className="form-label">Tutor Preference</label>
-              <Select options={tutors} value={tutor_id} onChange={setTutorId} isDisabled={loadingTutors || !selectedCourse || !session_date || !start_time || !end_time} />
+              <Select options={tutors} value={selectedTutor} onChange={handleTutorSelect} isDisabled={loadingTutors || !selectedCourse || !session_date || !start_time || !end_time} />
             </div>
 
             <div className="form-group">
