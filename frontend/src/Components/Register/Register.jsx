@@ -22,6 +22,7 @@ const Register = () => {
   const [message, setMessage] = useState("");
   const [hasDuplicate, setHasDuplicate] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isChecked, setChecked] = useState(false);
   
   const navigate = useNavigate();
 
@@ -81,6 +82,8 @@ const Register = () => {
     }
 
     if (!formData.role) newErrors.role = "Please select a role";
+
+    if (!isChecked) newErrors.dpa = "You have not agreed to the Data Privacy statement.";
 
     return newErrors;
   };
@@ -299,6 +302,19 @@ const Register = () => {
                   </label>
                 </div>
                 {errors.role && <p className="error">{errors.role}</p>}
+              </div>
+
+              <div className="form-group">
+                <label>
+                <input
+                type="checkbox"
+                name="dpa"
+                checked={isChecked} 
+                onChange={() => setChecked(!isChecked)}
+                />
+                I consent to secure data handling per Privacy Policy
+                </label>
+                {errors.dpa && <p className="error">{errors.dpa}</p>}
               </div>
 
               <button type="submit">Register</button>
