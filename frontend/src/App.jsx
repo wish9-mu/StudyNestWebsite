@@ -18,7 +18,6 @@ import AdminHome from "./Components/Admin Home/AdminHome";
 import TuteeHome from "./Components/Tutee Home/TuteeHome";
 import TuteeProfile from "./Components/Tutee Profile/TuteeProfile";
 import TutorBookings from "./Components/Tutor Bookings/TutorBookings";
-import TuteeWaitlist from "./Components/Tutee Waitlist/TuteeWaitlist";
 import TuteeActivity from "./Components/Tutee Activity/TuteeActivity";
 import AdminProfile from "./Components/Admin Profile/AdminProfile";
 import VisionMissionSection from "./Components/VisionMissionSection/VisionMissionSection";
@@ -55,7 +54,6 @@ const AppRoutes = () => {
       <Route path="/logout" element={<HomePage />} />
       <Route path="/tuteeprofile" element={<TuteeProfile />} />
       <Route path="/tutorbookings" element={<TutorBookings />} />
-      <Route path="/tuteewaitlist" element={<TuteeWaitlist />} />
       <Route path="/tuteeactivity" element={<TuteeActivity />} />
       <Route path="/adminprofile" element={<AdminProfile />} />
       <Route path="/visionmission" element={<VisionMissionSection />} />
