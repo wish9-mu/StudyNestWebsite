@@ -115,6 +115,29 @@ const Request = () => {
         setTutors([]);
         return;
       }
+
+      // Exclude tutors who have active bookings at the selected time
+      const { data: bookedTutors, error: bookedError } = await supabase
+        .from("bookings")
+        .select("tutor_id")
+        .eq("session_date", session_date)
+        .or(
+          `and(start_time.lte.${end_time}, end_time.gte.${start_time})`
+        )
+        .eq("status", "accepted"); // Only consider accepted bookings
+  
+      if (bookedError) throw bookedError;
+      console.log("🚫 Tutors who are already booked:", bookedTutors);
+      
+      // Remove booked tutors from the available list
+      const bookedTutorIds = bookedTutors.map(b => b.tutor_id);
+      const availableTutors = finalTutorIds.filter(id => !bookedTutorIds.includes(id));
+
+      if (availableTutors.length === 0) {
+        console.warn("⚠️ No available tutors left after filtering booked tutors.");
+        setTutors([]);
+        return;
+      }
   
       // Fetch tutor details
       const { data: tutorData, error: tutorError } = await supabase
