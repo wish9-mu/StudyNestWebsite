@@ -25,6 +25,7 @@ import VisionMissionSection from "./Components/VisionMissionSection/VisionMissio
 import ForgotPassword from "./Components/ResetPassword/ForgotPassword";
 import UpdateYourPassword from "./Components/ResetPassword/UpdateYourPassword";
 import AdminStats from "./Components/Admin Statistics/AdminStat";
+import GuestRequest from "./Components/Request/GuestRequest";
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
@@ -49,6 +50,7 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/about" element={<About />} />
       <Route path="/request" element={<Request />} />
+      <Route path="/guestrequest" element={<GuestRequest />} />
       <Route path="/developers" element={<Developers />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
