@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { data, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import "./Login.css";
 import Nav from "../Nav/Nav";
@@ -9,6 +9,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { setUser } = useAuth();
   const [error, setError] = useState("");
+  const [errorLayout, setErrorLayout] = useState("");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -21,6 +22,9 @@ const LoginPage = () => {
       ...prev,
       [name]: value,
     }));
+
+    setErrorLayout("");
+    setError("");
   };
 
   const handleSubmit = async (e) => {
@@ -38,10 +42,21 @@ const LoginPage = () => {
           password: formData.password,
         });
 
-      if (authError || !authData.user) {
+      if (authData.user && !authData.user.email_confirmed_at) {
         setError(
-          "Login failed: " + (authError?.message || "Invalid credentials")
+          "Please confirm your email before logging in. Check your inbox for the confirmation link."
         );
+        console.log("Auth response:", { data: authData, error: authError });
+        return;
+      } else if (!authData.user || !authData) {
+        setError("Login failed: Invalid credentials");
+        console.log("Auth response:", { data: authData, error: authError });
+        return;
+      } else if (authError) {
+        setError(
+          "Login failed: " + (authError?.message || "Authentication error")
+        );
+        console.log("Auth response:", { data: authData, error: authError });
         return;
       } else {
         console.log("Login successful:", authData.user);
@@ -128,6 +143,12 @@ const LoginPage = () => {
     }
   };
 
+  useEffect(() => {
+    if (error) {
+      setErrorLayout("error");
+    }
+  }, [error]);
+
   return (
     <div className="login-container">
       <Nav />
@@ -143,6 +164,7 @@ const LoginPage = () => {
               placeholder="Input your Mapua email..."
               value={formData.email}
               onChange={handleChange}
+              className={`input ${errorLayout}`}
               required
             />
           </div>
@@ -156,18 +178,15 @@ const LoginPage = () => {
               value={formData.password}
               onChange={handleChange}
               required
+              className={`input ${errorLayout}`}
             />
           </div>
+
+          {error && <p className="login-feedback">{error}</p>}
 
           <div className="form-footer">
             <span className="register-link" onClick={handleRegisterClick}>
               Not yet registered?
-            </span>
-          </div>
-
-          <div className="form-footer">
-            <span className="register-link" onClick={() => navigate("/forgotpassword")}>
-              Forgot your password?
             </span>
           </div>
 

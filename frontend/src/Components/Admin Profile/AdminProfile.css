@@ -1,102 +1,84 @@
-/* General styles */
-.admin-profile {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f9f9f9;
-    padding: 20px;
+/* TuteeProfile.css */
+.tutee-profile-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f7fafc;
+  margin-top: 100px;
+}
+
+.tutee-profile-content {
+  max-width: 1000px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  margin-bottom: 100px;
+}
+
+.profile-tabs {
+  display: flex;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #718096;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-button:hover {
+  color: #4299e1;
+}
+
+.tab-button.active {
+  color: #4299e1;
+  border-bottom: 2px solid #4299e1;
+}
+
+.profile-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .profile-tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 0.5rem;
   }
   
-  /* Header styles */
-  .header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background-color: #fff;
-    border-bottom: 1px solid #e0e0e0;
-    margin-bottom: 30px;
+  .tab-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
   }
   
-  .header h1 {
-    font-size: 2rem;
-    color: #333;
+  .tutee-profile-content {
+    padding: 0 1rem;
+    margin: 1rem auto;
   }
-  
-  .nav-links {
-    display: flex;
-    gap: 20px;
+}
+
+@media (max-width: 480px) {
+  .tab-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
   }
-  
-  .nav-links a {
-    text-decoration: none;
-    color: #666;
-    font-size: 1rem;
-  }
-  
-  .nav-links a:hover {
-    color: #007bff;
-  }
-  
-  /* Profile section styles */
-  .profile-section {
-    width: 100%;
-    max-width: 800px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .profile-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .profile-image {
-    width: 100px;
-    height: 100px;
-    background-color: #ccc;
-    border-radius: 50%;
-    margin-right: 20px;
-  }
-  
-  .profile-info h2 {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 5px;
-  }
-  
-  .profile-info h1 {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .profile-info .tag {
-    font-size: 1rem;
-    color: #666;
-    background-color: #e0e0e0;
-    padding: 5px 10px;
-    border-radius: 15px;
-    display: inline-block;
-  }
-  
-  /* Footer styles */
-  .footer {
-    width: 100%;
-    text-align: center;
-    padding: 20px;
-    background-color: #fff;
-    border-top: 1px solid #e0e0e0;
-    margin-top: auto;
-  }
-  
-  .footer p {
-    font-size: 0.9rem;
-    color: #666;
-  }
+}

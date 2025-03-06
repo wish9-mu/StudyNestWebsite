@@ -19,25 +19,16 @@ const HomePage = () => {
         {/* Banner Section - Matches the image */}
         <section className="banner-section">
           <div className="banner-content">
-            <h1>
-              IGNITING EXCELLENCE AS A PREMIER ENGINEERING SCHOOL IN THE
-              PHILIPPINES
-            </h1>
+            <h1>STUDYNEST IS THE KEY TO YOUR SUCCESS!</h1>
             <p>
-              Mapúa University, founded in 1925 by Don Tomas Mapúa, is a
-              world-class higher education institution in the Philippines
-              dedicated to providing a learning environment rooted in
-              discipline, excellence, commitment, integrity, and relevance.
-              Recognized by the 2025 Times Higher Education (THE) World
-              University Rankings (WUR) as one of the best schools in the world,
-              our academic stronghold provides a diverse array of programs
-              grounded in engineering and science, architecture and design,
-              information technology, business and health sciences, and media
-              studies. Our goal is to foster an atmosphere that promotes
-              academic rigor and practical expertise, enabling students to
-              compete on a global scale. And with strong moral fibers and
-              first-rate abilities, our graduates are ready to make a difference
-              in the world.
+              At StudyNest, we recognize the unique challenges and demands of
+              Mapua's rigorous academic environment. Our mission is to support
+              you in overcoming these challenges and help you reach your
+              academic goals. Join us at StudyNest to take charge of your
+              academic journey, enhance your learning experience, and connect
+              with peers who share your passion for knowledge. Together, we can
+              navigate the challenges of university life and celebrate the joys
+              of learning!
             </p>
           </div>
           <div className="banner-image">
