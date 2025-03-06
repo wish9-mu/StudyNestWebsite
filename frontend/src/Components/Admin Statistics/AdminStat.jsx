@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./AdminStat.css";
 import PerformanceCard from "./PerformanceCard";
+import GenerateReport from "./GenerateReport";
 import { supabase } from "../../supabaseClient";
 import AdminNav from "../Nav/AdminNav";
 
@@ -24,10 +25,6 @@ const AdminStat = () => {
         fetchBookings();
     }, []);
 
-  const generateReport = () => {
-    //pls help
-  };
-
   return (
     <>
     <AdminNav />
@@ -43,16 +40,12 @@ const AdminStat = () => {
 
       <div className="stat-content">
         <div className="box-placeholder">
-            <div>
-                <h2>Instructors</h2>
-                <small>Click a tutor to access their Performance Metrics</small>
-            </div>
-            <div>
-                <button className="generate-report-button" onClick={generateReport}>Generate Report</button>
-                <small>Click to generate performance rating report.</small>
-            </div>
+            {<GenerateReport /> 
+            //will add generation of report here
+            }
         </div>
         <div className="tutors-display">
+            <h2>Instructors</h2>
             <PerformanceCard tutorList={tutorList}/>
         </div>
       </div>
@@ -62,6 +55,3 @@ const AdminStat = () => {
 };
 
 export default AdminStat;
-
-//generate csv file
-//add onClick to per card
