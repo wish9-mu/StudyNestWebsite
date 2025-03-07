@@ -1,21 +1,20 @@
 import React from "react";
-import "./TuteeActivity.css";
-import TuteeNav from "../Nav/TuteeNav";
+import "../ActivityContent/TuteeWaitlist.css";
+import TutorNav from "../Nav/TutorNav";
 import ActiveBookings from "../ActivityContent/ActiveBookings";
 import BookingHistory from "../ActivityContent/BookingHistory";
-import Waitlist_ForTutee from "../ActivityContent/Waitlist_ForTutee";
+import Pending_ForTutor from "../ActivityContent/Pending_ForTutor";
 
-const TuteeActivity = () => {
+const TutorActivity = () => {
   return (
     <div className="page-container">
-      <TuteeNav />
+      <TutorNav />
       <main className="content-wrap">
         <div className="tutee-activity">
 
           <div className="activity-content">
             {/* ActiveBookings component */}
             <ActiveBookings />
-            <Waitlist_ForTutee />
             <BookingHistory />
           </div>
           
@@ -26,4 +25,4 @@ const TuteeActivity = () => {
   );
 };
 
-export default TuteeActivity;
+export default TutorActivity;

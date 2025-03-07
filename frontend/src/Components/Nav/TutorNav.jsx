@@ -43,6 +43,11 @@ const TutorNav = () => {
                 Bookings
               </Link>
             </li>
+            <li>
+              <Link to="/tutoractivity" className="nav-link">
+                Activity
+              </Link>
+            </li>
           </ul>
 
           {/* Profile Dropdown */}

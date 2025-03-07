@@ -74,7 +74,7 @@ const BookingHistory = () => {
     const [hours, minutes] = time.split(":");
     const hour = parseInt(hours, 10);
     const ampm = hour >= 12 ? "PM" : "AM";
-    const formattedHour = hour % 12 || 12; // Convert 0 to 12 for AM
+    const formattedHour = hour % 12 || 12;
     return `${formattedHour}:${minutes} ${ampm}`;
   };
 
@@ -102,38 +102,41 @@ const BookingHistory = () => {
     console.log("✅ Archived bookings fetched:", bookings);
 
     // Fetch participant + canceller names
-    const participantIds = bookings.map((b) =>
-      userRole === "tutee" ? b.tutor_id : b.tutee_id
-    );
-    const cancellerIds = bookings.map((b) => b.cancelled_by).filter(Boolean);
+    const participantIds = bookings
+      .map((b) => (userRole === "tutee" ? b.tutor_id : b.tutee_id))
+      .filter(Boolean);
 
-    const { data: participantData, error: participantError } = await supabase
+    const cancellerIds = bookings
+      .map((b) => b.cancelled_by)
+      .filter(Boolean);
+
+    const uniqueUserIds = [...new Set([...participantIds, ...cancellerIds])];
+
+    console.log("👤 Fetching names for IDs:", uniqueUserIds);
+
+    const { data: userData, error: userError } = await supabase
       .from("profiles")
       .select("id, first_name, last_name")
-      .in("id", [...participantIds, ...cancellerIds]);
+      .in("id", uniqueUserIds);
 
-    if (participantError) {
-      console.error("❌ Error fetching participant/canceller name:", participantError);
+    if (userError) {
+      console.error("❌ Error fetching participant/canceller names:", userError);
       return;
     }
 
-    console.log("👤 Participant & Canceller names fetched:", participantData);
+    console.log("👤 Participant & Canceller names fetched:", userData);
 
     const nameMap = {};
-    participantData.forEach((p) => {
+    userData.forEach((p) => {
       nameMap[p.id] = `${p.first_name} ${p.last_name}`;
     });
 
     const formattedBookings = bookings.map((booking) => ({
       id: booking.id,
       name: courses[booking.course_code] || booking.course_code,
-      participant:
-        nameMap[userRole === "tutee" ? booking.tutor_id : booking.tutee_id] ||
-        "Unknown",
+      participant: `With: ${nameMap[userRole === "tutee" ? booking.tutor_id : booking.tutee_id] || "Unknown"}`,
       date: booking.session_date,
-      day: new Date(booking.session_date).toLocaleDateString("en-us", {
-        weekday: "long",
-      }),
+      day: new Date(booking.session_date).toLocaleDateString("en-us", { weekday: "long" }),
       time: `${formatTime(booking.start_time)} - ${formatTime(booking.end_time)}`,
       notes: booking.notes || "No additional notes.",
       status:
@@ -146,33 +149,38 @@ const BookingHistory = () => {
     setArchivedBookings(formattedBookings);
   };
 
-  // 🔹 Fetch archived bookings on component mount
+  // 🔹 Fetch archived bookings when courses are ready
   useEffect(() => {
-    fetchArchivedBookings();
+    if (Object.keys(courses).length > 0) {
+      fetchArchivedBookings();
+    }
   }, [userId, userRole, courses]);
 
-  // 🔹 Listen for real-time updates in `bookings_history`
+  // 🔹 Listen for real-time updates in `bookings`
   useEffect(() => {
-    const subscription = supabase
-      .channel("bookings_history")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "bookings_history" },
-        (payload) => {
-          console.log("🆕 New booking added to history:", payload.new);
-          fetchArchivedBookings(); // Refetch instead of appending
+    const bookingsSubscription = supabase
+      .channel("bookings")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "bookings" }, (payload) => {
+        console.log("📌 Booking status changed:", payload.new);
+
+        if (["completed", "cancelled", "rejected"].includes(payload.new.status)) {
+          console.log("🔄 Booking moved to history, fetching new data...");
+          fetchArchivedBookings();
         }
-      )
+      })
+      .on("postgres_changes", { event: "DELETE", schema: "public", table: "bookings" }, (payload) => {
+        console.log("❌ Booking removed from active bookings:", payload.old);
+        fetchArchivedBookings();
+      })
       .subscribe();
 
     return () => {
-      supabase.removeChannel(subscription);
+      supabase.removeChannel(bookingsSubscription);
     };
   }, []);
 
   return (
     <>
-      <TuteeNav />
       <div className="content-wrapper">
         <div className="tutee-waitlist">
           <div className="header">
@@ -180,22 +188,22 @@ const BookingHistory = () => {
               <h1>Booking History</h1>
             </div>
             <div className="header-info">
-              <p>Here in Booking History, you can view your archived bookings.</p>
+              <p>View all your past bookings here.</p>
             </div>
           </div>
 
           <div className="waitlist-content">
             {archivedBookings.length === 0 ? (
               <div className="empty-waitlist">
-                <h3>You don't have any archived bookings.</h3>
-                <p>When you finish or cancel a session, it will appear here.</p>
+                <h3>No bookings found.</h3>
+                <p>Looks like you haven't made any bookings yet.</p>
               </div>
             ) : (
               archivedBookings.map((booking) => (
                 <div className="card-1" key={booking.id}>
                   <div className="align-left-content">
                     <h2>{booking.name}</h2>
-                    <p>With: {booking.participant}</p>
+                    <p>{booking.participant}</p>
                     <p>Notes: {booking.notes}</p>
                   </div>
                   <div className="align-right-content">

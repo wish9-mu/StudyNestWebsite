@@ -23,6 +23,7 @@ import AdminProfile from "./Components/Admin Profile/AdminProfile";
 import VisionMissionSection from "./Components/VisionMissionSection/VisionMissionSection";
 import ForgotPassword from "./Components/ResetPassword/ForgotPassword";
 import UpdateYourPassword from "./Components/ResetPassword/UpdateYourPassword";
+import TutorActivity from "./Components/TutorActivity/TutorActivity";
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
@@ -59,6 +60,7 @@ const AppRoutes = () => {
       <Route path="/visionmission" element={<VisionMissionSection />} />
       <Route path="/updateyourpassword" element={<UpdateYourPassword />} />
       <Route path="/forgotpassword" element={<ForgotPassword />} />
+      <Route path="/tutoractivity" element={<TutorActivity />} />
 
       {/* Protected Routes */}
       <Route

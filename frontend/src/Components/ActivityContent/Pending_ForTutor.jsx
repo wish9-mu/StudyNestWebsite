@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import "./TuteeWaitlist.css";
-import TuteeNav from "../Nav/TuteeNav";
+import TutorNav from "../Nav/TutorNav";
 
-const ActiveBookings = () => {
+const Pending_ForTutor = () => {
   const [userId, setUserId] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [courses, setCourses] = useState({});
@@ -265,4 +265,4 @@ const ActiveBookings = () => {
   );
 };
 
-export default ActiveBookings;
+export default Pending_ForTutor;
