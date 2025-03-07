@@ -214,7 +214,7 @@ const ActiveBookings = () => {
     };
   }, [courses]);
 
-  // 🔹 Handle Delete Booking
+  // 🔹 Handle Cancel Booking
   const handleCancelBooking = async (bookingId) => {
     if (!bookingId) {
       console.error("❌ Invalid booking ID:", bookingId);
@@ -279,10 +279,10 @@ const ActiveBookings = () => {
                   <div className="align-left-content">
                     <h2>{booking.name}</h2>
                     <p>With: {booking.participant}</p>
-                    <p>
-                      Notes:
+                    <div>
+                      <p>Notes:</p>
                       <p>{booking.notes}</p>
-                    </p>
+                    </div>
                   </div>
                   <div className="align-right-content">
                     <p>
