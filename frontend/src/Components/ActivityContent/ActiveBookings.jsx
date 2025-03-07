@@ -214,6 +214,43 @@ const ActiveBookings = () => {
     };
   }, [courses]);
 
+  // 🔹 Handle Delete Booking
+  const handleCancelBooking = async (bookingId) => {
+    if (!bookingId) {
+      console.error("❌ Invalid booking ID:", bookingId);
+      return;
+    }
+  
+    console.log("🚀 Cancelling booking:", bookingId);
+  
+    try {
+      const { error } = await supabase
+        .from("bookings")
+        .update({ status: "cancelled" })
+        .eq("id", bookingId)
+        .eq("status", "accepted"); // Ensuring only accepted bookings are cancelled
+  
+      if (error) {
+        console.error("❌ Error cancelling booking:", error);
+        alert("Failed to cancel the booking. Please try again.");
+        return;
+      }
+  
+      console.log("✅ Booking cancelled successfully.");
+  
+      // Update UI by removing cancelled booking
+      setActiveBookings((prevBookings) =>
+        prevBookings.filter((booking) => booking.id !== bookingId)
+      );
+  
+      alert("Booking has been cancelled successfully.");
+    } catch (error) {
+      console.error("❌ Unexpected error cancelling booking:", error);
+      alert("An error occurred while cancelling the booking.");
+    }
+  };
+  
+
   return (
     <>
       <TuteeNav />
@@ -252,7 +289,7 @@ const ActiveBookings = () => {
                       {booking.date} | {booking.day}
                     </p>
                     <p>{booking.time}</p>
-                    <button className="leave-waitlist-btn">Cancel Booking</button>
+                    <button className="leave-waitlist-btn" onClick={() => handleCancelBooking(booking.id)}>Cancel Booking</button>
                   </div>
                 </div>
               ))
