@@ -21,8 +21,9 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [hasDuplicate, setHasDuplicate] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState("");
   const [isChecked, setChecked] = useState(false);
+  const [showPrivacyModal, setPrivacyModal] = useState(false);
   
   const navigate = useNavigate();
 
@@ -107,7 +108,7 @@ const Register = () => {
 
         if (existingUsers.length > 0) {
           setHasDuplicate(true);
-          setShowModal(true);
+          setShowModal("duplicate");
           return;
         }
 
@@ -305,15 +306,21 @@ const Register = () => {
               </div>
 
               <div className="form-group">
-                <label>
+                <small>
                 <input
                 type="checkbox"
                 name="dpa"
                 checked={isChecked} 
                 onChange={() => setChecked(!isChecked)}
                 />
-                I consent to secure data handling per Privacy Policy
-                </label>
+                I acknowledge that I have read and understood the
+                <a href="#" onClick={(e) => {
+                  e.preventDefault();
+                  setShowModal("dpa");
+                }}
+                style={{color: "#dc2626"}}> Data Privacy Agreement </a>
+                and consent to the collection and use of my information as described.
+                </small>
                 {errors.dpa && <p className="error">{errors.dpa}</p>}
               </div>
 
@@ -322,14 +329,79 @@ const Register = () => {
           </div>
         </div>
 
-        {showModal && (
+        {showModal === "dpa" && (
           <div className="modal-overlay">
-            <div className="modal-content">
+            <div className={`modal-content ${showModal}`}>
+              <section>
+                <h2>Data Privacy Agreement</h2>
+              </section>
+              <section>
+                <h3>Collection and Use of Personal Information</h3>
+                <p>By registering for our tutor scheduling service, you consent to the collection and processing of your personal information including your name, email address, phone number, academic interests, and scheduling preferences. This information is used to:</p>
+                <ul>
+                  <li>Create and manage your user account</li>
+                  <li>Match you with appropriate tutors</li>
+                  <li>Facilitate scheduling and communication</li>
+                  <li>Send service notifications and updates</li>
+                  <li>Improve our services through anonymized analytics</li>
+                </ul>
+              </section>
+              
+              <section>
+                <h3>Data Protection and Security</h3>
+                <p>We implement industry-standard security measures to protect your personal information from unauthorized access, alteration, or disclosure. 
+                  Your data is stored on secure servers with encrypted transmission.</p>
+              </section>
+
+              <section>
+                <h3>Data Sharing</h3>
+                <p>Your personal information may be shared with:</p>
+                <ul>
+                  <li>Tutors you schedule sessions with</li>
+                  <li>Service providers who assist in website operation</li>
+                  <li>Legal authorities when required by law</li>
+                </ul>
+                <p>We will never sell your personal information to third parties or use it for marketing purposes without your explicit consent.</p>
+              
+              </section>
+              
+              <section>
+                <h3>Your Rights</h3>
+                <p>You have the right to:</p>
+                <ul>
+                  <li>Access your personal information</li>
+                  <li>Request corrections to inaccurate data</li>
+                  <li>Download a copy of your data</li>
+                  <li>Delete your account and associated data</li>
+                  <li>Opt out of non-essential communications</li>
+                </ul>
+              </section>
+              
+              <section>
+                <h3>Cookie Policy</h3>
+                <p>We use cookies to enhance your browsing experience, remember your preferences, and analyze website traffic. You can manage cookie settings through your browser.</p>
+              </section>
+
+              <section>
+                <h3>Changes to Privacy Policy</h3>
+                <p>We may update this privacy policy periodically. Significant changes will be communicated via email or website notification.</p>
+              </section>
+              
+              <div className="modal-buttons">
+                <button onClick={() => {setShowModal("");}}>Done</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showModal === "duplicate" && (
+          <div className="modal-overlay">
+            <div className={`modal-content ${showModal}`}>
               <h2>Duplicate found.</h2>
               <p>An account with this email or student number already exists. Would you like to login instead?</p>
               <div className="modal-buttons">
-                <button onClick={() => {setShowModal(false); navigate("/login");}}>Proceed to Login</button>
-                <button onClick={() => {setShowModal(false); setHasDuplicate(false);}}>Use a Different Email/Student Number</button>
+                <button onClick={() => {setShowModal(""); navigate("/login");}}>Proceed to Login</button>
+                <button onClick={() => {setShowModal(""); setHasDuplicate(false);}}>Use a Different Email/Student Number</button>
               </div>
             </div>
           </div>
