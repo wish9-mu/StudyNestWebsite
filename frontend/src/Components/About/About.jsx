@@ -1,56 +1,70 @@
 import React from "react";
-import Nav from "../Nav/Nav";
-
 import "./About.css";
-import program_1 from "../../assets/Rayleen.png";
-import program_2 from "../../assets/Ralf.png";
-import program_3 from "../../assets/Sofia.png";
+import Nav from "../Nav/Nav";
+import { FaEye, FaBullseye } from "react-icons/fa";
 
-import program_icon_1 from "../../assets/program-icon-1.png";
-import program_icon_2 from "../../assets/program-icon-2.png";
-import program_icon_3 from "../../assets/program-icon-3.png";
-
-//Other Import
-// import program_icon_1 from "../../assets/perd1.jpg";
-// import program_icon_2 from "../../assets/perd2.jpg";
-// import program_icon_3 from "../../assets/perd3.png";
-// import program_1 from "../../assets/ml1.jpg";
-// import program_2 from "../../assets/ml2.jpg";
-// import program_3 from "../../assets/ml3.jpg";
-import VideoBackground from "../VideoBackground/VideoBackground";
-
-const About = () => {
+const AboutPage = () => {
   return (
     <>
       <Nav />
-      <div className="content-wrapper">
-        <div className="abouts">
-          <div className="about">
-            <img src={program_1} alt="" />
-            <div className="caption">
-              <img src={program_icon_1} alt="" />
-              <p>Learn with Us!</p>
-            </div>
+      <div className="about-container">
+        <div className="about-section">
+          <div className="about-header">
+            <h1 className="about-title">About Us</h1>
           </div>
-          <div className="about">
-            <img src={program_2} alt="" />
-            <div className="caption">
-              <img src={program_icon_2} alt="" />
-              <p>How you can excel.</p>
-            </div>
-          </div>
-          <div className="about">
-            <img src={program_3} alt="" />
-            <div className="caption">
-              <img src={program_icon_3} alt="" />
-              <p>Courses</p>
-            </div>
+
+          <div className="about-content">
+            <p>
+              StudyNest is Mapúa University's premier peer tutoring program,
+              dedicated to fostering academic excellence through
+              student-to-student learning support. Our program selects, trains,
+              and deploys qualified volunteer student tutors to conduct both
+              one-on-one and group tutoring sessions.
+            </p>
+            <p>
+              Established with the goal of enhancing academic performance,
+              StudyNest focuses on providing comprehensive support for
+              fundamental courses in mathematics and engineering subjects,
+              ensuring that Mapúa students receive the assistance they need to
+              excel in their academic journey.
+            </p>
           </div>
         </div>
-        <VideoBackground />
+
+        <div className="card-container">
+          <div className="card">
+            <div className="card-header">
+              <FaEye size={36} color="#cc0000" />
+              <h2 className="card-title">Vision</h2>
+            </div>
+            <p className="card-content">
+              To be the premier peer-to-peer learning hub that empowers Mapúa
+              students to achieve academic excellence through collaborative
+              learning, fostering a community where knowledge is freely shared
+              and every student reaches their full potential.
+            </p>
+          </div>
+
+          <div className="card">
+            <div className="card-header">
+              <FaBullseye size={36} color="#cc0000" />
+              <h2 className="card-title">Mission</h2>
+            </div>
+            <p className="card-content">
+              We are committed to providing high-quality, accessible academic
+              support through trained peer tutors while fostering an inclusive
+              learning environment that caters to diverse learning needs. Our
+              peer tutoring program not only offers supplementary learning
+              assistance to uphold Mapúa University's academic standards but
+              also develops student leaders. By promoting a culture of
+              collaborative learning and academic excellence, we strive to
+              empower students in their academic journey.
+            </p>
+          </div>
+        </div>
       </div>
     </>
   );
 };
 
-export default About;
+export default AboutPage;

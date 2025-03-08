@@ -1,0 +1,158 @@
+/* AvailableCourses.css */
+.course-services {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .course-button {
+    padding: 8px 16px;
+    background-color: var(--red);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    margin: 0 10px; /* Added horizontal margin */
+  }
+  
+  /* Add margin to the first button to ensure proper spacing from the left edge */
+  .course-button:first-child {
+    margin-left: 0;
+  }
+  
+  /* Add margin to the last button to ensure proper spacing from the right edge */
+  .course-button:last-child {
+    margin-right: 0;
+  }
+  
+  .course-button:hover {
+    background-color: var(--red2);
+  }
+  
+  .message-success {
+    color: #4CAF50;
+    text-align: center;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(76, 175, 80, 0.1);
+    border-radius: 4px;
+  }
+  
+  .error-message {
+    color: #e53e3e;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(229, 62, 62, 0.1);
+    border-radius: 4px;
+    text-align: center;
+  }
+  
+  .course-table {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  th {
+    background-color: #f7fafc;
+    font-weight: 600;
+  }
+  
+  .course-row:hover {
+    background-color: #f7fafc;
+  }
+  
+  .remove-con {
+    text-align: center;
+    width: 10rem;
+    margin: 0 auto;
+    padding: 0;
+  }
+  
+  .remove-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0 auto;
+    background-color: #e53e3e;
+    transition: background-color 0.2s;
+  }
+  
+  .remove-btn:hover {
+    background-color: #c53030;
+  }
+  
+  .done-con {
+    text-align: center;
+    width: 10rem;
+    margin: 0 auto;
+    padding: 0;
+  }
+  
+  .done-btn {
+    width: auto;
+    min-width: 80px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    background-color: #38a169;
+    color: white;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin: 0 5px; /* Added horizontal margin */
+  }
+  
+  .done-btn:hover {
+    background-color: #2f855a;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .course-services {
+      padding: 15px;
+    }
+    
+    .button-container {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .course-button {
+      width: 100%;
+      margin: 5px 0; /* Changed to vertical margins for mobile */
+    }
+    
+    .done-btn {
+      margin: 5px 0; /* Changed to vertical margins for mobile */
+    }
+  }

@@ -31,8 +31,8 @@ const GenerateReport = () => {
             {label: "Request Date", key: "request_date"},
             {label: "Session Date", key: "session_date"},
             {label: "Status", key: "status"},
-            {label: "Tutor ID", key: "tutor_id"},
-            {label: "Tutee ID", key: "tutee_id"},
+            {label: "Tutor Name", key: "tutor_name"},
+            {label: "Tutee Name", key: "tutee_name"},
             {label: "Start Time", key: "start_time"},
             {label: "End Time", key: "end_time"},
             {label: "Notes", key: "notes"},
@@ -43,8 +43,8 @@ const GenerateReport = () => {
             {label: "Request Date", key: "request_date"},
             {label: "Session Date", key: "session_date"},
             {label: "Status", key: "status"},
-            {label: "Tutor ID", key: "tutor_id"},
-            {label: "Tutee ID", key: "tutee_id"},
+            {label: "Tutor Name", key: "tutor_name"},
+            {label: "Tutee Name", key: "tutee_name"},
             {label: "Start Time", key: "start_time"},
             {label: "End Time", key: "end_time"},
             {label: "Date/Time Completed", key: "completed_at"},
@@ -57,15 +57,37 @@ const GenerateReport = () => {
         console.log(`Attempting to generate ${type} report. `);
 
         try {
-            // Fetch data from Supabase
-            const { data, error } = await supabase
-              .from(type)
-              .select("*");
+            let data;
+            let error;
+
+            if (type === "profiles") {
+                const result = await supabase
+                .from(type)
+                .select("*");
+
+                data = result.data;
+                error = result.error;
+            } else {
+                const result = await supabase
+                .from(type)
+                .select(`
+                    *,
+                    tutor:profiles!tutor_id(first_name, last_name),
+                    tutee:profiles!tutee_id(first_name, last_name)`);
+                
+                data = result.data;
+                error = result.error;
+            }
+            
       
             if (error) {
               console.error(`Error fetching ${type}:`, error);
+              setError(`Error fetching data: ${error.message}`);
               return;
-            }
+            } 
+
+            console.log("Fetched data:", data);
+            console.log("Tutor data:", data[0]?.tutor);
 
             if (!data || data.length === 0) {
                 console.log(`No data available for ${type}.`);
@@ -85,6 +107,12 @@ const GenerateReport = () => {
 
             const filteredData = data.map(item => { 
                 const filteredItem = {};
+
+                if (type === "bookings" || type === "bookings_history") {
+                    item.tutor_name = item.tutor ? `${item.tutor.first_name} ${item.tutor.last_name}` : "";
+                    item.tutee_name = item.tutee ? `${item.tutee.first_name} ${item.tutee.last_name}` : "";
+                }
+
                 columnConfig.forEach(header => { 
                     const value = item[header.key];
 
@@ -92,7 +120,13 @@ const GenerateReport = () => {
                         const date = new Date(value);
                         if (!isNaN(date)) {
                             filteredItem[header.key] = "'" + date.toISOString().split('T')[0];
+                            return;
                         }
+                    }
+
+                    if (header.key === 'student_number' && value) {
+                        filteredItem[header.key] = "'" + value;
+                        return;
                     }
                     
                     if (typeof value === 'number') {
@@ -106,7 +140,6 @@ const GenerateReport = () => {
                 return filteredItem; 
             });
 
-            // Update state with the CSV data and filename
             setCsvData(filteredData);
             setFilename(`${type}_report_${new Date().toISOString().slice(0, 10)}.csv`);
 
@@ -115,7 +148,6 @@ const GenerateReport = () => {
         } catch (error) {
             console.error("Unexpected error:", error);
         } finally {
-        // Reset loading state
             setLoading(prev => ({ ...prev, [type]: false }));
         }    
     };

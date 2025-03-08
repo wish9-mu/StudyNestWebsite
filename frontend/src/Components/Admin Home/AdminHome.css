@@ -1,63 +1,153 @@
-    .admin-home {
-        padding: 20px;
-        padding-top: 80px;
-        text-align: center;
+/* Base Layout */
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .admin-home {
+    margin-top: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 10rem;
+  }
+  
+  .admin-home-container {
+    text-align: center;
+    max-width: 1000px;
+    width: 100%;
+    padding: 0 20px;
+  }
+  
+  /* Admin Title */
+  .admin-title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #e60000;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Description */
+  .admin-home-description {
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    text-align: center;
+  }
+  
+  /* Boxes Section */
+  .admin-home-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+  
+  .admin-box {
+    width: 300px;
+    height: 300px;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    aspect-ratio: 1 / 1; /* Ensures boxes remain square */
+    background-color: #444;
+  }
+  
+  .box-1 {
+    background-color: #2c3e50; /* Dark blue/gray color */
+  }
+  
+  .box-2 {
+    background-color: #444444; /* Dark gray color */
+  }
+  
+  .box-3 {
+    background-color: #333333; /* Darker gray color */
+  }
+  
+  .admin-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Footer */
+  .admin-footer {
+    background-color: #c0000f;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    width: 100%;
+  }
+  
+  /* Responsive Design - Tablets */
+  @media (max-width: 992px) {  
+    .admin-box {
+      width: 180px;
+      height: 180px;
     }
     
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 50px 20px;
-        background-color: #f9f9f9;
-        border-radius: 10px;
-        margin-bottom: 30px;
+    .admin-title {
+      font-size: 2.5rem;
+    }
+  }
+  
+  /* Responsive Design - Small Tablets */
+  @media (max-width: 768px) {
+    .admin-home-description {
+      font-size: 0.9rem;
+    }
+  
+    .admin-box {
+      width: 160px;
+      height: 160px;
     }
     
-    .header-text {
-        max-width: 50%;
-        text-align: left;
+    .admin-home-boxes {
+      gap: 20px;
     }
     
-    .header-text h1 {
-        font-size: 2.5rem;
-        font-weight: bold;
-        margin-bottom: 4rem;
+    .admin-title {
+      font-size: 2.2rem;
+    }
+  }
+  
+  /* Responsive Design - Mobile */
+  @media (max-width: 576px) {
+    .admin-home-description {
+      font-size: 0.85rem;
     }
     
-    .header-text p {
-        font-size: 1.2rem;
-        margin-bottom: 20px;
+    .admin-home-boxes {
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
     }
-
-    .box-placeholders {
-        display: flex;
-        justify-content: space-between;
-        gap: 20px;
+  
+    .admin-box {
+      width: 220px;
+      height: 220px;
     }
-
-    .card {
-        flex: 1;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        text-align: center;
+    
+    .admin-title {
+      font-size: 2rem;
     }
-
-    .card img {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        margin-bottom: 15px;
+  }
+  
+  /* Extra Small Devices */
+  @media (max-width: 375px) {
+    .admin-home-description {
+      font-size: 0.8rem;
     }
-
-    .card h3 {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
+  
+    .admin-box {
+      width: 200px;
+      height: 200px;
     }
-
-    .card p {
-        font-size: 1rem;
-        color: #666;
-    }
+  }

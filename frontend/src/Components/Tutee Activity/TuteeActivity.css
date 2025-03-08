@@ -1,0 +1,86 @@
+/* TuteeActivity.css */
+.page-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .content-wrap {
+    flex: 1;
+  }
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .tutee-activity {
+    padding: 20px;
+    background-color: #ffffff;
+  }
+  
+  .tutee-header {
+    margin-bottom: 30px;
+    margin-top: 100px;
+  }
+  
+  .header-text h1 {
+    font-size: 4rem;
+    color: #e32212;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .header-info p {
+    font-size: 1rem;
+    color: #555;
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eeeeee;
+    text-align: center;
+  }
+  
+  .activity-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .course-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #eee;
+  }
+  
+  .course-icon {
+    margin-right: 15px;
+  }
+  
+  .book-icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 2h12c1.1 0 2 .9 2 2v16c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2zm0 2v16h12V4H6z"/></svg>');
+  }
+  
+  .course-info {
+    flex-grow: 1;
+  }
+  
+  .course-info h2 {
+    font-size: 1.2rem;
+    color: #333;
+    margin: 0 0 5px 0;
+    font-weight: bold;
+  }
+  
+  .course-info p {
+    font-size: 0.9rem;
+    color: #777;
+    margin: 0;
+  }

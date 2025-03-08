@@ -1,0 +1,40 @@
+import React from "react";
+import "./AdminProfile.css";
+import NavAdmin from "../Nav/AdminNav";
+import AvailableCourses from "./AvailableCourses";
+
+const AdminProfile = () => {
+  return (
+    <>
+      <div className="tutee-profile-container">
+        <NavAdmin />
+        <div className="tutee-profile-content">
+          <div className="profile-tabs">
+            <button
+              className={`tab-button ${
+                activeTab === "account" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("account")}
+            >
+              Account Information
+            </button>
+            <button
+              className={`tab-button ${
+                activeTab === "security" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("security")}
+            >
+              Sign-In & Security
+            </button>
+          </div>
+
+          <section>
+            <AvailableCourses />
+          </section>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default AdminProfile;

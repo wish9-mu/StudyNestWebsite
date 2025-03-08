@@ -1,7 +1,7 @@
 //Registration successful msg put to modal if possible.
 
 import React, { useState } from "react";
-import "./Register.css"; import "./RegisterModal.css";
+import "./Register.css"; import "../Modal/Modal.css";
 import { supabase } from "../../supabaseClient";
 import Nav from "../Nav/Nav";
 import { useNavigate } from "react-router-dom";

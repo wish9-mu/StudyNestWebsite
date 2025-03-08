@@ -1,74 +1,83 @@
-    .admin-stat {
-        padding: 20px;
-        padding-top: 80px;
-        text-align: center;
-    }
+.admin-stat {
+    padding: 20px;
+    padding-top: 30px;
+    text-align: center;
+    margin-bottom: 100px;
+}
 
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 50px 20px;
-        background-color: #f9f9f9;
-        border-radius: 10px;
-        margin-bottom: 30px;
-    }
-    
-    .header-text {
-        max-width: 50%;
-        text-align: left;
-    }
-    
-    .header-text h1 {
-        font-size: 2.5rem;
-        font-weight: bold;
-        margin-bottom: 4rem;
-    }
-    
-    .header-text p {
-        font-size: 1.2rem;
-        margin-bottom: 20px;
-    }
+.header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 20px; /* Reduced padding from 50px to 30px */
+    background-color: #ffffff;
+    border-radius: 10px;
+    margin-bottom: 30px;
 
-    h1 {
-        text-align: center;
-        font-size: 2.5rem;
-        font-weight: bold;
-        margin-bottom: 4rem;
-    }
-  
-    .tutors-display {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        justify-content: center;
-    }
-    
-    .tutor-card {
-        margin-top: 20px; /* Add margin from the top */
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 300px;
-        text-align: center;
-    }
-    
-    .tutor-card h3 {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
-    }
-    
-    .tutor-card p {
-        font-size: 1rem;
-        color: #666;
-        margin: 5px 0;
-    }
-    
-    .profile-img {
-        width: 80px;
-        height: 80px;
-        background-color: #ccc;
-        border-radius: 50%;
-        margin: 0 auto 15px;
-    }
+    max-width: 800px; /* Added max-width to make the box smaller */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.header-text {
+    width: 100%;
+    text-align: center;
+}
+
+.header-text h1 {
+    font-size: 3.5rem; /* Reduced from 3rem */
+    font-weight: bold;
+    margin-bottom: .5rem; /* Reduced from 4rem */
+    color: #e53e3e; /* Added red color to match the design */
+}
+
+.header-text p {
+    font-size: 1.1rem;
+    margin-bottom: 0px;
+    color: #4a5568; /* Added a darker gray for better contrast */
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+}
+
+.tutors-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+.tutor-card {
+    margin-top: 20px; /* Add margin from the top */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+.tutor-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.tutor-card p {
+    font-size: 1rem;
+    color: #666;
+    margin: 5px 0;
+}
+
+.profile-img {
+    width: 80px;
+    height: 80px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+}

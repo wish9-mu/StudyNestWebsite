@@ -1,0 +1,204 @@
+/* TuteeWaitlist.css */
+:root {
+    --primary-color: #c00; /* Red color from the image */
+    --secondary-color: #f5f5f5;
+    --text-color: #333;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+  }
+  
+  /* Global styles for footer positioning */
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* Main content wrapper */
+  .content-wrapper {
+    flex: 1 0 auto; /* This will make it take up all available space */
+    width: 100%;
+    margin-bottom: 150px; /* Add space for footer */
+  }
+  
+  /* Footer styles */
+  .footer {
+    flex-shrink: 0; /* Prevent the footer from shrinking */
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    width: 100%;
+    margin-top: auto; /* Push to bottom if content doesn't fill page */
+  }
+  
+  .tutee-waitlist {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Header Section */
+  .header {
+    margin-top: 100px;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .header-text h1 {
+    font-size: 2.5rem;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  .header-info p {
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.5;
+  }
+  
+  /* Waitlist Content */
+  .waitlist-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem; /* Add space before footer */
+  }
+  
+  /* Card Styling */
+  .card-1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  
+  .card-1:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .card-1::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 5px;
+    background-color: var(--primary-color);
+  }
+  
+  .align-left-content, .align-right-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .align-left-content {
+    flex: 3;
+  }
+  
+  .align-right-content {
+    flex: 2;
+    text-align: right;
+  }
+  
+  .align-left-content h2 {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  .align-left-content p, .align-right-content p {
+    color: #666;
+    line-height: 1.6;
+    margin: 0.25rem 0;
+  }
+  
+  .align-right-content p:first-child {
+    font-weight: 500;
+    color: #444;
+  }
+  
+  /* Button styling */
+  .leave-waitlist-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+  }
+  
+  .leave-waitlist-btn:hover {
+    background-color: #a00;
+  }
+  
+  /* Empty State */
+  .empty-waitlist {
+    text-align: center;
+    padding: 3rem;
+    background-color: var(--secondary-color);
+    border-radius: var(--border-radius);
+  }
+  
+  .empty-waitlist h3 {
+    color: #666;
+    margin-bottom: 1rem;
+  }
+  
+  /* Status indicator for waitlist position */
+  .waitlist-position {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: #ffeaea;
+    color: var(--primary-color);
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-left: 1rem;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .card-1 {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .align-right-content {
+      text-align: left;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+      width: 100%;
+    }
+    
+    .header-text h1 {
+      font-size: 2rem;
+    }
+    
+    .align-left-content h2 {
+      font-size: 1.3rem;
+    }
+  }

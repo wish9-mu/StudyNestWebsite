@@ -22,13 +22,13 @@ const AdminNav = () => {
       setUser(null);
       navigate("/login");
     }
-  }
+  };
 
   return (
     <nav className="nav nav-colored">
       <div className="container">
         <div className="wrapper">
-          <Link to="/tutor">
+          <Link to="/adminhome">
             <img src={logo} alt="Logo" className="logo" />
           </Link>
           <ul className="nav-list">
@@ -38,7 +38,7 @@ const AdminNav = () => {
               </Link>
             </li>
             <li>
-              <Link to="/adminstat" className="nav-link">
+              <Link to="/adminstats" className="nav-link">
                 Statistics
               </Link>
             </li>
@@ -54,7 +54,10 @@ const AdminNav = () => {
                 <Link to="/adminprofile" className="dropdown-item">
                   Profile
                 </Link>
-                <button onClick={handleLogout} className="dropdown-item logout-btn">
+                <button
+                  onClick={handleLogout}
+                  className="dropdown-item logout-btn"
+                >
                   Logout
                 </button>
               </div>

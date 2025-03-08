@@ -4,6 +4,7 @@ import TutorNav from "../Nav/TutorNav";
 import AccountInformation from "../ProfileContent/AccountInformation"; 
 import BookingPreferences from "../ProfileContent/BookingPreferences_Tutor"; 
 import SignInSecurity from "../ProfileContent/SignInSecurity"; 
+import AvailabilitySchedule from "../ProfileContent/AvailabilitySchedule";
 
 const TutorProfile = () => {
   return (
@@ -19,6 +20,7 @@ const TutorProfile = () => {
         {/* ✅ Insert Booking Preferences Component */}
         <section className="profile-section">
           <BookingPreferences />
+          <AvailabilitySchedule />
         </section>
 
         {/* ✅ Insert Sign-In & Security Component */}

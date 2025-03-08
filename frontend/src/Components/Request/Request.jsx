@@ -1,252 +1,246 @@
 import React, { useEffect, useState } from "react";
-import Nav from "../Nav/Nav";
+import TuteeNav from "../Nav/TuteeNav";
 import "./Request.css";
-import { Navigate, useNavigate } from "react-router-dom";
+import Select from "react-select";
+import { supabase } from "../../supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 const Request = () => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    year: "",
-    course: "",
-    preferredDate: "",
-    preferredTime: "",
-    message: "",
-  });
-
   const navigate = useNavigate();
+  const [userId, setUserId] = useState(null);
+  const [courses, setCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [tutors, setTutors] = useState([]);
+  const [tutor_id, setTutorId] = useState(null);
+  const [session_date, setSessionDate] = useState("");
+  const [start_time, setStartTime] = useState("");
+  const [end_time, setEndTime] = useState("");
+  const [notes, setNotes] = useState("");
+  const [loadingTutors, setLoadingTutors] = useState(false); // Track if tutors are being fetched
 
-  const [isLoggedIn, setLoggedIn] = useState(false);
-
-  const [tutee, setTutee] = useState(null);
-
+  // 🔹 Fetch User ID
   useEffect(() => {
-    //To check if user is logged in
-    const user = null; //JSON parse to get user data
-
-    if (user) {
-      setLoggedIn(true);
-      fetchTuteeDetails(user.id); //gets user id
-    }
+    const fetchUser = async () => {
+      const { data: userData, error } = await supabase.auth.getUser();
+      if (error || !userData?.user?.id) {
+        console.error("❌ Error fetching user:", error || "User not found");
+        return;
+      }
+      setUserId(userData.user.id);
+    };
+    fetchUser();
   }, []);
 
-  const fetchTuteeDetails = async (tuteeID) => {
-    try {
-      //add fetch url here
-      const response = await fetch();
+  // 🔹 Fetch Courses
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const { data, error } = await supabase.from("courses").select("course_code, course_name");
 
-      if (response.ok) {
-        const data = await response;
-        setTutee(data);
-
-        setFormData((prevState) => ({
-          ...prevState,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          year: data.year,
-        }));
-      } else {
-        console.error("Failed to fetch tutee details.");
+      if (error) {
+        console.error("❌ Error fetching courses:", error);
+        return;
       }
+
+      setCourses(data.map(course => ({ value: course.course_code, label: course.course_name })));
+    };
+
+    fetchCourses();
+  }, []);
+
+  // 🔹 Get Weekday from `session_date`
+  const getWeekday = (date) => {
+    return new Date(date).toLocaleString("en-us", { weekday: "long" });
+  };
+
+  // 🔹 Fetch Tutors (Triggered only when all required fields are set)
+  useEffect(() => {
+    if (selectedCourse && session_date && start_time && end_time) {
+      fetchAvailableTutors();
+    }
+  }, [selectedCourse, session_date, start_time, end_time]);
+
+  const fetchAvailableTutors = async () => {
+    if (!selectedCourse || !session_date || !start_time || !end_time) {
+      alert("Please select course, date, and time before choosing a tutor.");
+      return;
+    }
+  
+    try {
+      // Convert session_date to week day format (e.g., "Monday")
+      const sessionDay = new Date(session_date).toLocaleString('en-us', { weekday: 'long' });
+  
+      // Fetch tutor availability
+      const { data: availabilityData, error: availabilityError } = await supabase
+        .from("availability_schedule")
+        .select("user_id")
+        .eq("day_of_week", sessionDay)
+        .lte("start_time", start_time)
+        .gte("end_time", end_time);
+  
+      if (availabilityError) throw availabilityError;
+      if (!availabilityData || availabilityData.length === 0) {
+        setTutors([]); // No tutors available
+        console.log("No tutors available for the selected time slot.");
+        return;
+      }
+  
+      // Extract tutor IDs
+      const tutorIds = availabilityData.map((row) => row.user_id);
+  
+      // Fetch tutor details
+      const { data: tutorData, error: tutorError } = await supabase
+        .from("profiles")
+        .select("id, first_name, last_name")
+        .in("id", tutorIds)
+        .eq("role", "tutor");
+  
+      if (tutorError) throw tutorError;
+  
+      // Ensure data is always an array
+      setTutors(tutorData || []);
     } catch (error) {
-      console.error("Error fetching tutee details:", error);
+      console.error("❌ Error fetching tutors:", error);
+      setTutors([]); // Reset if there's an error
     }
   };
+  
 
-  const courses = [
-    "PHYS108-2",
-    "PHYS108-1",
-    "CHEM107-2",
-    "BIOL107-2",
-    "ITS162L",
-    "CSS132",
-    "CSS132L",
-    "Other",
-  ];
-
-  const time = [
-    "7:00 AM",
-    "7:30 AM",
-    "8:00 AM",
-    "8:30 AM",
-    "9:00 AM",
-    "9:30 AM",
-    "10:00 AM",
-    "10:30 AM",
-    "11:00 AM",
-    "11:30 AM",
-    "12:00 PM",
-    "12:30 PM",
-    "1:00 PM",
-    "1:30 PM",
-    "2:00 PM",
-    "2:30 PM",
-    "3:00 PM",
-    "3:30 PM",
-    "4:00 PM",
-    "4:30 PM",
-    "5:00 PM",
-    "5:30 PM",
-    "6:00 PM",
-    "6:30 PM",
-    "7:00 PM",
-  ];
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  // 🔹 Handle Tutor Selection
+  const handleTutorSelect = (selectedTutor) => {
+    if (!selectedCourse || !session_date || !start_time || !end_time) {
+      alert("Please complete the form before selecting a tutor.");
+      return;
+    }
+    setTutorId(selectedTutor);
   };
 
+  // 🔹 Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!isLoggedIn) {
-      alert("Please login to submit.");
-      navigate("/login");
+    if (!selectedCourse || !tutor_id || !session_date || !start_time || !end_time) {
+      alert("Please fill in all fields.");
+      return;
     }
 
-    const requestData = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      year: formData.year,
-      course: formData.course,
-      date: formData.preferredDate,
-      time: formData.preferredTime,
-      message: formData.message,
+    if (start_time < "07:00" || end_time > "19:00") {
+      alert("Time must be between 7:00 AM and 7:00 PM.");
+      return;
+    }
+
+    if (new Date(`1970-01-01T${end_time}`) <= new Date(`1970-01-01T${start_time}`)) {
+      alert("End time must be after start time.");
+      return;
+    }
+
+    const newBooking = {
+      tutee_id: userId,
+      tutor_id: tutor_id.value,
+      course_code: selectedCourse.value,
+      session_date,
+      start_time,
+      end_time,
+      notes,
     };
 
     try {
-      //add fetch url here
-      const response = await fetch(null, {
-        method: "POST",
-        body: JSON.stringify(requestData),
-      });
+      const { error } = await supabase.from("bookings").insert([newBooking]);
 
-      if (response.ok) {
-        alert("Request submitted successfully!");
-        setFormData({
-          course: "",
-          preferredDate: "",
-          preferredTime: "",
-          message: "",
-        });
-      } else {
-        alert("Failed to submit request. Please try again.");
-      }
+      if (error) throw error;
+
+      alert("Request submitted successfully!");
+      resetForm();
     } catch (error) {
       console.error("Error submitting request:", error);
-      alert("An error occured. Please try again later.");
+      alert("An error occurred. Please try again later.");
     }
+  };
+
+  // 🔹 Handle Form Changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case "session_date":
+        setSessionDate(value);
+        break;
+      case "start_time":
+        setStartTime(value);
+        break;
+      case "end_time":
+        setEndTime(value);
+        break;
+      case "notes":
+        setNotes(value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const resetForm = () => {
+    setSelectedCourse(null);
+    setTutorId(null);
+    setSessionDate("");
+    setStartTime("");
+    setEndTime("");
+    setNotes("");
   };
 
   return (
     <>
-      <Nav />
+      <TuteeNav />
       <div className="request-container">
         <div className="request-card">
           <div className="request-header">
             <h1 className="request-title">Request a Tutor</h1>
-            <p className="request-subtitle">
-              Fill out the form below and we'll match you with the perfect tutor
-            </p>
+            <p className="request-subtitle">Fill out the form below to book your tutoring session.</p>
           </div>
 
-          <form
-            className="form-grid"
-            onSubmit={(e) => {
-              e.preventDefault();
-              //no setLoggedIn yet, so always false isLoggedIn
-              if (isLoggedIn == true) {
-                handleSubmit();
-              } else {
-                alert("Please login to submit.");
-                navigate("/login");
-              }
-            }}
-          >
+          <form className="form-grid">
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">Course</label>
-                <select
-                  name="course"
-                  value={formData.course}
+                <Select options={courses} value={selectedCourse} onChange={setSelectedCourse} />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Session Date</label>
+                <input
+                  type="date"
+                  name="session_date"
+                  value={session_date}
                   onChange={handleChange}
-                  className="form-select"
+                  min={new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split("T")[0]}
+                  max={new Date(new Date().setDate(new Date().getDate() + 14)).toISOString().split("T")[0]}
+                  className="form-input"
                   required
-                >
-                  <option value="">Select a course</option>
-                  {courses.map((course) => (
-                    <option key={course} value={course}>
-                      {course}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
             </div>
 
             <div className="form-row">
               <div className="form-group">
-                <label className="form-label">Preferred Start Date</label>
-                <div className="date-input-container">
-                  <input
-                    type="date"
-                    name="preferredDate"
-                    value={formData.preferredDate}
-                    onChange={handleChange}
-                    min={new Date().toISOString().split("T")[0]}
-                    max={
-                      new Date(new Date().setDate(new Date().getDate() + 14))
-                        .toISOString()
-                        .split("T")[0]
-                    }
-                    className="form-input"
-                    required
-                  />
-                </div>
+                <label>Start Time:</label>
+                <input type="time" name="start_time" value={start_time} onChange={handleChange} required />
               </div>
 
               <div className="form-group">
-                <label className="form-label">Preferred Time</label>
-                <div className="time-input-container">
-                  <select
-                    name="preferredTime"
-                    value={formData.preferredTime}
-                    onChange={handleChange}
-                    className="form-input"
-                    required
-                  >
-                    <option value=""> Select time schedule</option>
-                    {time.map((time) => (
-                      <option key={time} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </select>
-                  <small className="helper-text">
-                    Available hours: 7:00 AM - 7:00 PM
-                  </small>
-                </div>
+                <label>End Time:</label>
+                <input type="time" name="end_time" value={end_time} onChange={handleChange} required />
               </div>
             </div>
 
             <div className="form-group">
-              <label className="form-label">Additional Details</label>
-              <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                className="form-textarea"
-                placeholder="Tell us about your learning goals and any specific requirements..."
-              />
+              <label className="form-label">Tutor Preference</label>
+              <Select options={tutors} value={tutor_id} onChange={setTutorId} isDisabled={loadingTutors || !selectedCourse || !session_date || !start_time || !end_time} />
             </div>
 
-            <button type="submit" className="submit-button">
+            <div className="form-group">
+              <label className="form-label">Additional Details</label>
+              <textarea name="notes" value={notes} onChange={handleChange} className="form-textarea" placeholder="Tell us about your learning goals..." />
+            </div>
+
+            <button type="submit" className="submit-button" onClick={handleSubmit}>
               Submit Request
             </button>
           </form>

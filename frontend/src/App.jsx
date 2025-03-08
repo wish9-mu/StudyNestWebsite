@@ -1,12 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider, useAuth } from "./Components/Login/AuthContext"; 
+import { AuthProvider, useAuth } from "./Components/Login/AuthContext";
 import ProtectedRoute from "./Components/Login/ProtectedRoute";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
 // Components import
-import HomePage from "./Components/HomePage/Homepage";
+import HomePage from "./Components/HomePage/HomePage";
 import About from "./Components/About/About";
 import Request from "./Components/Request/Request";
 import Login from "./Components/Login/Login";
@@ -21,7 +21,11 @@ import TutorBookings from "./Components/Tutor Bookings/TutorBookings";
 import TuteeWaitlist from "./Components/Tutee Waitlist/TuteeWaitlist";
 import TuteeActivity from "./Components/Tutee Activity/TuteeActivity";
 import AdminProfile from "./Components/Admin Profile/AdminProfile";
-import AdminStat from "./Components/Admin Statistics/AdminStat";
+import VisionMissionSection from "./Components/VisionMissionSection/VisionMissionSection";
+import ForgotPassword from "./Components/ResetPassword/ForgotPassword";
+import UpdateYourPassword from "./Components/ResetPassword/UpdateYourPassword";
+import AdminStats from "./Components/Admin Statistics/AdminStat";
+import GuestRequest from "./Components/Request/GuestRequest";
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
@@ -46,6 +50,7 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/about" element={<About />} />
       <Route path="/request" element={<Request />} />
+      <Route path="/guestrequest" element={<GuestRequest />} />
       <Route path="/developers" element={<Developers />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -56,19 +61,43 @@ const AppRoutes = () => {
       <Route path="/tuteewaitlist" element={<TuteeWaitlist />} />
       <Route path="/tuteeactivity" element={<TuteeActivity />} />
       <Route path="/adminprofile" element={<AdminProfile />} />
-      <Route path="/adminstat" element={<AdminStat />}  />
+      <Route path="/visionmission" element={<VisionMissionSection />} />
+      <Route path="/updateyourpassword" element={<UpdateYourPassword />} />
+      <Route path="/forgotpassword" element={<ForgotPassword />} />
+      <Route path="/adminstats" element={<AdminStats />} />
 
       {/* Protected Routes */}
-      <Route path="/tutorhome" element={<ProtectedRoute role="tutor"><TutorHome /></ProtectedRoute>} />
-      <Route path="/adminhome" element={<ProtectedRoute role="admin"><AdminHome /></ProtectedRoute>} />
-      <Route path="/tuteehome" element={<ProtectedRoute role="tutee"><TuteeHome /></ProtectedRoute>} />
+      <Route
+        path="/tutorhome"
+        element={
+          <ProtectedRoute role="tutor">
+            <TutorHome />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/adminhome"
+        element={
+          <ProtectedRoute role="admin">
+            <AdminHome />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/tuteehome"
+        element={
+          <ProtectedRoute role="tutee">
+            <TuteeHome />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 };
 
 const App = () => {
   return (
-    <AuthProvider> 
+    <AuthProvider>
       <Router>
         <div>
           <AppRoutes />

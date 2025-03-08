@@ -4,9 +4,44 @@ import TutorNav from "../Nav/TutorNav";
 import "./BookingsCard.jsx";
 import BookingsCard from "./BookingsCard.jsx";
 import AcceptedCard from "./AcceptedCard.jsx";
+import { supabase } from "../../supabaseClient";
 
 const TutorBookings = () => {
   const [acceptedBList, setAcceptedBList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    console.log("Accepted Bookings:", acceptedBList);
+    setLoading(false);
+  }, [acceptedBList]);
+
+  useEffect(() => {
+    const fetchAcceptedBookings = async () => {
+        setLoading(true);
+        const { data, error } = await supabase
+            .from("bookings")
+            .select(`
+                *,
+                profiles!tutee_id(first_name, last_name)
+            `)
+            .eq("status", "accepted");
+
+        if (error) {
+            console.error("Error fetching accepted bookings:", error);
+        } else {
+            console.log("Fetched accepted bookings.");
+            const formattedData = data.map(booking => ({
+                ...booking,
+                firstName: booking.profiles?.first_name || "",
+                lastName: booking.profiles?.last_name || "",
+            }));
+            setAcceptedBList(formattedData);
+        }
+        setLoading(false);
+    };
+
+    fetchAcceptedBookings();
+}, []);
 
   return (
     <>
@@ -25,7 +60,9 @@ const TutorBookings = () => {
         </div>
 
         <div className="accepted-cards">
-          {acceptedBList.length > 0 ? (
+          {loading ? (
+            <p>Loading...</p>
+          ) : acceptedBList.length > 0 ? (
             <>
               <h2>Accepted Bookings</h2>
               <AcceptedCard
