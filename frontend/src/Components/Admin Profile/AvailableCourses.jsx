@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
 import "./AvailableCourses.css";
-import "./Modal.css";
+import "../Modal/Modal.css";
 
 const AvailableCourses = () => {
   const [courses, setCourses] = useState([]);

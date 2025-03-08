@@ -1,0 +1,197 @@
+/*Modal Component; Modal.css*/
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content.duplicate {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 500px;
+    text-align: center;
+}
+
+.modal-content.dpa {
+    background: white;
+    padding: 5rem;
+    border-radius: 8px;
+    width: 50rem;
+    max-width: 90%; 
+    text-align: justify;
+    margin: 2rem auto; 
+    box-sizing: border-box; 
+}
+
+.modal-overlay:has(.modal-content.dpa) {
+    align-items: flex-start;
+    padding: 2rem 0;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2d3748;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.modal-content li {
+    margin-left: 2rem;
+}
+
+.modal-content section {
+    padding-bottom: 0.5rem 0;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    flex: 1; 
+}
+
+.form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #e53e3e;
+    box-shadow: 0 0 0 1px #e53e3e;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .submit-btn {
+    padding: 8px 16px;
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .submit-btn:hover {
+    background-color: #e53e3e;
+  }
+  
+  .delete-confirm-btn {
+    padding: 8px 16px;
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .delete-confirm-btn:hover {
+    background-color: #c53030;
+  }
+  
+  .cancel-btn {
+    padding: 8px 16px;
+    background-color: #a0aec0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #718096;
+  }
+  
+  /* Legacy button support for existing code */
+  .yes-btn {
+    padding: 8px 16px;
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 10px;
+  }
+  
+  .yes-btn:hover {
+    background-color: #c53030;
+  }
+  
+  .no-btn {
+    padding: 8px 16px;
+    background-color: #a0aec0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .no-btn:hover {
+    background-color: #718096;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .modal-content {
+      margin: 0 15px;
+      max-width: calc(100% - 30px);
+    }
+    
+    .button-group {
+      flex-direction: column;
+    }
+    
+    .submit-btn, .delete-confirm-btn, .cancel-btn, .yes-btn, .no-btn {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    
+    .yes-btn {
+      margin-right: 0;
+    }
+  }

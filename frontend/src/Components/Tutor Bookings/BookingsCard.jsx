@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./TutorBookings.css";
 import { supabase } from "../../supabaseClient";
-import "../Admin Profile/Modal.css"; //galing admin i2h
+import "../Modal/Modal.css"; 
 
 const BookingsCard = ({setAcceptedBList}) => {
     const [bookingsList, setBookingsList] = useState([]);
