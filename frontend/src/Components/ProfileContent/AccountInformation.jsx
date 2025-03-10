@@ -197,7 +197,6 @@ const AccountInformation = () => {
 
   return (
     <div className="account-info-container">
-      <h2>Account Information</h2>
       <div className="profile-pic">
         <img
           src={userData.profile_picture || "/default-avatar.png"}

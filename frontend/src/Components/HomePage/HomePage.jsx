@@ -9,6 +9,7 @@ import TutorImg1 from "../../assets/TutorImg1.png";
 import { FaLightbulb, FaChartLine } from "react-icons/fa";
 import nelson from "../../assets/nelson.jpg";
 import study from "../../assets/study.jpg";
+import study2 from "../../assets/study2.jpg";
 
 const HomePage = () => {
   return (
@@ -34,7 +35,7 @@ const HomePage = () => {
             </p>
           </div>
           <div className="banner-image">
-            <img src={study} alt="Mapúa University Building" />
+            <img src={study2} alt="Mapúa University Building" />
           </div>
         </section>
 

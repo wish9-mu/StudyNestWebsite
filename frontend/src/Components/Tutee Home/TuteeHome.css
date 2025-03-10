@@ -16,6 +16,13 @@
   margin-bottom: 10rem;
 }
 
+.tutee-home-title{
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #e53e3e;
+}
+
 .tutee-home-container {
   text-align: center;
   max-width: 1000px;

@@ -16,13 +16,13 @@ const TuteeNav = () => {
   };
 
   const handleLogout = async () => {
-      const { error } = await supabase.auth.signOut();
-      if (error) console.error("Log out error:", error);
-      else {
-        setUser(null);
-        navigate("/login");
-      }
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error("Log out error:", error);
+    else {
+      setUser(null);
+      navigate("/login");
     }
+  };
 
   return (
     <nav className="nav nav-colored">
@@ -59,7 +59,10 @@ const TuteeNav = () => {
                 <Link to="/tuteeprofile" className="dropdown-item">
                   Profile
                 </Link>
-                <button onClick={handleLogout} className="dropdown-item logout-btn">
+                <button
+                  onClick={handleLogout}
+                  className="dropdown-item logout-btn"
+                >
                   Logout
                 </button>
               </div>

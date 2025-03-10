@@ -15,7 +15,7 @@ const Hero = () => {
           Engineering subjects, find a qualified peer tutor who's been in your
           shoes.
         </p>
-        <Link to="/request" className="nav-links">
+        <Link to="/guestrequest" className="nav-links">
           <button className="btn">Find a Tutor</button>
         </Link>
       </div>
