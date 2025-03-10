@@ -4,6 +4,8 @@ import TuteeNav from "../Nav/TuteeNav";
 import AccountInformation from "../ProfileContent/AccountInformation";
 import SignInSecurity from "../ProfileContent/SignInSecurity";
 import "./TuteeProfile.css";
+import ClassSchedule from "../ProfileContent/ClassSchedule";
+import AvailabilitySchedule from "../ProfileContent/AvailabilitySchedule";
 
 const TuteeProfile = () => {
   const [activeTab, setActiveTab] = useState("account");
@@ -20,6 +22,12 @@ const TuteeProfile = () => {
             Account Information
           </button>
           <button
+            className={`tab-button ${activeTab === "booking" ? "active" : ""}`}
+            onClick={() => setActiveTab("booking")}
+          >
+            Booking Preferences
+          </button>
+          <button
             className={`tab-button ${activeTab === "security" ? "active" : ""}`}
             onClick={() => setActiveTab("security")}
           >
@@ -31,6 +39,13 @@ const TuteeProfile = () => {
           {activeTab === "account" && (
             <section className="profile-section account-section">
               <AccountInformation />
+            </section>
+          )}
+
+          {activeTab === "booking" && (
+            <section className="profile-section account-section">
+              <ClassSchedule />
+              <AvailabilitySchedule />
             </section>
           )}
 

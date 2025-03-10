@@ -19,11 +19,11 @@
 }
 
 .banner-content {
-  flex: 1;
+  flex: 3; /* Increase text portion to take up more space */
 }
 
 .banner-content h1 {
-  font-size: 36px;
+  font-size: 50px;
   font-weight: 700;
   margin-bottom: 20px;
   color: #333;
@@ -31,18 +31,21 @@
 }
 
 .banner-content p {
-  line-height: 1.6;
+  line-height: 2;
   color: #444;
+  font-size:1.5rem;
 }
 
 .banner-image {
-  flex: 1;
+  flex: 2; /* Reduce image portion */
   display: flex;
   justify-content: center;
+  max-width: 45%; /* Limit maximum width */
 }
 
 .banner-image img {
   max-width: 100%;
+  height: auto; /* Maintain aspect ratio */
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -209,6 +212,10 @@
     padding: 40px 20px;
   }
   
+  .banner-content, .banner-image {
+    flex: 1;
+    max-width: 100%;
+  }
   .vision-container, .mission-container {
     margin-bottom: 20px;
   }

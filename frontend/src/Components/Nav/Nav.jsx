@@ -55,7 +55,7 @@ const Nav = () => {
               </Link>
             </li>
             <li>
-              <Link to="/request" className="nav-link">
+              <Link to="/guestrequest" className="nav-link">
                 Request
               </Link>
             </li>

@@ -24,6 +24,9 @@ import VisionMissionSection from "./Components/VisionMissionSection/VisionMissio
 import ForgotPassword from "./Components/ResetPassword/ForgotPassword";
 import UpdateYourPassword from "./Components/ResetPassword/UpdateYourPassword";
 import TutorActivity from "./Components/TutorActivity/TutorActivity";
+import GuestRequest from "./Components/Request/GuestRequest";
+import AdminStats from "./Components/Admin Statistics/AdminStat";
+import ClassSchedule from "./Components/ProfileContent/ClassSchedule";
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
@@ -61,6 +64,9 @@ const AppRoutes = () => {
       <Route path="/updateyourpassword" element={<UpdateYourPassword />} />
       <Route path="/forgotpassword" element={<ForgotPassword />} />
       <Route path="/tutoractivity" element={<TutorActivity />} />
+      <Route path="/guestrequest" element={<GuestRequest />} />
+      <Route path="/adminstats" element={<AdminStats />} />
+      <Route path="/classschedule" element={<ClassSchedule />} />
 
       {/* Protected Routes */}
       <Route
@@ -99,6 +105,7 @@ const App = () => {
           <AppRoutes />
         </div>
       </Router>
+
       <footer>© StudyNest 2025. All Rights Reserved.</footer>
     </AuthProvider>
   );
