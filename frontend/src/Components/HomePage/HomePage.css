@@ -3,11 +3,45 @@
   background-color: #ffffff;
 }
 
-.content-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+
+/* Full-screen section */
+.fullscreen-section {
+  width: 100%;
+  max-width: 1900px;
+  height: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align content to the left */
+  text-align: left; /* Left-align the text */
+  color: white;
+  background: url('../../assets/study5.png') center/cover no-repeat;
+  padding: 50px;
 }
+
+/* Content container */
+.content-container {
+  padding: 40px;
+  border-radius: 10px;
+  max-width: 50%; /* Adjust width to avoid too much stretching */
+
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color:var(--red);
+}
+
+p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color:#262626;
+  font-weight: 500;
+  text-align: justify;
+
+  
+}
+}
+
 
 /* Banner section styling - matches the image */
 .banner-section {
@@ -33,11 +67,12 @@
 .banner-content p {
   line-height: 2;
   color: #444;
-  font-size:1.5rem;
+  font-size:1.2rem;
+  text-align: justify;
 }
 
 .banner-image {
-  flex: 2; /* Reduce image portion */
+  flex: 3; /* Reduce image portion */
   display: flex;
   justify-content: center;
   max-width: 45%; /* Limit maximum width */
@@ -90,7 +125,7 @@
 .cta-button {
   margin-top: 24px;
   padding: 8px 24px;
-  background-color: #ff0000;  /* Mapua red color */
+  background-color:var(--red); /* Mapua red color */
   color: white;
   border: none;
   border-radius: 25px;
@@ -98,10 +133,12 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   display: inline-block;
+  transition: transform 0.3s ease;
 }
 
 .cta-button:hover {
-  background-color: #e00000;
+  background-color: var(--red);
+  transform: translateY(-5px);
 }
 
 /* Vision/Mission section styling */
@@ -219,7 +256,39 @@
   .vision-container, .mission-container {
     margin-bottom: 20px;
   }
+
+  .fullscreen-section {
+    flex-direction: column; /* Stack elements */
+    align-items: flex-start; /* Keep text left-aligned */
+    height: auto;
+  }
+
+  .content-container {
+    width: 100%; /* Full width for text */
+    max-width: 90%; /* Prevent text from being too narrow */
+    padding: 20px;
+  
+
+    h1 {
+      font-size: 2rem;
+    }
+  
+    p {
+      font-size: 1rem;
+    }
+  }
+  
+
+  .image-container {
+    width: 100%; /* Full width for image */
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  
 }
+
 
 @media (max-width: 480px) {
   .vision-mission-section {

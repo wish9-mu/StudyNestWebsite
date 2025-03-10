@@ -34,7 +34,7 @@ const AboutPage = () => {
         <div className="card-container">
           <div className="card">
             <div className="card-header">
-              <FaEye size={36} color="#cc0000" />
+              <FaEye size={36} color="var(--red)" />
               <h2 className="card-title">Vision</h2>
             </div>
             <p className="card-content">
@@ -47,7 +47,7 @@ const AboutPage = () => {
 
           <div className="card">
             <div className="card-header">
-              <FaBullseye size={36} color="#cc0000" />
+              <FaBullseye size={36} color="var(--red)" />
               <h2 className="card-title">Mission</h2>
             </div>
             <p className="card-content">

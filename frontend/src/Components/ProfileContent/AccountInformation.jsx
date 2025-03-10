@@ -212,16 +212,16 @@ const AccountInformation = () => {
             style={{ display: "none" }}
             id="fileInput"
           />
-          <label htmlFor="fileInput" className="upload-button">
+          <button htmlFor="fileInput" className="upload-button">
             {uploading ? "Uploading..." : "Change Picture"}
-          </label>
+          </button>
           {userData.profile_picture && (
             <button
               onClick={handleRemovePicture}
               disabled={uploading}
               className="remove-button"
             >
-              Remove
+              Change Picture
             </button>
           )}
         </div>

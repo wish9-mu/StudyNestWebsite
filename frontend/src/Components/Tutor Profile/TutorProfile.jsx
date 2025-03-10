@@ -1,63 +1,52 @@
+// TutorProfile.jsx
 import React, { useState } from "react";
-import "./TutorProfile.css";
 import TutorNav from "../Nav/TutorNav";
 import AccountInformation from "../ProfileContent/AccountInformation";
 import BookingPreferences from "../ProfileContent/BookingPreferences_Tutor";
 import SignInSecurity from "../ProfileContent/SignInSecurity";
 import AvailabilitySchedule from "../ProfileContent/AvailabilitySchedule";
 import ClassSchedule from "../ProfileContent/ClassSchedule";
+import Sidebar from "../Tutee Profile/TuteeSidebar";
+import "./TutorProfile.css";
 
 const TutorProfile = () => {
   const [activeTab, setActiveTab] = useState("account");
 
   return (
-    <>
+    <div className="tutor-profile-container">
       <TutorNav />
-      <div className="tutor-profile">
-        <div className="profile-tabs">
-          <button
-            className={`tab-button ${activeTab === "account" ? "active" : ""}`}
-            onClick={() => setActiveTab("account")}
-          >
-            Account Information
-          </button>
-          <button
-            className={`tab-button ${activeTab === "booking" ? "active" : ""}`}
-            onClick={() => setActiveTab("booking")}
-          >
-            Booking Preferences
-          </button>
-          <button
-            className={`tab-button ${activeTab === "security" ? "active" : ""}`}
-            onClick={() => setActiveTab("security")}
-          >
-            Sign-In & Security
-          </button>
-        </div>
 
-        <div className="profile-sections">
-          {activeTab === "account" && (
-            <section className="profile-section account-section">
-              <AccountInformation />
-            </section>
-          )}
+      <div className="profile-layout">
+        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-          {activeTab === "booking" && (
-            <section className="profile-section booking-section">
-              <BookingPreferences />
-              <ClassSchedule />
-              <AvailabilitySchedule />
-            </section>
-          )}
+        <div className="tutor-profile-content">
+          <div className="profile-sections">
+            {activeTab === "account" && (
+              <section className="profile-section account-section">
+                <h2 className="section-title">Account Information</h2>
+                <AccountInformation />
+              </section>
+            )}
 
-          {activeTab === "security" && (
-            <section className="profile-section security-section">
-              <SignInSecurity />
-            </section>
-          )}
+            {activeTab === "booking" && (
+              <section className="profile-section booking-section">
+                <h2 className="section-title">Booking Preferences</h2>
+                <BookingPreferences />
+                <ClassSchedule />
+                <AvailabilitySchedule />
+              </section>
+            )}
+
+            {activeTab === "security" && (
+              <section className="profile-section security-section">
+                <h2 className="section-title">Sign-In & Security</h2>
+                <SignInSecurity />
+              </section>
+            )}
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

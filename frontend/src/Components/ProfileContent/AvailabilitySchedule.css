@@ -12,6 +12,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    
   }
   
   .availability-header h2 {
@@ -34,6 +35,8 @@
     border: none;
     padding: 10px 16px;
     font-size: 1rem;
+    width: auto; /* Makes the width adjust to content */
+    min-width: 150px; /* Ensures some consistency */
   }
   
   .btn-primary:hover {
@@ -158,3 +161,5 @@
     gap: 12px;
     margin-top: 24px;
   }
+
+  /*class schedules*/

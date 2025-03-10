@@ -1,6 +1,7 @@
 // Sidebar.jsx
 import React from "react";
 import "./TuteeSidebar.css";
+import logo from "../../assets/StudyNest_Colored.png";
 
 const handleLogout = async () => {
   const { error } = await supabase.auth.signOut();
@@ -14,17 +15,13 @@ const handleLogout = async () => {
 const Sidebar = ({ activeTab, setActiveTab }) => {
   return (
     <div className="sidebar">
-      {/* <div className="sidebar-profile">
+      <div className="sidebar-profile">
         <div className="profile-avatar">
-          <img
-            src={userData.profile_picture || "/default-avatar.png"}
-            alt="Profile"
-            className="profile-image"
-          />
+          <img src={logo} alt="Logo" />
         </div>
-        <h3 className="profile-name">Paano ba to</h3>
-        <p className="profile-status">hihi</p>
-      </div> */}
+        <h3 className="profile-name">Tutee View</h3>
+        <p className="profile-status"></p>
+      </div>
 
       <div className="sidebar-menu">
         <button
@@ -33,7 +30,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
           }`}
           onClick={() => setActiveTab("account")}
         >
-          <i className="menu-icon">👤</i>
+          <p className="menu-icon">👤</p>
           <span>Account Information</span>
         </button>
 
@@ -43,7 +40,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
           }`}
           onClick={() => setActiveTab("booking")}
         >
-          <i className="menu-icon">📅</i>
+          <p className="menu-icon">📅</p>
           <span>Booking Preferences</span>
         </button>
 
@@ -53,7 +50,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
           }`}
           onClick={() => setActiveTab("security")}
         >
-          <i className="menu-icon">🔒</i>
+          <p className="menu-icon">🔒</p>
           <span>Sign-In & Security</span>
         </button>
       </div>
