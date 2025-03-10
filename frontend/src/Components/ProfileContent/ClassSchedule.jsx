@@ -214,7 +214,7 @@ const ClassSchedule = () => {
 
   return (
     <div>
-      <p>My Class Schedule</p>
+      <p className="cs-p">My Class Schedule</p>
       <button className="btn btn-primary" onClick={() => setShowModal(true)}>
         Add Class Schedule
       </button>
