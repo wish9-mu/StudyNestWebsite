@@ -9,6 +9,18 @@ const AdminStat = () => {
   const [tuteeList, setTuteeList] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
 
+  // 📊 Statistics States
+  const [totalTutors, setTotalTutors] = useState(0);
+  const [totalTutees, setTotalTutees] = useState(0);
+  const [totalBookings, setTotalBookings] = useState(0);
+  const [totalPending, setTotalPending] = useState(0);
+  const [totalAccepted, setTotalAccepted] = useState(0);
+  const [totalCompleted, setTotalCompleted] = useState(0);
+  const [totalCancelled, setTotalCancelled] = useState(0);
+  const [totalRejected, setTotalRejected] = useState(0);
+  const [topTutors, setTopTutors] = useState([]);
+  const [topTutees, setTopTutees] = useState([]);
+
   // Fetch tutors from the database
   useEffect(() => {
     const fetchTutors = async () => {
@@ -21,6 +33,7 @@ const AdminStat = () => {
         console.error("Error fetching tutors:", error);
       } else {
         setTutorList(data);
+        setTotalTutors(data.length);
       }
     };
 
@@ -39,10 +52,84 @@ const AdminStat = () => {
         console.error("Error fetching tutees:", error);
       } else {
         setTuteeList(data);
+        setTotalTutees(data.length);
       }
     };
 
     fetchTutees();
+  }, []);
+
+  // 🔹 Fetch Booking Statistics
+  useEffect(() => {
+    const fetchBookingStats = async () => {
+      console.log("📊 Fetching Booking Statistics...");
+
+      try {
+        const [
+          totalBookingsData,
+          pendingData,
+          acceptedData,
+          completedData,
+          cancelledData,
+          rejectedData
+        ] = await Promise.all([
+          supabase.from("bookings").select("*"),
+          supabase.from("bookings").select("*").eq("status", "pending"),
+          supabase.from("bookings").select("*").eq("status", "accepted"),
+          supabase.from("bookings_history").select("*").eq("status", "completed"),
+          supabase.from("bookings_history").select("*").eq("status", "cancelled"),
+          supabase.from("bookings_history").select("*").eq("status", "rejected")
+        ]);
+
+        setTotalBookings(totalBookingsData.data.length);
+        setTotalPending(pendingData.data.length);
+        setTotalAccepted(acceptedData.data.length);
+        setTotalCompleted(completedData.data.length);
+        setTotalCancelled(cancelledData.data.length);
+        setTotalRejected(rejectedData.data.length);
+      } catch (error) {
+        console.error("❌ Error fetching booking statistics:", error);
+      }
+    };
+
+    fetchBookingStats();
+  }, []);
+
+  // 🔹 Fetch Top Active Tutors & Tutees
+  useEffect(() => {
+    const fetchTopUsers = async () => {
+      console.log("📊 Fetching Top Tutors & Tutees...");
+
+      try {
+        const [
+          topTutorsData,
+          topTuteesData
+        ] = await Promise.all([
+          supabase
+            .from("bookings_history")
+            .select("tutor_id, COUNT(*)")
+            .eq("status", "completed")
+            .group("tutor_id")
+            .order("count", { ascending: false })
+            .limit(3),
+
+          supabase
+            .from("bookings_history")
+            .select("tutee_id, COUNT(*)")
+            .eq("status", "completed")
+            .group("tutee_id")
+            .order("count", { ascending: false })
+            .limit(3)
+        ]);
+
+        setTopTutors(topTutorsData.data);
+        setTopTutees(topTuteesData.data);
+      } catch (error) {
+        console.error("❌ Error fetching top tutors & tutees:", error);
+      }
+    };
+
+    fetchTopUsers();
   }, []);
 
   // Handle opening the PerformanceCard modal
@@ -70,6 +157,64 @@ const AdminStat = () => {
               metrics, and generate reports.
             </p>
           </div>
+        </div>
+
+        <div className="statistics-summary">
+          <div className="stat-card">
+            <h3>Total Tutors</h3>
+            <p>{totalTutors}</p>
+          </div>
+          <div className="stat-card">
+            <h3>Total Tutees</h3>
+            <p>{totalTutees}</p>
+          </div>
+          <div className="stat-card">
+            <h3>Total Bookings</h3>
+            <p>{totalBookings}</p>
+          </div>
+          <div className="stat-card">
+            <h3>Pending Bookings</h3>
+            <p>{totalPending}</p>
+          </div>
+          <div className="stat-card">
+            <h3>Accepted Bookings</h3>
+            <p>{totalAccepted}</p>
+          </div>
+          <div className="stat-card">
+            <h3>Completed Bookings</h3>
+            <p>{totalCompleted}</p>
+          </div>
+          <div className="stat-card">
+            <h3>Cancelled Bookings</h3>
+            <p>{totalCancelled}</p>
+          </div>
+          <div className="stat-card">
+            <h3>Rejected Bookings</h3>
+            <p>{totalRejected}</p>
+          </div>
+        </div>
+
+        {/* 🔹 Top Active Users */}
+        <div className="top-users">
+          <h2>Top Active Tutors</h2>
+          <p>Based on number of completed bookings.</p>
+          <ul>
+            {topTutors.length > 0 ? (
+              topTutors.map((tutor, index) => <li key={index}>Tutor ID: {tutor.tutor_id} - {tutor.count} Sessions</li>)
+            ) : (
+              <li>No active tutors found.</li>
+            )}
+          </ul>
+
+          <h2>Top Active Tutees</h2>
+          <p>Based on number of completed bookings.</p>
+          <ul>
+            {topTutees.length > 0 ? (
+              topTutees.map((tutee, index) => <li key={index}>Tutee ID: {tutee.tutee_id} - {tutee.count} Sessions</li>)
+            ) : (
+              <li>No active tutees found.</li>
+            )}
+          </ul>
         </div>
 
         <div className="stat-content">
