@@ -8,7 +8,7 @@ const TutorHome = () => {
       <TutorNav />
 
       <main className="main-content">
-        <h1>Learning begins now.</h1>
+        <h1>Welcome back, Tutor!</h1>
         <p className="subtitle">
           StudyNest is a student-led tutoring platform exclusively for Mapúans,
           connecting knowledgeable upper-year students with those seeking

@@ -320,19 +320,23 @@ const ActiveBookings = ({ feedbackBool }) => {
                       {booking.date} | {booking.day}
                     </p>
                     <p>{booking.time}</p>
-                    <button
-                      onClick={() => {
-                        handleCancelBooking(booking.id);
-                      }}
-                    >
-                      Cancel Booking
-                    </button>
-
-                    {userRole === "tutee" && bookingStat === "accepted" && (
-                      <button onClick={() => handleCompleteSession(booking.id)}>
-                        Mark as Completed
+                    <div className="booking-buttons">
+                      <button
+                        className="cancel-booking-btn"
+                        onClick={() => handleCancelBooking(booking.id)}
+                      >
+                        Cancel Booking
                       </button>
-                    )}
+
+                      {userRole === "tutee" && bookingStat === "accepted" && (
+                        <button
+                          className="complete-booking-btn"
+                          onClick={() => handleCompleteSession(booking.id)}
+                        >
+                          Mark as Completed
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))

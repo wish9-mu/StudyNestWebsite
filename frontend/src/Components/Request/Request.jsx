@@ -4,6 +4,7 @@ import "./Request.css";
 import Select from "react-select";
 import { supabase } from "../../supabaseClient";
 import { useNavigate } from "react-router-dom";
+import "../Modal/Modal.css";
 
 const Request = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ const Request = () => {
   const [end_time, setEndTime] = useState("");
   const [notes, setNotes] = useState("");
   const [loadingTutors, setLoadingTutors] = useState(false); // Track if tutors are being fetched
+  const [showModal, setShowModal] = useState(false);
+  const [modalMsg, setModalMsg] = useState("");
 
   // 🔹 Fetch User ID
   useEffect(() => {
@@ -34,14 +37,21 @@ const Request = () => {
   // 🔹 Fetch Courses
   useEffect(() => {
     const fetchCourses = async () => {
-      const { data, error } = await supabase.from("courses").select("course_code, course_name");
+      const { data, error } = await supabase
+        .from("courses")
+        .select("course_code, course_name");
 
       if (error) {
         console.error("❌ Error fetching courses:", error);
         return;
       }
 
-      setCourses(data.map(course => ({ value: course.course_code, label: course.course_name })));
+      setCourses(
+        data.map((course) => ({
+          value: course.course_code,
+          label: course.course_name,
+        }))
+      );
     };
 
     fetchCourses();
@@ -61,33 +71,45 @@ const Request = () => {
 
   const fetchAvailableTutors = async () => {
     if (!selectedCourse || !session_date || !start_time || !end_time) {
-      alert("Please select course, date, and time before choosing a tutor.");
+      setModalMsg(
+        "Please select course, date, and time before choosing a tutor."
+      );
+      setShowModal(true);
       return;
     }
-  
+
     try {
       // Convert session_date to week day format (e.g., "Monday")
-      const sessionDay = new Date(session_date).toLocaleString('en-us', { weekday: 'long' });
+      const sessionDay = new Date(session_date).toLocaleString("en-us", {
+        weekday: "long",
+      });
       console.log("🔹 Converted session date to weekday:", sessionDay);
-  
+
       // Fetch tutor availability
-      const { data: availabilityData, error: availabilityError } = await supabase
-        .from("availability_schedule")
-        .select("user_id")
-        .eq("day_of_week", sessionDay)
-        .lte("start_time", start_time)
-        .gte("end_time", end_time);
-  
-      if (availabilityError) throw availabilityError;
+      const { data: availabilityData, error: availabilityError } =
+        await supabase
+          .from("availability_schedule")
+          .select("user_id")
+          .eq("day_of_week", sessionDay)
+          .lte("start_time", start_time)
+          .gte("end_time", end_time);
+
+      if (availabilityError) {
+        setModalMsg(availabilityError.message);
+        showModal(true);
+        throw availabilityError;
+      }
 
       console.log("✅ Tutor availability data fetched:", availabilityData);
 
       if (!availabilityData || availabilityData.length === 0) {
         setTutors([]); // No tutors available
         console.log("No tutors available for the selected time slot.");
+        setModalMsg("No tutors available for the selected time slot.");
+        setShowModal(true);
         return;
       }
-  
+
       // Extract tutor IDs
       const tutorIds = availabilityData.map((row) => row.user_id);
       console.log("🆔 Tutor IDs matching availability:", tutorIds);
@@ -105,13 +127,19 @@ const Request = () => {
         .eq("course_code", selectedCourse.value)
         .in("tutor_id", tutorIds); // Filter tutors that match both availability and course
 
-      if (courseError) throw courseError;
+      if (courseError) {
+        setModalMsg(courseError.message);
+        showModal(true);
+        throw courseError;
+      }
       console.log("📚 Tutors who teach this course:", tutorsTeachingCourse);
 
-      const finalTutorIds = tutorsTeachingCourse.map(t => t.tutor_id);
+      const finalTutorIds = tutorsTeachingCourse.map((t) => t.tutor_id);
 
       if (finalTutorIds.length === 0) {
         console.warn("⚠️ No tutors found who teach this course.");
+        setModalMsg("No tutors found who teach this course.");
+        setShowModal(true);
         setTutors([]);
         return;
       }
@@ -121,56 +149,67 @@ const Request = () => {
         .from("bookings")
         .select("tutor_id")
         .eq("session_date", session_date)
-        .or(
-          `and(start_time.lte.${end_time}, end_time.gte.${start_time})`
-        )
+        .or(`and(start_time.lte.${end_time}, end_time.gte.${start_time})`)
         .eq("status", "accepted"); // Only consider accepted bookings
-  
-      if (bookedError) throw bookedError;
+
+      if (bookedError) {
+        setModalMsg(bookedError.message);
+        setShowModal(true);
+        throw bookedError;
+      }
       console.log("🚫 Tutors who are already booked:", bookedTutors);
-      
+
       // Remove booked tutors from the available list
-      const bookedTutorIds = bookedTutors.map(b => b.tutor_id);
-      const availableTutors = finalTutorIds.filter(id => !bookedTutorIds.includes(id));
+      const bookedTutorIds = bookedTutors.map((b) => b.tutor_id);
+      const availableTutors = finalTutorIds.filter(
+        (id) => !bookedTutorIds.includes(id)
+      );
 
       if (availableTutors.length === 0) {
-        console.warn("⚠️ No available tutors left after filtering booked tutors.");
+        console.warn(
+          "⚠️ No available tutors left after filtering booked tutors."
+        );
+        setModalMsg("No more tutors available");
+        setShowModal(true);
         setTutors([]);
         return;
       }
-  
+
       // Fetch tutor details
       const { data: tutorData, error: tutorError } = await supabase
         .from("profiles")
         .select("id, first_name, last_name")
         .in("id", tutorIds)
         .eq("role", "tutor");
-  
-      if (tutorError) throw tutorError;
+
+      if (tutorError) {
+        setModalMsg(tutorError.message);
+        showModal(true);
+        throw tutorError;
+      }
       console.log("✅ Tutors fetched after filtering:", tutorData);
-      
+
       // Convert tutor data to react-select format
-      const formattedTutors = tutorData.map(tutor => ({
-        value: tutor.id, 
-        label: `${tutor.first_name} ${tutor.last_name}` // Display full name
+      const formattedTutors = tutorData.map((tutor) => ({
+        value: tutor.id,
+        label: `${tutor.first_name} ${tutor.last_name}`, // Display full name
       }));
-  
+
       // Ensure data is always an array
       setTutors(formattedTutors || []);
-
     } catch (error) {
       console.error("❌ Error fetching tutors:", error);
       setTutors([]); // Reset if there's an error
-    } finally { 
+    } finally {
       setLoadingTutors(false);
-    } 
+    }
   };
-  
 
   // 🔹 Handle Tutor Selection
   const handleTutorSelect = (selectedTutor) => {
     if (!selectedCourse || !session_date || !start_time || !end_time) {
-      alert("Please complete the form before selecting a tutor.");
+      setModalMsg("Please complete the form before selecting a tutor.");
+      setShowModal(true);
       return;
     }
     console.log("🎯 Selected Tutor:", selectedTutor);
@@ -181,18 +220,29 @@ const Request = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectedCourse || !selectedTutor || !session_date || !start_time || !end_time) {
-      alert("Please fill in all fields.");
-      return;
-    }
-
     if (start_time < "07:00" || end_time > "19:00") {
-      alert("Time must be between 7:00 AM and 7:00 PM.");
+      setModalMsg("Time must be between 7:00 AM and 7:00 PM.");
+      setShowModal(true);
       return;
     }
 
-    if (new Date(`1970-01-01T${end_time}`) <= new Date(`1970-01-01T${start_time}`)) {
-      alert("End time must be after start time.");
+    if (
+      new Date(`1970-01-01T${end_time}`) <= new Date(`1970-01-01T${start_time}`)
+    ) {
+      setModalMsg("End time must be after start time.");
+      setShowModal(true);
+      return;
+    }
+
+    if (
+      !selectedCourse ||
+      !selectedTutor ||
+      !session_date ||
+      !start_time ||
+      !end_time
+    ) {
+      setModalMsg("Please fill in all fields.");
+      setShowModal(true);
       return;
     }
 
@@ -212,14 +262,17 @@ const Request = () => {
 
       const { error } = await supabase.from("bookings").insert([newBooking]);
 
-      if (error) throw error;
+      if (error) {
+        setModalMsg(error.message);
+        setShowModal(true);
+        throw error;
+      }
 
-      alert("Request submitted successfully!");
+      setModalMsg("Request submitted successfully!");
+      setShowModal(true);
       resetForm();
-
     } catch (error) {
       console.error("Error submitting request:", error);
-      alert("An error occurred. Please try again later.");
     }
   };
 
@@ -264,20 +317,22 @@ const Request = () => {
         <div className="request-card">
           <div className="request-header">
             <h1 className="request-title">Request a Tutor</h1>
-            <p className="request-subtitle">Fill out the form below to book your tutoring session.</p>
+            <p className="request-subtitle">
+              Fill out the form below to book your tutoring session.
+            </p>
           </div>
 
           <form className="form-grid">
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">Course</label>
-                <Select 
-                  options={courses} 
-                  value={selectedCourse} 
+                <Select
+                  options={courses}
+                  value={selectedCourse}
                   onChange={(selectedOption) => {
                     setSelectedCourse(selectedOption);
                     if (selectedTutor) setSelectedTutor(null);
-                  }} 
+                  }}
                 />
               </div>
 
@@ -288,8 +343,16 @@ const Request = () => {
                   name="session_date"
                   value={session_date}
                   onChange={handleChange}
-                  min={new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split("T")[0]}
-                  max={new Date(new Date().setDate(new Date().getDate() + 14)).toISOString().split("T")[0]}
+                  min={
+                    new Date(new Date().setDate(new Date().getDate() + 1))
+                      .toISOString()
+                      .split("T")[0]
+                  }
+                  max={
+                    new Date(new Date().setDate(new Date().getDate() + 14))
+                      .toISOString()
+                      .split("T")[0]
+                  }
                   className="form-input"
                   required
                 />
@@ -299,30 +362,84 @@ const Request = () => {
             <div className="form-row">
               <div className="form-group">
                 <label>Start Time:</label>
-                <input type="time" name="start_time" value={start_time} onChange={handleChange} required />
+                <input
+                  type="time"
+                  name="start_time"
+                  value={start_time}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <div className="form-group">
                 <label>End Time:</label>
-                <input type="time" name="end_time" value={end_time} onChange={handleChange} required />
+                <input
+                  type="time"
+                  name="end_time"
+                  value={end_time}
+                  onChange={handleChange}
+                  required
+                />
               </div>
             </div>
 
             <div className="form-group">
               <label className="form-label">Tutor Preference</label>
-              <Select options={tutors} value={selectedTutor} onChange={handleTutorSelect} isDisabled={loadingTutors || !selectedCourse || !session_date || !start_time || !end_time} />
+              <Select
+                options={tutors}
+                value={selectedTutor}
+                onChange={handleTutorSelect}
+                isDisabled={
+                  loadingTutors ||
+                  !selectedCourse ||
+                  !session_date ||
+                  !start_time ||
+                  !end_time
+                }
+              />
             </div>
 
             <div className="form-group">
               <label className="form-label">Additional Details</label>
-              <textarea name="notes" value={notes} onChange={handleChange} className="form-textarea" placeholder="Tell us about your learning goals..." />
+              <textarea
+                name="notes"
+                value={notes}
+                onChange={handleChange}
+                className="form-textarea"
+                placeholder="Tell us about your learning goals..."
+              />
             </div>
 
-            <button type="submit" className="submit-button" onClick={handleSubmit}>
+            <button
+              type="submit"
+              className="submit-button"
+              onClick={handleSubmit}
+            >
               Submit Request
             </button>
           </form>
         </div>
+
+        <>
+          {showModal && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <h2>{modalMsg}</h2>
+                <button
+                  className="accept"
+                  onClick={() => {
+                    setShowModal(false);
+                    setModalMsg("");
+                  }}
+                >
+                  Okay
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+
+        <></>
       </div>
     </>
   );

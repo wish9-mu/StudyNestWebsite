@@ -25,8 +25,15 @@
   .content-wrapper {
     flex: 1 0 auto; /* This will make it take up all available space */
     width: 100%;
-    margin-bottom: 150px; /* Add space for footer */
+    margin-bottom: 30px; /* Add space for footer */
   }
+
+  /* For the parent container that will hold both components */
+.bookings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Controls space between the components */
+}
   
   /* Footer styles */
   .footer {
@@ -46,10 +53,19 @@
     font-family: 'Arial', sans-serif;
   }
   
+  /* APage title that only appears once at the top */
+.page-title {
+  margin-top: 70px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 2.2rem;
+  color: var(--text-color);
+}
+
   /* Header Section */
   .header {
-    margin-top: 100px;
-    margin-bottom: 2rem;
+    margin-top: 80px;
+    margin-bottom: 1rem;
     border-bottom: 1px solid #eee;
     padding-bottom: 1rem;
     text-align: center;
@@ -138,6 +154,56 @@
     color: #444;
   }
   
+  /* Button container to organize multiple buttons */
+.booking-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Base button styling for all booking buttons */
+.cancel-booking-btn, .complete-booking-btn {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  border: none;
+  text-align: center;
+  min-width: 150px;
+}
+
+/* Cancel booking button - red background like in the screenshot */
+.cancel-booking-btn {
+  background-color: var(--primary-color); /* Using the red color from your variables */
+  color: white;
+}
+
+.cancel-booking-btn:hover {
+  background-color: #a00; /* Darker red on hover */
+  transform: translateY(-2px);
+}
+
+/* Mark as completed button - white with red border and text */
+.complete-booking-btn {
+  background-color: white;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.complete-booking-btn:hover {
+  background-color: #fff0f0; /* Light red background on hover */
+  transform: translateY(-2px);
+}
+
+/* Active/pressed state for buttons */
+.cancel-booking-btn:active, .complete-booking-btn:active {
+  transform: translateY(0);
+}
+
+
   /* Button styling */
   .leave-waitlist-btn {
     background-color: var(--primary-color);
@@ -200,5 +266,13 @@
     
     .align-left-content h2 {
       font-size: 1.3rem;
+    }
+
+    .booking-buttons {
+      width: 100%;
+    }
+    
+    .cancel-booking-btn, .complete-booking-btn {
+      width: 100%;
     }
   }

@@ -194,7 +194,7 @@ const Register = () => {
       <div className="register">
         <div className="signup-container">
           <div className="signup-card">
-            <h1>Be part of the nest.</h1>
+            <h1 className="h1">Be part of the nest.</h1>
 
             {message && <p className="success">{message}</p>}
 
@@ -308,7 +308,7 @@ const Register = () => {
                     />
                     Tutee
                   </label>
-                  <label>
+                  <label className="label-radial">
                     <input
                       type="radio"
                       name="role"
@@ -323,28 +323,30 @@ const Register = () => {
               </div>
 
               <div className="form-group">
-                <small>
+                <div className="checkbox-container">
                   <input
                     type="checkbox"
                     name="dpa"
                     checked={isChecked}
                     onChange={() => setChecked(!isChecked)}
                   />
-                  I acknowledge that I have read and understood the
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setShowModal("dpa");
-                    }}
-                    style={{ color: "#dc2626" }}
-                  >
-                    {" "}
-                    Data Privacy Agreement{" "}
-                  </a>
-                  and consent to the collection and use of my information as
-                  described.
-                </small>
+                  <small>
+                    I acknowledge that I have read and understood the
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowModal("dpa");
+                      }}
+                      style={{ color: "#dc2626" }}
+                    >
+                      {" "}
+                      Data Privacy Agreement{" "}
+                    </a>
+                    and consent to the collection and use of my information as
+                    described.
+                  </small>
+                </div>
                 {errors.dpa && <p className="error">{errors.dpa}</p>}
               </div>
 

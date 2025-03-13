@@ -1,4 +1,4 @@
-/*Modal Component; Modal.css*/
+/* Modal Component; Modal.css */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -59,7 +59,88 @@
 }
 
 .modal-content section {
-  padding-bottom: 0.5rem 0;
+  padding-bottom: 0.5rem;
+}
+
+/* Session Evaluation Form Styles */
+.feedback-container h1 {
+  color: #e53e3e;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.feedback-container p {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 2rem;
+}
+
+.form-group h3 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+/* Radio Button Alignment Fixes */
+.rating-options {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.rating-options label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.rating-options input[type="radio"] {
+  margin-right: 0.75rem;
+  width: auto;
+  height: 1rem;
+  width: 1rem;
+}
+
+/* Styling for the comment textarea */
+.form-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: #e53e3e;
+  box-shadow: 0 0 0 1px #e53e3e;
+}
+
+/* Submit Button Styling */
+.feedback-container button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  display: block;
+  margin: 2rem auto 0;
+  min-width: 150px;
+}
+
+.feedback-container button[type="submit"]:hover {
+  background-color: #c53030;
 }
 
 .modal-buttons {
@@ -83,7 +164,7 @@
   margin-bottom: 15px;
 }
 
-.form-group input {
+.form-group input:not([type="radio"]) {
   width: 100%;
   padding: 10px;
   border: 1px solid #e2e8f0;
@@ -193,5 +274,13 @@
   
   .yes-btn {
     margin-right: 0;
+  }
+
+  .rating-options {
+    width: 100%;
+  }
+  
+  .modal-content.feedbackform {
+    padding: 2rem;
   }
 }

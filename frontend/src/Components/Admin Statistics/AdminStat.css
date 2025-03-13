@@ -33,23 +33,115 @@
     font-size: 1rem;
     margin-bottom: 20px;
     color: #4a5568;
-    border-bottom: 1px solid #e2e8f0;
+    /* border-bottom: 1px solid #e2e8f0; */
     padding-bottom: 15px;
 }
 
-.stat-content {
+/* Statistics Summary Section */
+.statistics-summary {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto 40px;
+}
+
+.stat-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: calc(25% - 15px);
+    padding: 20px 15px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card h3 {
+    font-size: 1rem;
+    color: #4a5568;
+    margin-bottom: 10px;
+}
+
+.stat-card p {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #e53e3e;
+    margin: 0;
+}
+
+/* Top Users Section */
+.top-users {
+    max-width: 1000px;
+    margin: 0 auto 40px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    text-align: left;
+}
+
+.top-users h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2d3748;
+    margin-bottom: 5px;
+    margin-top: 20px;
+}
+
+.top-users h2:first-child {
+    margin-top: 0;
+}
+
+.top-users p {
+    font-size: 0.9rem;
+    color: #718096;
+    margin-bottom: 10px;
+}
+
+.top-users ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 20px;
+}
+
+.top-users li {
+    padding: 10px 15px;
+    background-color: #f7fafc;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: #4a5568;
+    border-left: 4px solid #e53e3e;
+}
+
+.top-users li:last-child {
+    margin-bottom: 0;
+}
+
+.gen-report-content {
     max-width: 1000px;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
 
 .box-placeholder {
     background-color: transparent;
     color: white;
     margin-bottom: 30px;
+    width: 100%;
     max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
     margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .report-options {
@@ -73,10 +165,19 @@
 
 .tutors-display {
     margin-top: 30px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: space-between;
+    padding: 0 15px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tutors-display h1 {
+    width: 100%;
+    text-align: left;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #2d3748;
 }
 
 .tutors-display h2 {
@@ -85,39 +186,70 @@
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 20px;
+    color: #2d3748;
+}
+
+/* Fix for the tutors-display layout */
+.tutors-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .tutor-card {
     background-color: #fff;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     width: calc(25% - 15px);
     text-align: center;
-    padding: 20px;
+    padding: 25px 15px;
     margin: 0;
     overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 calc(25% - 15px);
+}
+
+.tutor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .tutor-card h3 {
     font-size: 1.2rem;
     margin-bottom: 10px;
+    font-weight: 600;
+    color: #2d3748;
 }
 
 .tutor-card p {
-    font-size: 0.9rem;
-    color: #666;
+    font-size: 0.85rem;
+    color: #718096;
     margin: 5px 0;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    max-width: 100%;
 }
 
 .profile-img {
-    width: 80px;
-    height: 80px;
-    background-color: #ccc;
+    width: 100px;
+    height: 100px;
+    background-color: #e2e8f0;
     border-radius: 50%;
     margin: 0 auto 15px;
+    object-fit: cover;
+    display: block;
+    overflow: hidden;
+}
+
+.profile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* Report generation section */
@@ -146,13 +278,23 @@
     color: white;
     border: none;
     font-weight: 500;
-    margin: 10px auto;
-    width: 100%;
-    max-width: 300px;
-    display: block;
+    margin: 0; /* Remove vertical margins */
+    width: auto; /* Allow buttons to size to content */
+    min-width: 200px; /* Set a minimum width */
     transition: background-color 0.2s, transform 0.1s;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+  }
+
+  .report-generation-section {
+    background-color: #ffffff; /* Light blue color */
+    color:#333;
+    font-size: 1.2rem;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 8px;
+    margin: 20px 0;
+    width: 100%;
+  }
 
 .generate-report-button:hover {
     background-color: #c53030;
@@ -177,8 +319,28 @@
     display: none;
 }
 
+.horizontal-buttons-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 20px 0;
+  }
+
 /* Responsive adjustments */
+@media (max-width: 1200px) {
+    .tutor-card {
+        width: calc(33.33% - 14px);
+    }
+}
+
 @media (max-width: 992px) {
+    .stat-card {
+        width: calc(33.33% - 14px);
+    }
+    
     .tutor-card {
         width: calc(50% - 10px);
     }
@@ -188,9 +350,35 @@
     }
 }
 
+@media (max-width: 768px) {
+    .horizontal-buttons-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .generate-report-button {
+        width: 100%;
+        max-width: 300px;
+        margin: 5px 0;
+      }
+
+    .stat-card {
+        width: calc(50% - 10px);
+    }
+    
+    .tutors-display > div {
+        justify-content: center;
+    }
+}
+
 @media (max-width: 576px) {
+    .stat-card {
+        width: 100%;
+    }
+    
     .tutor-card {
         width: 100%;
+        max-width: 320px;
     }
     
     .header-text h1 {

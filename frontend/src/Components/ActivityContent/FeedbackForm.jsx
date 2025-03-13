@@ -1,95 +1,252 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import "../Modal/Modal.css";
 import ActiveBookings from "./ActiveBookings";
 
-const FeedbackForm = ({userRole, onClose}) => {
-    const [responses, setResponses] = useState({});
-    const [comments, setComments] = useState("");
-    const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+const FeedbackForm = ({ userRole, onClose }) => {
+  const [responses, setResponses] = useState({});
+  const [comments, setComments] = useState("");
+  const [pageNum, setPageNum] = useState(1);
+  const [validationError, setValidationError] = useState("");
 
-    const handleResponseChange = (questionId, value) => {
-        setResponses(prev => ({ ...prev, [questionId]: value }));
-    };
+  useEffect(() => {
+    console.log("Current responses:", responses);
+  }, [responses]);
 
-    const handleCommentChange = (e) => {
-        setComments(e.target.value);
-    };
+  const handleResponseChange = (questionId, value) => {
+    setResponses((prev) => ({ ...prev, [questionId]: value }));
+    if (validationError) {
+      setValidationError("");
+    }
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  const handleCommentChange = (e) => {
+    setComments(e.target.value);
+  };
 
-        const feedbackData = { responses, comments, userRole };
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-        console.log("Feedback Submitted:", feedbackData);
-        
-        onClose();
+    if (!validatePage("webapp")) {
+      return;
+    }
 
-        //no backend yet
-    };
+    const feedbackData = { responses, comments, userRole };
 
-    const questions = userRole === "Tutee" ? [
-        { id: "knowledge", text: "The tutor demonstrated strong knowledge of the subject matter." },
-        { id: "explanations", text: "The tutor explained concepts in a way that was easy to understand." },
-        { id: "patience", text: "The tutor was patient with my questions and learning pace." },
-        { id: "examples", text: "The tutor provided relevant examples that enhanced my understanding." },
-        { id: "environment", text: "The tutor created a positive learning environment." },
-        { id: "needs", text: "My specific learning needs and questions were addressed." },
-        { id: "satisfaction", text: "Overall, I am satisfied with this tutoring session." }
-    ] : [
-        { id: "punctuality", text: "The student arrived on time for the scheduled session." },
-        { id: "engagement", text: "The student actively participated throughout the session." },
-        { id: "progress", text: "We made meaningful progress on the subject material during this session." },
-        { id: "timeManagement", text: "We used our session time effectively." },
-        { id: "sessionSatisfaction", text: "Overall, I am satisfied with how this tutoring session went." }
-    ];
+    console.log("Feedback Submitted:", feedbackData);
 
+    onClose();
 
-    return (
-        <>
-        <div className="modal-overlay">
-            <div className="modal-content feedbackform">
-                <div className="feedback-container">
-                    <h1>Session Evaluation</h1>
-                    <p>Please rate the following aspects of the tutoring session:</p>
-                    <form onSubmit={handleSubmit}>
-                        {questions.map((q) => (
-                            <div key={q.id} className="form-group">
-                                <h3>{q.text}</h3>
-                                <div className="rating-options">
-                                    {[1, 2, 3, 4, 5].map((value) => (
-                                        <label key={value}>
-                                            <input
-                                                type="radio"
-                                                name={q.id}
-                                                value={value}
-                                                onChange={() => handleResponseChange(q.id, value)}
-                                                required
-                                            />
-                                            {["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"][value - 1]}
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
+    //no backend yet
+  };
 
-                        <div className="form-group">
-                            <label>Comments</label>
-                            <textarea
-                                name="comments"
-                                value={comments}
-                                onChange={handleCommentChange}
-                                className="form-textarea"
-                                placeholder="Tell us more about your experience!"
+  const tuteeQuestions = [
+    {
+      id: "knowledge",
+      text: "1. The tutor demonstrated strong knowledge of the subject matter.",
+    },
+    {
+      id: "explanations",
+      text: "2. The tutor explained concepts in a way that was easy to understand.",
+    },
+    {
+      id: "patience",
+      text: "3. The tutor was patient with my questions and learning pace.",
+    },
+    {
+      id: "examples",
+      text: "4. The tutor provided relevant examples that enhanced my understanding.",
+    },
+    {
+      id: "environment",
+      text: "5. The tutor created a positive learning environment.",
+    },
+    {
+      id: "needs",
+      text: "6. My specific learning needs and questions were addressed.",
+    },
+    {
+      id: "satisfaction",
+      text: "7. Overall, I am satisfied with this tutoring session.",
+    },
+  ];
+
+  const tutorQuestions = [
+    {
+      id: "punctuality",
+      text: "1. The student arrived on time for the scheduled session.",
+    },
+    {
+      id: "engagement",
+      text: "2. The student actively participated throughout the session.",
+    },
+    {
+      id: "progress",
+      text: "3. We made meaningful progress on the subject material during this session.",
+    },
+    {
+      id: "timeManagement",
+      text: "4. We used our session time effectively.",
+    },
+    {
+      id: "sessionSatisfaction",
+      text: "5. Overall, I am satisfied with how this tutoring session went.",
+    },
+  ];
+
+  const questions = userRole === "Tutee" ? tuteeQuestions : tutorQuestions;
+
+  const webAppQuestions = [
+    {
+      id: "webapp1",
+      text: "1. The scheduling application was intuitive and easy to navigate.",
+    },
+    {
+      id: "webapp2",
+      text: "2. Booking/scheduling a tutoring session was straightforward.",
+    },
+    {
+      id: "webapp3",
+      text: "3. The calendar feature effectively displayed availability and scheduled sessions.",
+    },
+    {
+      id: "webapp4",
+      text: "4. I received timely reminders and notifications about my sessions.",
+    },
+    {
+      id: "webapp5",
+      text: "5. The process for rescheduling or canceling sessions was convenient.",
+    },
+  ];
+
+  const ratingLabels = [
+    "Strongly Disagree",
+    "Disagree",
+    "Neutral",
+    "Agree",
+    "Strongly Agree",
+  ];
+
+  const validatePage = (questionType) => {
+    let currentQuestions = webAppQuestions;
+    if (questionType === "user") {
+      currentQuestions = questions;
+    } else {
+      currentQuestions = webAppQuestions;
+    }
+
+    const unansweredQuestions = currentQuestions.filter(
+      (q) => !responses[q.id]
+    );
+    if (unansweredQuestions.length > 0) {
+      setValidationError("Please answer all questions before submitting.");
+      return false;
+    }
+
+    setValidationError("");
+    return true;
+  };
+
+  const handleNextClick = () => {
+    if (validatePage("user")) {
+      setPageNum(pageNum + 1);
+    }
+  };
+
+  return (
+    <>
+      <div className="modal-overlay">
+        <div className="modal-content feedbackform">
+          <div className="feedback-container">
+            <h1>Session Evaluation</h1>
+            <p>Please rate the following aspects of the tutoring session:</p>
+            <form onSubmit={handleSubmit}>
+              {pageNum === 1 && (
+                <div className="form-group">
+                  {questions.map((q) => (
+                    <div key={q.id} className="form-group">
+                      <h3>{q.text}</h3>
+                      <div className="rating-options">
+                        {ratingLabels.map((label, index) => (
+                          <label key={index}>
+                            <input
+                              type="radio"
+                              name={q.id}
+                              value={index + 1}
+                              checked={responses[q.id] === index + 1}
+                              onChange={() =>
+                                handleResponseChange(q.id, index + 1)
+                              }
                             />
-                        </div>
-
-                        <button type="submit">Submit</button>
-                    </form>
+                            {label}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  {validationError && (
+                    <div className="error-message">{validationError}</div>
+                  )}
+                  <button type="button" onClick={handleNextClick}>
+                    Next
+                  </button>
                 </div>
-            </div>
+              )}
+
+              {pageNum === 2 && (
+                <div className="form-group">
+                  {webAppQuestions.map((q) => (
+                    <div key={q.id} className="form-group">
+                      <h3>{q.text}</h3>
+                      <div className="rating-options">
+                        {ratingLabels.map((label, index) => (
+                          <label key={index}>
+                            <input
+                              type="radio"
+                              name={q.id}
+                              value={index + 1}
+                              checked={responses[q.id] === index + 1}
+                              onChange={() =>
+                                handleResponseChange(q.id, index + 1)
+                              }
+                            />
+                            {label}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  <div className="form-group">
+                    <label>Comments</label>
+                    <textarea
+                      name="comments"
+                      value={comments}
+                      onChange={handleCommentChange}
+                      className="form-textarea"
+                      placeholder="Tell us more about your experience!"
+                    />
+                  </div>
+
+                  {validationError && (
+                    <div className="error-message">{validationError}</div>
+                  )}
+
+                  <div className="button-group">
+                    <button
+                      type="button"
+                      onClick={() => setPageNum(pageNum - 1)}
+                    >
+                      Previous
+                    </button>
+                    <button type="submit">Submit</button>
+                  </div>
+                </div>
+              )}
+            </form>
+          </div>
         </div>
-        </>
-    )
+      </div>
+    </>
+  );
 };
 
 export default FeedbackForm;

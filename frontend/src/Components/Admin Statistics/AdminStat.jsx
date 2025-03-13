@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./AdminStat.css";
 import PerformanceCard from "./PerformanceCard";
+import GenerateReport from "./GenerateReport";
 import { supabase } from "../../supabaseClient";
 import AdminNav from "../Nav/AdminNav";
 
@@ -71,14 +72,23 @@ const AdminStat = () => {
           acceptedData,
           completedData,
           cancelledData,
-          rejectedData
+          rejectedData,
         ] = await Promise.all([
           supabase.from("bookings").select("*"),
           supabase.from("bookings").select("*").eq("status", "pending"),
           supabase.from("bookings").select("*").eq("status", "accepted"),
-          supabase.from("bookings_history").select("*").eq("status", "completed"),
-          supabase.from("bookings_history").select("*").eq("status", "cancelled"),
-          supabase.from("bookings_history").select("*").eq("status", "rejected")
+          supabase
+            .from("bookings_history")
+            .select("*")
+            .eq("status", "completed"),
+          supabase
+            .from("bookings_history")
+            .select("*")
+            .eq("status", "cancelled"),
+          supabase
+            .from("bookings_history")
+            .select("*")
+            .eq("status", "rejected"),
         ]);
 
         setTotalBookings(totalBookingsData.data.length);
@@ -101,29 +111,28 @@ const AdminStat = () => {
       console.log("📊 Fetching Top Tutors & Tutees...");
 
       try {
-        const [
-          topTutorsData,
-          topTuteesData
-        ] = await Promise.all([
-          supabase
-            .from("bookings_history")
-            .select("tutor_id, COUNT(*)")
-            .eq("status", "completed")
-            .group("tutor_id")
-            .order("count", { ascending: false })
-            .limit(3),
+        // Fetch top tutors
+        const { data: topTutorsData, error: tutorError } = await supabase.rpc(
+          "get_top_tutors"
+        );
+        // Fetch top tutees
+        const { data: topTuteesData, error: tuteeError } = await supabase.rpc(
+          "get_top_tutees"
+        );
 
-          supabase
-            .from("bookings_history")
-            .select("tutee_id, COUNT(*)")
-            .eq("status", "completed")
-            .group("tutee_id")
-            .order("count", { ascending: false })
-            .limit(3)
-        ]);
+        if (tutorError) {
+          console.error("❌ Error fetching top tutors:", tutorError);
+        } else {
+          console.log("✅ Top Tutors Data:", topTutorsData);
+          setTopTutors(topTutorsData);
+        }
 
-        setTopTutors(topTutorsData.data);
-        setTopTutees(topTuteesData.data);
+        if (tuteeError) {
+          console.error("❌ Error fetching top tutees:", tuteeError);
+        } else {
+          console.log("✅ Top Tutees Data:", topTuteesData);
+          setTopTutees(topTuteesData);
+        }
       } catch (error) {
         console.error("❌ Error fetching top tutors & tutees:", error);
       }
@@ -156,6 +165,21 @@ const AdminStat = () => {
               In Statistics, you can monitor activities, track performance
               metrics, and generate reports.
             </p>
+          </div>
+        </div>
+
+        <div className="gen-report-content">
+          <div className="box-placeholder">
+            {
+              <GenerateReport />
+              //will add generation of report here
+            }
+          </div>
+          {/* Section divider for visual separation */}
+
+          <div className="tutors-display">
+            <h1 className="">Instructors</h1>
+            <PerformanceCard tutorList={tutorList} />
           </div>
         </div>
 
@@ -197,27 +221,53 @@ const AdminStat = () => {
         {/* 🔹 Top Active Users */}
         <div className="top-users">
           <h2>Top Active Tutors</h2>
-          <p>Based on number of completed bookings.</p>
+          <p>Based on the number of completed bookings.</p>
           <ul>
             {topTutors.length > 0 ? (
-              topTutors.map((tutor, index) => <li key={index}>Tutor ID: {tutor.tutor_id} - {tutor.count} Sessions</li>)
+              topTutors.map((tutor, index) => {
+                // Find the tutor in the tutorList using tutor_id
+                const tutorInfo = tutorList.find(
+                  (t) => t.id === tutor.tutor_id
+                );
+                return (
+                  <li key={index}>
+                    {tutorInfo
+                      ? `${tutorInfo.first_name} ${tutorInfo.last_name}`
+                      : `Tutor ID: ${tutor.tutor_id}`}
+                    - {tutor.total_bookings || tutor.count} Sessions
+                  </li>
+                );
+              })
             ) : (
               <li>No active tutors found.</li>
             )}
           </ul>
 
           <h2>Top Active Tutees</h2>
-          <p>Based on number of completed bookings.</p>
+          <p>Based on the number of completed bookings.</p>
           <ul>
             {topTutees.length > 0 ? (
-              topTutees.map((tutee, index) => <li key={index}>Tutee ID: {tutee.tutee_id} - {tutee.count} Sessions</li>)
+              topTutees.map((tutee, index) => {
+                // Find the tutee in the tuteeList using tutee_id
+                const tuteeInfo = tuteeList.find(
+                  (t) => t.id === tutee.tutee_id
+                );
+                return (
+                  <li key={index}>
+                    {tuteeInfo
+                      ? `${tuteeInfo.first_name} ${tuteeInfo.last_name}`
+                      : `Tutee ID: ${tutee.tutee_id}`}
+                    - {tutee.total_bookings || tutee.count} Sessions
+                  </li>
+                );
+              })
             ) : (
               <li>No active tutees found.</li>
             )}
           </ul>
         </div>
 
-        <div className="stat-content">
+        <div className="">
           <div className="tutors-display">
             <h2>Tutors</h2>
             {tutorList.map((tutor) => (

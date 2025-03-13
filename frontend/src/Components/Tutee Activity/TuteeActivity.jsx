@@ -13,9 +13,25 @@ const TuteeActivity = () => {
         <div className="tutee-activity">
           <div className="activity-content">
             {/* ActiveBookings component */}
-            <ActiveBookings feedbackBool={false} />
-            <Waitlist_ForTutee />
-            <BookingHistory />
+            <div className="activity-section">
+              <ActiveBookings feedbackBool={false} />
+            </div>
+
+            {/* Optional visual separator */}
+            <div className="component-separator"></div>
+
+            {/* Waitlist component */}
+            <div className="activity-section">
+              <Waitlist_ForTutee />
+            </div>
+
+            {/* Optional visual separator */}
+            <div className="component-separator"></div>
+
+            {/* Booking History component */}
+            <div className="activity-section">
+              <BookingHistory />
+            </div>
           </div>
         </div>
       </main>

@@ -55,12 +55,12 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
         </button>
       </div>
 
-      <div className="sidebar-footer">
+      {/* <div className="sidebar-footer">
         <button onClick={handleLogout} className="sidebar-logout">
-          <i className="menu-icon">🚪</i>
+          <p className="menu-icon">🚪</p>
           <span>Logout</span>
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

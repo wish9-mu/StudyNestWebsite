@@ -22,9 +22,9 @@
 
 .wrapper {
   display: flex;
-  justify-content: center; /* Center items horizontally */
+  justify-content: space-between; /* Changed to space-between for better responsiveness */
   align-items: center;
-  gap: 2rem; /* Add gap between items */
+  gap: 1rem; /* Reduced gap for mobile */
 }
 
 .dropdown-item {
@@ -32,6 +32,26 @@
   text-decoration: none;
   display: block;
   width: 100%;
+  padding: 0.5rem 1rem;
+  border: none;
+  text-align: left;
+  background: none;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-width: 150px;
+  z-index: 1001;
 }
 
 .logo {
@@ -50,6 +70,7 @@
 .nav-link {
   text-decoration: none;
   color: #fff;
+  font-weight: 500;
 }
 
 .nav-link:hover {
@@ -57,16 +78,27 @@
 }
 
 .btnlog {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   text-decoration: none;
   color: #1b1b1b;
   padding: 0.5rem 1.5rem;
   background-color: rgba(255, 255, 255);
   border-radius: 25px;
+  border: none;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btnlog:hover {
   background-color: #ffee00;
+}
+
+.user-image {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
 }
 
 .mobile-menu-button {
@@ -75,16 +107,38 @@
   border: none;
   cursor: pointer;
   color: #fff;
+  padding: 0.5rem;
 }
 
 .mobile-menu {
   display: none;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #ca0000;
+  margin-top: 0.5rem;
+  border-radius: 4px;
 }
 
 .mobile-link {
   text-decoration: none;
   color: #fff;
   font-size: 1.1rem;
+  padding: 0.5rem 0;
+}
+
+.mobile-logout-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  text-align: left;
+  padding: 0.5rem 0;
+  cursor: pointer;
+}
+
+.mobile-logout-btn:hover {
+  color: #ffee00;
 }
 
 /* Media Queries */
@@ -93,15 +147,25 @@
     display: none;
   }
 
+  .profile-dropdown {
+    display: none;
+  }
+
   .mobile-menu-button {
     display: block;
+    order: 3; /* Push button to the right */
   }
 
   .mobile-menu {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-    background-color: #ca0000;
+  }
+
+  .wrapper {
+    justify-content: space-between;
+  }
+  
+  /* Logo stays on left, hamburger on right */
+  .logo {
+    order: 1;
   }
 }

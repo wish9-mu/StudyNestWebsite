@@ -1,7 +1,10 @@
 // Sidebar.jsx
-import React from "react";
+
 import "../Tutee Profile/TuteeSidebar.css";
 import logo from "../../assets/StudyNest_Colored.png";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
 
 const handleLogout = async () => {
   const { error } = await supabase.auth.signOut();
@@ -55,12 +58,12 @@ const TutorSidebar = ({ activeTab, setActiveTab }) => {
         </button>
       </div>
 
-      <div className="sidebar-footer">
+      {/* <div className="sidebar-footer">
         <button onClick={handleLogout} className="sidebar-logout">
           <i className="menu-icon">🚪</i>
           <span>Logout</span>
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -21,18 +21,28 @@
   width: 350px;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
   position: relative;
-}
+  overflow: hidden; /* Hide overflow for the header bar */
+} 
 
-/* Close Button */
+/* Close Button - Updated positioning */
 .close-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
+  top: 0;
+  right: 0;
+  background: #ff0000b2; /* Red background color matching your app theme */
+  color: white; /* White X color */
   border: none;
-  font-size: 18px;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
 }
+
+
 
 /* Profile Image */
 .profile-header {

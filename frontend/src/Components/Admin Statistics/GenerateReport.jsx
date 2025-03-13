@@ -160,20 +160,18 @@ const GenerateReport = () => {
   }, [triggerDownload, csvData]);
 
   return (
-    <>
+    <div className="report-generation-section">
       <div>
-        {/*<small>Click a tutor to access their Performance Metrics</small>*/}
         <h2>Generate Report</h2>
         <small>Generate summarized reports below.</small>
-        {error && <p>{error}</p>}
+        {error && <p style={{ color: "#e53e3e" }}>{error}</p>}
       </div>
-      <div>
+      <div className="horizontal-buttons-container">
         <button
           className="generate-report-button"
           onClick={() => generateReport("profiles")}
           disabled={loading.profiles}
         >
-          {" "}
           {loading.profiles ? "Generating..." : "Generate Users Report"}
         </button>
         <button
@@ -192,7 +190,6 @@ const GenerateReport = () => {
             ? "Generating..."
             : "Generate Archived Bookings Report"}
         </button>
-        {/*<small>Click to generate performance rating report.</small>*/}
       </div>
 
       <CSVLink
@@ -203,7 +200,7 @@ const GenerateReport = () => {
         className="hidden"
         target="_blank"
       />
-    </>
+    </div>
   );
 };
 

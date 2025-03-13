@@ -22,13 +22,12 @@ body {
   max-width: 500px;
 }
 
-h1 {
+.h1 {
   color: #dc2626;
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
-  font-weight: bold;
+
 }
+
+
 
 .form-row {
   display: grid;
@@ -38,7 +37,63 @@ h1 {
 }
 
 .form-group {
+  
   margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column; /* Keeps label and options stacked */
+}
+
+
+
+label {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center-aligns both the text and the radio button */
+  text-align: center; /* Ensures the text itself is centered */
+  gap: 5px; /* Adds spacing between the radio button and the text */
+  font-weight: bold;
+}
+
+
+.form-group small {
+  display: flex;
+  align-items: flex-start; /* Ensures checkbox aligns with the first line of text */
+  gap: 8px; /* Adds spacing between checkbox and text */
+}
+
+.form-group input[type="checkbox"] {
+  margin-top: 2px; /* Adjusts checkbox position slightly */
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Keeps checkbox close to text */
+  max-width: 100%; /* Prevents unnecessary wrapping */
+}
+
+.checkbox-container small {
+  display: inline-block;
+  white-space: normal; /* Ensures text flows naturally */
+  flex: 1; /* Allows text to take up remaining space */
+  
+}
+
+.checkbox-container input[type="checkbox"] {
+  margin: 0; /* Removes default margin */
+  width: 16px; /* Ensures a consistent size */
+  height: 16px;
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  accent-color: red; /* Change to any color you want */
+}
+
+.role-options {
+  display: flex;
+  gap: 15px; /* Adjusts spacing between radio buttons */
+  align-items: center;
 }
 
 .mobile-con {
