@@ -1,8 +1,13 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import { AuthProvider, useAuth } from "./Components/Login/AuthContext";
 import ProtectedRoute from "./Components/Login/ProtectedRoute";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 // Components import
@@ -97,16 +102,34 @@ const AppRoutes = () => {
   );
 };
 
+const FooterWithRouteCheck = () => {
+  const location = useLocation();
+  const noFooterPaths = [
+    "/login",
+    "/register",
+    "/forgotpassword",
+    "/tuteeprofile",
+    "/tutorprofile",
+  ];
+
+  if (noFooterPaths.some((path) => location.pathname === path)) {
+    return null;
+  }
+
+  return <footer>© StudyNest 2025. All Rights Reserved.</footer>;
+};
+
 const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <div>
-          <AppRoutes />
+        <div className="app-container">
+          <div className="content">
+            <AppRoutes />
+          </div>
+          <FooterWithRouteCheck />
         </div>
       </Router>
-
-      <footer>© StudyNest 2025. All Rights Reserved.</footer>
     </AuthProvider>
   );
 };

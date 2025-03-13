@@ -73,19 +73,27 @@ const Notifications = ({ userId }) => {
 
   return (
     <div className="notifications-container">
-      <button className="notifications-button" onClick={() => setDropdownOpen(!dropdownOpen)}>
-        🔔 {notifications.length > 0 && <span className="notif-count">{notifications.length}</span>}
+      <button
+        className="notifications-button"
+        onClick={() => setDropdownOpen(!dropdownOpen)}
+      >
+        🔔{" "}
+        {notifications.length > 0 && (
+          <span className="notif-count">{notifications.length}</span>
+        )}
       </button>
 
       {dropdownOpen && (
         <div className="notifications-dropdown">
-          {
-            notifications.map((note) => (
-              <div key={note.id} className="notification-item" onClick={() => markAsRead(note.id)}>
-                <p>{note.message}</p>
-              </div>
-            ))
-        }
+          {notifications.map((note) => (
+            <div
+              key={note.id}
+              className="notification-item"
+              onClick={() => markAsRead(note.id)}
+            >
+              <p>{note.message}</p>
+            </div>
+          ))}
         </div>
       )}
     </div>

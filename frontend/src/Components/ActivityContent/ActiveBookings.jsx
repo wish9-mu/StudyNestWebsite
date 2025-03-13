@@ -2,12 +2,16 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import "./TuteeWaitlist.css";
 import TuteeNav from "../Nav/TuteeNav";
+import FeedbackForm from "./FeedbackForm";
 
-const ActiveBookings = () => {
+const ActiveBookings = ({ feedbackBool }) => {
   const [userId, setUserId] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [courses, setCourses] = useState({});
   const [activeBookings, setActiveBookings] = useState([]);
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [bookingStat, setBookingStat] = useState("");
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
 
   // 🔹 Fetch User ID
   useEffect(() => {
@@ -119,13 +123,20 @@ const ActiveBookings = () => {
     const formattedBookings = bookings.map((booking) => ({
       id: booking.id,
       name: courses[booking.course_code] || booking.course_code,
-      participant: `With: ${participantMap[booking.tutor_id] || participantMap[booking.tutee_id] || "Unknown"}`,
+      participant: `With: ${
+        participantMap[booking.tutor_id] ||
+        participantMap[booking.tutee_id] ||
+        "Unknown"
+      }`,
       date: booking.session_date,
       day: new Date(booking.session_date).toLocaleDateString("en-us", {
         weekday: "long",
       }),
-      time: `${formatTime(booking.start_time)} - ${formatTime(booking.end_time)}`,
+      time: `${formatTime(booking.start_time)} - ${formatTime(
+        booking.end_time
+      )}`,
       notes: booking.notes || "No additional notes.",
+      status: booking.status,
     }));
 
     console.log("📌 Formatted bookings:", formattedBookings);
@@ -146,51 +157,64 @@ const ActiveBookings = () => {
   }, [userId, userRole, courses]);
 
   // 🔹 Listen for real-time updates
-    useEffect(() => {
-      const subscription = supabase
-        .channel("bookings")
-        .on(
-          "postgres_changes",
-          { event: "UPDATE", schema: "public", table: "bookings" },
-          (payload) => {
-            console.log("🔄 [Active] Booking status updated:", payload.new);
-  
-            const updatedBooking = payload.new;
-  
-            if (updatedBooking.status === "accepted") {
-              // ✅ Add to active bookings if it was just accepted
-              setActiveBookings((prevBookings) => {
-                const alreadyExists = prevBookings.some((b) => b.id === updatedBooking.id);
-                if (alreadyExists) return prevBookings; // Avoid duplicates
-  
-                return [...prevBookings, {
+  useEffect(() => {
+    const subscription = supabase
+      .channel("bookings")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "bookings" },
+        (payload) => {
+          console.log("🔄 [Active] Booking status updated:", payload.new);
+
+          const updatedBooking = payload.new;
+
+          if (updatedBooking.status === "accepted") {
+            // ✅ Add to active bookings if it was just accepted
+            setActiveBookings((prevBookings) => {
+              const alreadyExists = prevBookings.some(
+                (b) => b.id === updatedBooking.id
+              );
+              if (alreadyExists) return prevBookings; // Avoid duplicates
+
+              return [
+                ...prevBookings,
+                {
                   id: updatedBooking.id,
-                  name: courses[updatedBooking.course_code] || updatedBooking.course_code,
+                  name:
+                    courses[updatedBooking.course_code] ||
+                    updatedBooking.course_code,
                   participant: "Fetching...", // Will be updated later
                   date: updatedBooking.session_date,
-                  day: new Date(updatedBooking.session_date).toLocaleDateString("en-us", {
-                    weekday: "long",
-                  }),
-                  time: `${formatTime(updatedBooking.start_time)} - ${formatTime(updatedBooking.end_time)}`,
+                  day: new Date(updatedBooking.session_date).toLocaleDateString(
+                    "en-us",
+                    {
+                      weekday: "long",
+                    }
+                  ),
+                  time: `${formatTime(
+                    updatedBooking.start_time
+                  )} - ${formatTime(updatedBooking.end_time)}`,
                   notes: updatedBooking.notes || "No additional notes.",
-                }];
-              });
-            } 
-            else if (updatedBooking.status === "cancelled" || updatedBooking.status === "completed") {
-              // ❌ Remove from active bookings if status is now cancelled or completed
-              setActiveBookings((prevBookings) =>
-                prevBookings.filter((booking) => booking.id !== updatedBooking.id)
-              );
-            }
+                },
+              ];
+            });
+          } else if (
+            updatedBooking.status === "cancelled" ||
+            updatedBooking.status === "completed"
+          ) {
+            // ❌ Remove from active bookings if status is now cancelled or completed
+            setActiveBookings((prevBookings) =>
+              prevBookings.filter((booking) => booking.id !== updatedBooking.id)
+            );
           }
-        )
-        .subscribe();
-  
-      return () => {
-        supabase.removeChannel(subscription);
-      };
-    }, [courses]);
-  
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }, [courses]);
 
   // 🔹 Handle Cancel Booking
   const handleCancelBooking = async (bookingId) => {
@@ -223,6 +247,44 @@ const ActiveBookings = () => {
     }
   };
 
+  useEffect(() => {
+    if (activeBookings.length > 0) {
+      setBookingStat(
+        activeBookings.find((b) => b.status === "accepted")?.status || ""
+      );
+    }
+  }, [activeBookings]);
+
+  const markAsCompleted = async (bookingId) => {
+    const { error } = await supabase
+      .from("bookings")
+      .update({ status: "completed" })
+      .eq("id", bookingId);
+
+    if (error) {
+      console.error("❌ Error updating booking status:", error);
+    } else {
+      console.log(`✅ Booking ${bookingId} marked as completed`);
+
+      fetchActiveBookings();
+    }
+  };
+
+  const handleCompleteSession = (bookingId) => {
+    setSelectedBookingId(bookingId);
+    setShowFeedbackForm(true);
+    console.log("✅ Feedback Form Active.");
+  };
+
+  const handleCloseFeedback = async () => {
+    if (selectedBookingId) {
+      await markAsCompleted(selectedBookingId);
+    }
+    setShowFeedbackForm(false);
+    setSelectedBookingId(null);
+    console.log("✅ Feedback Form Closed.");
+  };
+
   return (
     <>
       <div className="content-wrapper">
@@ -232,15 +294,18 @@ const ActiveBookings = () => {
               <h1>Active Bookings</h1>
             </div>
             <div className="header-info">
-              <p>Here in Active Bookings, you can find your ongoing booked sessions.</p>
+              <p>
+                Here in Active Bookings, you can find your ongoing booked
+                sessions.
+              </p>
             </div>
           </div>
 
           <div className="waitlist-content">
             {activeBookings.length === 0 ? (
               <div className="empty-waitlist">
-                <h3>You don't have any archived bookings.</h3>
-                <p>When you finish or cancel a session, it will appear here.</p>
+                <h3>You don't have any active bookings.</h3>
+                <p>When you have a pending session, it will appear here.</p>
               </div>
             ) : (
               activeBookings.map((booking) => (
@@ -249,16 +314,33 @@ const ActiveBookings = () => {
                     <h2>{booking.name}</h2>
                     <p>{booking.participant}</p>
                     <p>Notes: {booking.notes}</p>
-                  </div>  
+                  </div>
                   <div className="align-right-content">
-                    <p>{booking.date} | {booking.day}</p>
+                    <p>
+                      {booking.date} | {booking.day}
+                    </p>
                     <p>{booking.time}</p>
-                    <button onClick={() => handleCancelBooking(booking.id)}>Cancel Booking</button>
+                    <button
+                      onClick={() => {
+                        handleCancelBooking(booking.id);
+                      }}
+                    >
+                      Cancel Booking
+                    </button>
+
+                    {userRole === "tutee" && bookingStat === "accepted" && (
+                      <button onClick={() => handleCompleteSession(booking.id)}>
+                        Mark as Completed
+                      </button>
+                    )}
                   </div>
                 </div>
               ))
             )}
           </div>
+          {showFeedbackForm && (
+            <FeedbackForm userRole={userRole} onClose={handleCloseFeedback} />
+          )}
         </div>
       </div>
     </>

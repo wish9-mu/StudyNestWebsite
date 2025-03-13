@@ -17,18 +17,15 @@ const TutorHome = () => {
           shoes.
         </p>
 
-        <div className="features-grid">
-          <div className="feature-card">
-            <h3>Your Schedule</h3>
-            <p>Manage your tutoring availability and upcoming sessions.</p>
+        <div className="tutor-home-boxes">
+          <div className="box-container">
+            <div className="tutor-box box-1"></div>
           </div>
-          <div className="feature-card">
-            <h3>Active Sessions</h3>
-            <p>View and manage your current tutoring sessions.</p>
+          <div className="box-container">
+            <div className="tutor-box box-2"></div>
           </div>
-          <div className="feature-card">
-            <h3>Student Requests</h3>
-            <p>Check pending tutoring requests from students.</p>
+          <div className="box-container">
+            <div className="tutor-box box-3"></div>
           </div>
         </div>
       </main>

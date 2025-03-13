@@ -11,28 +11,38 @@ const Nav = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const titleSection = document.querySelector(".title");
-      if (titleSection) {
-        const titlePosition = titleSection.getBoundingClientRect().top;
-        setNavBackground(titlePosition <= 0);
-      } else {
-        // If .title section doesn't exist, set navBackground to true
-        setNavBackground(true);
+      if (location.pathname === "/") {
+        const titleSection = document.querySelector(".title");
+        if (titleSection) {
+          const titlePosition = titleSection.getBoundingClientRect().top;
+          setNavBackground(titlePosition <= 0);
+        } else {
+          // Fall back to basic scroll position if .title doesn't exist
+          setNavBackground(window.scrollY > 80);
+        }
       }
     };
 
-    // If the current route is not the home page, force red background
+    // Set initial state based on route
     if (location.pathname !== "/") {
+      // For non-home pages, always have background
       setNavBackground(true);
     } else {
-      // If on the home page, handle scroll logic
+      // For homepage, start with no background
+      setNavBackground(false);
+
+      // Add scroll listener for homepage only
       window.addEventListener("scroll", handleScroll);
-      handleScroll(); // Call once to set initial state
+
+      // Check initial scroll position after a small delay to ensure DOM is ready
+      setTimeout(handleScroll, 100);
     }
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Cleanup function
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, [location]); // Re-run effect when location changes
-
   return (
     <nav className={`nav ${navBackground ? "nav-colored" : ""}`}>
       <div className="container">

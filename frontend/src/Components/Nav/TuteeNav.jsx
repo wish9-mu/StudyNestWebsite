@@ -65,11 +65,6 @@ const TuteeNav = () => {
                 Activity
               </Link>
             </li>
-            <li>
-              <Link to="/tuteewaitlist" className="nav-link">
-                Waitlist
-              </Link>
-            </li>
           </ul>
           <div className="nav-right">
             {/* Notifications */}
@@ -83,9 +78,12 @@ const TuteeNav = () => {
               </button>
               {dropdownOpen && (
                 <div className="dropdown-menu">
-                  <Link to="/tuteeprofile" className="dropdown-item">
+                  <button
+                    onClick={() => navigate("/TuteeProfile")}
+                    className="dropdown-item"
+                  >
                     Profile
-                  </Link>
+                  </button>
                   <button
                     onClick={handleLogout}
                     className="dropdown-item logout-btn"

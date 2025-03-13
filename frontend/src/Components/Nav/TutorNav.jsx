@@ -15,27 +15,27 @@ const TutorNav = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-      const { error } = await supabase.auth.signOut();
-      if (error) console.error("Log out error:", error);
-      else {
-        setUser(null);
-        navigate("/login");
-      }
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error("Log out error:", error);
+    else {
+      setUser(null);
+      navigate("/login");
     }
+  };
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   // Get the user ID
   useEffect(() => {
-    if (!user?.email) return;  // Ensure `user.email` exists before fetching
-  
+    if (!user?.email) return; // Ensure `user.email` exists before fetching
+
     const fetchUser = async () => {
       const { data, error } = await supabase
         .from("profiles")
         .select("id")
         .eq("email", user.email)
         .single();
-  
+
       if (error) {
         console.error("Error fetching user:", error);
       } else {
@@ -43,11 +43,10 @@ const TutorNav = () => {
         setUserName(data.first_name + " " + data.last_name);
       }
     };
-  
+
     fetchUser();
   }, [user]); // Depend on `user`
-  
-  
+
   return (
     <nav className="nav nav-colored">
       <div className="container">
@@ -89,10 +88,16 @@ const TutorNav = () => {
               </button>
               {dropdownOpen && (
                 <div className="dropdown-menu">
-                  <Link to="/TutorProfile" className="dropdown-item">
+                  <button
+                    onClick={() => navigate("/TutorProfile")}
+                    className="dropdown-item"
+                  >
                     Profile
-                  </Link>
-                  <button onClick={handleLogout} className="dropdown-item logout-btn">
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="dropdown-item logout-btn"
+                  >
                     Logout
                   </button>
                 </div>

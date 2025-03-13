@@ -11,14 +11,12 @@ const TuteeActivity = () => {
       <TuteeNav />
       <main className="content-wrap">
         <div className="tutee-activity">
-
           <div className="activity-content">
             {/* ActiveBookings component */}
-            <ActiveBookings />
+            <ActiveBookings feedbackBool={false} />
             <Waitlist_ForTutee />
             <BookingHistory />
           </div>
-          
         </div>
       </main>
       {/* Footer is rendered elsewhere in your app structure */}

@@ -51,9 +51,11 @@ const AdminNav = () => {
             </button>
             {dropdownOpen && (
               <div className="dropdown-menu">
-                <Link to="/adminprofile" className="dropdown-item">
-                  Profile
-                </Link>
+                <button className="button-class">
+                  <Link to="/adminprofile" className="dropdown-item">
+                    Profile
+                  </Link>
+                </button>
                 <button
                   onClick={handleLogout}
                   className="dropdown-item logout-btn"

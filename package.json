@@ -3,6 +3,7 @@
     "@supabase/supabase-js": "^2.49.1",
     "dotenv": "^16.4.7",
     "lucide-react": "^0.475.0",
+    "nodemon": "^3.1.9",
     "papaparse": "^5.5.2",
     "prop-types": "^15.8.1",
     "react-csv": "^2.2.2",

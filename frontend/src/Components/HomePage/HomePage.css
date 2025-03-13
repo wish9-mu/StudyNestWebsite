@@ -49,7 +49,7 @@ p {
   align-items: center;
   gap: 40px;
   padding: 60px 100px;
-  background-color: #f8f8f8;
+  background-color: #ffffff;
 }
 
 .banner-content {
@@ -60,8 +60,12 @@ p {
   font-size: 50px;
   font-weight: 700;
   margin-bottom: 20px;
-  color: #333;
+  color: #ffd000;
   line-height: 1.2;
+}
+
+.banner-content h2 {
+  color: #ca0000;
 }
 
 .banner-content p {
@@ -348,5 +352,109 @@ p {
   
   .banner-content h1 {
     font-size: 28px;
+  }
+}
+
+/* Banner2 Section Styles */
+.banner2-section {
+  padding: 80px 0;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.banner2-content {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.banner2-text {
+  flex: 1;
+}
+
+.main-title {
+  font-size: 42px;
+  font-weight: 700;
+  color: #e13939;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.main-title span {
+  display: block;
+}
+
+.description {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 40px;
+}
+
+.cta-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #e13939;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.cta-text {
+  font-size: 20px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.get-started-btn {
+  background-color: #e13939;
+  color: white;
+  border: none;
+  padding: 15px 0;
+  width: 100%;
+  max-width: 400px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 auto;  /* Center the button */
+  display: block;  /* Make button a block element to use margin auto */
+}
+
+.get-started-btn:hover {
+  background-color: #c23030;
+}
+
+.banner2-image {
+  flex: 1;
+}
+
+.banner2-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .banner2-content {
+    flex-direction: column;
+  }
+  
+  .banner2-text {
+    text-align: center;
+    margin-bottom: 40px;
+    text-align: center;  /* Center the text content */
+  max-width: 600px;   
+  }
+  
+  .get-started-btn {
+    margin: 0 auto;
   }
 }

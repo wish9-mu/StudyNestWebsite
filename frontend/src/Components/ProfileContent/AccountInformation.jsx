@@ -99,6 +99,7 @@ const AccountInformation = () => {
 
   // Handle Profile Picture Upload
   const handleUpload = async (event) => {
+    console.log("📁 Uploading file...");
     setUploading(true);
     const file = event.target.files[0];
 
@@ -212,7 +213,11 @@ const AccountInformation = () => {
             style={{ display: "none" }}
             id="fileInput"
           />
-          <button htmlFor="fileInput" className="upload-button">
+          <button
+            onClick={() => document.getElementById("fileInput").click()}
+            disabled={uploading}
+            className="upload-button"
+          >
             {uploading ? "Uploading..." : "Change Picture"}
           </button>
           {userData.profile_picture && (
@@ -221,7 +226,7 @@ const AccountInformation = () => {
               disabled={uploading}
               className="remove-button"
             >
-              Change Picture
+              Remove Picture
             </button>
           )}
         </div>

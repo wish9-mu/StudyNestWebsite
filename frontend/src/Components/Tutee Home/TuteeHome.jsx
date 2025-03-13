@@ -23,22 +23,13 @@ const TuteeHome = () => {
           </p>
           <div className="tutee-home-boxes">
             <div className="box-container">
-              <div
-                className="tutee-box box-1"
-                onClick={() => handleBoxClick(1)}
-              ></div>
+              <div className="tutee-box box-1"></div>
             </div>
             <div className="box-container">
-              <div
-                className="tutee-box box-2"
-                onClick={() => handleBoxClick(2)}
-              ></div>
+              <div className="tutee-box box-2"></div>
             </div>
             <div className="box-container">
-              <div
-                className="tutee-box box-3"
-                onClick={() => handleBoxClick(3)}
-              ></div>
+              <div className="tutee-box box-3"></div>
             </div>
           </div>
         </div>

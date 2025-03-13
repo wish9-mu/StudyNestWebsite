@@ -6,7 +6,7 @@ import BookingPreferences from "../ProfileContent/BookingPreferences_Tutor";
 import SignInSecurity from "../ProfileContent/SignInSecurity";
 import AvailabilitySchedule from "../ProfileContent/AvailabilitySchedule";
 import ClassSchedule from "../ProfileContent/ClassSchedule";
-import Sidebar from "../Tutee Profile/TuteeSidebar";
+import TutorSidebar from "./TutorSidebar";
 import "./TutorProfile.css";
 
 const TutorProfile = () => {
@@ -17,7 +17,7 @@ const TutorProfile = () => {
       <TutorNav />
 
       <div className="profile-layout">
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <TutorSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
         <div className="tutor-profile-content">
           <div className="profile-sections">

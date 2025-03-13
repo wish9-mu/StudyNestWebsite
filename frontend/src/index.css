@@ -1,5 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+}
+
+footer {
+  width: 100%;
+  background-color: #b30000; /* Matching your red theme */
+  color: white;
+  text-align: center;
+  padding: 15px 0;
+}
+
 :root {
   --red: #e53e3e;; 
   --yellow: rgb(255, 187, 0); 
@@ -13,6 +37,7 @@
   box-sizing: border-box;
   font-family: "Outfit", serif;
 }
+
 
 body{
   background: #f4f4f4;
@@ -86,19 +111,6 @@ a{
 .btn:hover{
   background: #ffee00;
   transition: ease 0.5s;
-}
-
-footer {
-  background-color: var(--red2); /* Light gray background */
-  color: #ffffff; /* Dark gray text color */
-  text-align: center; /* Center-align the text */
-  padding: 1rem 0; /* Add some padding */
-  font-size: 0.875rem; /* Smaller font size */
-  border-top: 1px solid #ddd; /* Add a border on top */
-  
-  left: 0;
-  bottom: 0;
-  width: 100%; /* Full width */
 }
 
 footer a {
