@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { CSVLink } from "react-csv";
 import { supabase } from "../../supabaseClient";
 import "./AdminStat.css";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const GenerateReport = () => {
   const [loading, setLoading] = useState({
@@ -11,9 +13,10 @@ const GenerateReport = () => {
   });
   const [filename, setFilename] = useState("");
   const [csvData, setCsvData] = useState([]);
-  const [triggerDownload, setTriggerDownload] = useState(false);
   const [csvHeaders, setCsvHeaders] = useState([]);
   const [error, setError] = useState("");
+  const [showModal, setShowModal] = useState(false); // 🔹 Modal state
+  const [reportType, setReportType] = useState(""); // 🔹 Store Report Type
 
   const columnConfigs = {
     profiles: [
@@ -25,7 +28,6 @@ const GenerateReport = () => {
       { label: "Year", key: "year" },
       { label: "Program", key: "program" },
     ],
-
     bookings: [
       { label: "Course Code", key: "course_code" },
       { label: "Request Date", key: "request_date" },
@@ -37,7 +39,6 @@ const GenerateReport = () => {
       { label: "End Time", key: "end_time" },
       { label: "Notes", key: "notes" },
     ],
-
     bookings_history: [
       { label: "Course Code", key: "course_code" },
       { label: "Request Date", key: "request_date" },
@@ -53,24 +54,20 @@ const GenerateReport = () => {
 
   const generateReport = async (type) => {
     setLoading((prev) => ({ ...prev, [type]: true }));
-
-    console.log(`Attempting to generate ${type} report. `);
+    setShowModal(false);
+    console.log(`Generating ${type} report...`);
 
     try {
-      let data;
-      let error;
-
+      let data, error;
       if (type === "profiles") {
         const result = await supabase.from(type).select("*");
-
         data = result.data;
         error = result.error;
       } else {
         const result = await supabase.from(type).select(`
-                    *,
-                    tutor:profiles!tutor_id(first_name, last_name),
-                    tutee:profiles!tutee_id(first_name, last_name)`);
-
+                  *,
+                  tutor:profiles!tutor_id(first_name, last_name),
+                  tutee:profiles!tutee_id(first_name, last_name)`);
         data = result.data;
         error = result.error;
       }
@@ -81,17 +78,9 @@ const GenerateReport = () => {
         return;
       }
 
-      console.log("Fetched data:", data);
-      console.log("Tutor data:", data[0]?.tutor);
-
       if (!data || data.length === 0) {
-        console.log(`No data available for ${type}.`);
         setError(`No data available for that report.`);
-
-        setTimeout(() => {
-          setError("");
-        }, 3000);
-
+        setTimeout(() => setError(""), 3000);
         return;
       }
 
@@ -101,7 +90,6 @@ const GenerateReport = () => {
 
       const filteredData = data.map((item) => {
         const filteredItem = {};
-
         if (type === "bookings" || type === "bookings_history") {
           item.tutor_name = item.tutor
             ? `${item.tutor.first_name} ${item.tutor.last_name}`
@@ -112,38 +100,27 @@ const GenerateReport = () => {
         }
 
         columnConfig.forEach((header) => {
-          const value = item[header.key];
+          let value = item[header.key];
 
           if (dateFields.includes(header.key) && value) {
             const date = new Date(value);
             if (!isNaN(date)) {
-              filteredItem[header.key] = "'" + date.toISOString().split("T")[0];
+              filteredItem[header.key] = date.toLocaleDateString("en-US");
               return;
             }
           }
 
-          if (header.key === "student_number" && value) {
-            filteredItem[header.key] = "'" + value;
-            return;
-          }
-
-          if (typeof value === "number") {
-            filteredItem[header.key] = "'" + value.toString();
-          } else if (value === null || value === undefined) {
-            filteredItem[header.key] = "";
-          } else {
-            filteredItem[header.key] = value;
-          }
+          filteredItem[header.key] =
+            value === null || value === undefined ? "" : value;
         });
+
         return filteredItem;
       });
 
       setCsvData(filteredData);
-      setFilename(
-        `${type}_report_${new Date().toISOString().slice(0, 10)}.csv`
-      );
-
-      setTriggerDownload(true);
+      setReportType(type);
+      setShowModal(true); // 🔹 Show Modal
+      setFilename(`${type}_report_${new Date().toISOString().slice(0, 7)}.csv`);
     } catch (error) {
       console.error("Unexpected error:", error);
     } finally {
@@ -151,55 +128,95 @@ const GenerateReport = () => {
     }
   };
 
-  useEffect(() => {
-    if (triggerDownload && csvData.length > 0) {
-      document.getElementById("csvDownloadLink").click();
-      console.log("CSV download started!");
-      setTriggerDownload(false);
-    }
-  }, [triggerDownload, csvData]);
-
+  // 🔹 Generate PDF
+  const generatePDF = () => {
+    const doc = new jsPDF();
+  
+    // Title
+    doc.text("Bookings Report", 14, 15);
+  
+    // Define Table Headers
+    const tableColumn = csvHeaders.map(header => header.label);
+  
+    // Define Table Rows (Map Data)
+    const tableRows = csvData.map(row => csvHeaders.map(header => row[header.key]));
+  
+    // Generate Table
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 25,
+    });
+  
+    // Save the PDF
+    doc.save("bookings_report.pdf");
+  };
+  
   return (
     <div className="report-generation-section">
-      <div>
-        <h2>Generate Report</h2>
-        <small>Generate summarized reports below.</small>
-        {error && <p style={{ color: "#e53e3e" }}>{error}</p>}
-      </div>
+      <h2>Generate Report</h2>
+      <small>Generate summarized reports below.</small>
+      {error && <p style={{ color: "#e53e3e" }}>{error}</p>}
+      
       <div className="horizontal-buttons-container">
-        <button
-          className="generate-report-button"
-          onClick={() => generateReport("profiles")}
-          disabled={loading.profiles}
-        >
+        <button className="generate-report-button" onClick={() => generateReport("profiles")} disabled={loading.profiles}>
           {loading.profiles ? "Generating..." : "Generate Users Report"}
         </button>
-        <button
-          className="generate-report-button"
-          onClick={() => generateReport("bookings")}
-          disabled={loading.bookings}
-        >
+        <button className="generate-report-button" onClick={() => generateReport("bookings")} disabled={loading.bookings}>
           {loading.bookings ? "Generating..." : "Generate Bookings Report"}
         </button>
-        <button
-          className="generate-report-button"
-          onClick={() => generateReport("bookings_history")}
-          disabled={loading.bookings_history}
-        >
-          {loading.bookings_history
-            ? "Generating..."
-            : "Generate Archived Bookings Report"}
+        <button className="generate-report-button" onClick={() => generateReport("bookings_history")} disabled={loading.bookings_history}>
+          {loading.bookings_history ? "Generating..." : "Generate Archived Bookings Report"}
         </button>
       </div>
 
-      <CSVLink
-        id="csvDownloadLink"
-        data={csvData}
-        headers={csvHeaders}
-        filename={filename}
-        className="hidden"
-        target="_blank"
-      />
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            {/* Close Button */}
+            <button className="close-btn" onClick={() => setShowModal(false)}>✖</button>
+
+            <h3>Preview: {reportType} Report</h3>
+            
+            {/* Table Preview */}
+            <table className="preview-table">
+              <thead>
+                <tr>
+                  {csvHeaders.map((header) => (
+                    <th key={header.key}>{header.label}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {csvData.slice(0, 7).map((row, index) => (
+                  <tr key={index}>
+                    {csvHeaders.map((header) => (
+                      <td key={header.key}>{row[header.key]}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <p>Showing first 7 rows...</p>
+
+            {/* Footer Buttons */}
+            <div className="modal-footer">
+              <CSVLink
+                data={csvData}
+                headers={csvHeaders}
+                filename={filename}
+                className="download-csv-btn"
+              >
+                Download CSV
+              </CSVLink>
+              <button className="generate-pdf-btn" onClick={generatePDF}>
+                Generate PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
