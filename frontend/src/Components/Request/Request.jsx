@@ -96,7 +96,7 @@ const Request = () => {
 
       if (availabilityError) {
         setModalMsg(availabilityError.message);
-        showModal(true);
+        setShowModal(true);
         throw availabilityError;
       }
 
@@ -129,7 +129,7 @@ const Request = () => {
 
       if (courseError) {
         setModalMsg(courseError.message);
-        showModal(true);
+        setShowModal(true);
         throw courseError;
       }
       console.log("📚 Tutors who teach this course:", tutorsTeachingCourse);
@@ -184,7 +184,7 @@ const Request = () => {
 
       if (tutorError) {
         setModalMsg(tutorError.message);
-        showModal(true);
+        setShowModal(true);
         throw tutorError;
       }
       console.log("✅ Tutors fetched after filtering:", tutorData);

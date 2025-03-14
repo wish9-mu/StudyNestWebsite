@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import "./TuteeWaitlist.css";
+import "../Modal/Modal.css";
 import TuteeNav from "../Nav/TuteeNav";
 import FeedbackForm from "./FeedbackForm";
 
-const ActiveBookings = ({ feedbackBool }) => {
+const ActiveBookings = () => {
   const [userId, setUserId] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [courses, setCourses] = useState({});
@@ -12,6 +13,9 @@ const ActiveBookings = ({ feedbackBool }) => {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [bookingStat, setBookingStat] = useState("");
   const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const [showModal, setShowModal] = useState("");
+  const [bookingID, setBookingID] = useState(null);
+  const [message, setMessage] = useState({ show: false, status: "" });
 
   // 🔹 Fetch User ID
   useEffect(() => {
@@ -143,6 +147,14 @@ const ActiveBookings = ({ feedbackBool }) => {
     setActiveBookings(formattedBookings);
   };
 
+  const showTemporaryMessage = (status) => {
+    setMessage({ show: true, status });
+
+    setTimeout(() => {
+      setMessage({ show: false, status: "" });
+    }, 5000);
+  };
+
   const formatTime = (time) => {
     const [hours, minutes] = time.split(":");
     const hour = parseInt(hours, 10);
@@ -240,7 +252,7 @@ const ActiveBookings = ({ feedbackBool }) => {
 
       console.log("✅ Booking cancelled successfully.");
       fetchActiveBookings();
-      alert("Booking has been cancelled successfully.");
+      showTemporaryMessage("cancelled");
     } catch (error) {
       console.error("❌ Unexpected error cancelling booking:", error);
       alert("An error occurred while cancelling the booking.");
@@ -301,6 +313,12 @@ const ActiveBookings = ({ feedbackBool }) => {
             </div>
           </div>
 
+          {message.show && (
+            <div className="message">
+              <h3>This booking has been {message.status}.</h3>
+            </div>
+          )}
+
           <div className="waitlist-content">
             {activeBookings.length === 0 ? (
               <div className="empty-waitlist">
@@ -308,42 +326,77 @@ const ActiveBookings = ({ feedbackBool }) => {
                 <p>When you have a pending session, it will appear here.</p>
               </div>
             ) : (
-              activeBookings.map((booking) => (
-                <div className="card-1" key={booking.id}>
-                  <div className="align-left-content">
-                    <h2>{booking.name}</h2>
-                    <p>{booking.participant}</p>
-                    <p>Notes: {booking.notes}</p>
-                  </div>
-                  <div className="align-right-content">
-                    <p>
-                      {booking.date} | {booking.day}
-                    </p>
-                    <p>{booking.time}</p>
-                    <div className="booking-buttons">
-                      <button
-                        className="cancel-booking-btn"
-                        onClick={() => handleCancelBooking(booking.id)}
-                      >
-                        Cancel Booking
-                      </button>
-
-                      {userRole === "tutee" && bookingStat === "accepted" && (
-                        <button
-                          className="complete-booking-btn"
-                          onClick={() => handleCompleteSession(booking.id)}
-                        >
-                          Mark as Completed
-                        </button>
-                      )}
+              <>
+                {activeBookings.map((booking) => (
+                  <div className="card-1" key={booking.id}>
+                    <div className="align-left-content">
+                      <h2>{booking.name}</h2>
+                      <p>{booking.participant}</p>
+                      <p>Notes: {booking.notes}</p>
+                    </div>
+                    <div className="align-right-content">
+                      <p>
+                        {booking.date} | {booking.day}
+                      </p>
+                      <p>{booking.time}</p>
+                      <div className="booking-buttons">
+                        {bookingStat !== "completed" && (
+                          <button
+                            className="cancel-booking-btn"
+                            onClick={() => {
+                              setBookingID(booking.id);
+                              setShowModal("cancel");
+                            }}
+                          >
+                            Cancel Booking
+                          </button>
+                        )}
+                        {userRole === "tutee" && bookingStat === "accepted" && (
+                          <button
+                            className="complete-booking-btn"
+                            onClick={() => handleCompleteSession(booking.id)}
+                          >
+                            Mark as Completed
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
+                ))}
+
+                {showModal === "cancel" && (
+                  <div className="modal-overlay">
+                    <div className="modal-content">
+                      <h2>Are you sure you want to cancel this booking?</h2>
+                      <button
+                        className="accept-button"
+                        onClick={() => {
+                          handleCancelBooking(bookingID);
+                          setShowModal("");
+                        }}
+                      >
+                        Yes
+                      </button>
+                      <button
+                        className="reject-button"
+                        onClick={() => setShowModal("")}
+                      >
+                        No
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
-          {showFeedbackForm && (
-            <FeedbackForm userRole={userRole} onClose={handleCloseFeedback} />
+          {showFeedbackForm && selectedBookingId && (
+            <FeedbackForm
+              userRole={userRole}
+              sessionId={selectedBookingId}
+              sessionType="booking"
+              userId={userId}
+              onClose={handleCloseFeedback}
+            />
           )}
         </div>
       </div>

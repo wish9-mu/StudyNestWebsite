@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import "./TuteeWaitlist.css";
 import TuteeNav from "../Nav/TuteeNav";
+import FeedbackForm from "./FeedbackForm";
 
 const BookingHistory = () => {
   const [userId, setUserId] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [courses, setCourses] = useState({});
   const [archivedBookings, setArchivedBookings] = useState([]);
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
 
   // 🔹 Fetch User ID
   useEffect(() => {
@@ -106,9 +109,7 @@ const BookingHistory = () => {
       .map((b) => (userRole === "tutee" ? b.tutor_id : b.tutee_id))
       .filter(Boolean);
 
-    const cancellerIds = bookings
-      .map((b) => b.cancelled_by)
-      .filter(Boolean);
+    const cancellerIds = bookings.map((b) => b.cancelled_by).filter(Boolean);
 
     const uniqueUserIds = [...new Set([...participantIds, ...cancellerIds])];
 
@@ -120,7 +121,10 @@ const BookingHistory = () => {
       .in("id", uniqueUserIds);
 
     if (userError) {
-      console.error("❌ Error fetching participant/canceller names:", userError);
+      console.error(
+        "❌ Error fetching participant/canceller names:",
+        userError
+      );
       return;
     }
 
@@ -134,15 +138,26 @@ const BookingHistory = () => {
     const formattedBookings = bookings.map((booking) => ({
       id: booking.id,
       name: courses[booking.course_code] || booking.course_code,
-      participant: `With: ${nameMap[userRole === "tutee" ? booking.tutor_id : booking.tutee_id] || "Unknown"}`,
+      participant: `With: ${
+        nameMap[userRole === "tutee" ? booking.tutor_id : booking.tutee_id] ||
+        "Unknown"
+      }`,
       date: booking.session_date,
-      day: new Date(booking.session_date).toLocaleDateString("en-us", { weekday: "long" }),
-      time: `${formatTime(booking.start_time)} - ${formatTime(booking.end_time)}`,
+      day: new Date(booking.session_date).toLocaleDateString("en-us", {
+        weekday: "long",
+      }),
+      time: `${formatTime(booking.start_time)} - ${formatTime(
+        booking.end_time
+      )}`,
       notes: booking.notes || "No additional notes.",
       status:
         booking.status === "cancelled" && booking.cancelled_by
-          ? `CANCELLED BY ${nameMap[booking.cancelled_by]?.toUpperCase() || "UNKNOWN"}`
+          ? `CANCELLED BY ${
+              nameMap[booking.cancelled_by]?.toUpperCase() || "UNKNOWN"
+            }`
           : booking.status.toUpperCase(),
+      bookingStat: booking.status,
+      feedback_done: booking.feedback_done,
     }));
 
     console.log("📌 Formatted bookings:", formattedBookings);
@@ -160,24 +175,69 @@ const BookingHistory = () => {
   useEffect(() => {
     const bookingsSubscription = supabase
       .channel("bookings")
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "bookings" }, (payload) => {
-        console.log("📌 Booking status changed:", payload.new);
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "bookings" },
+        (payload) => {
+          console.log("📌 Booking status changed:", payload.new);
 
-        if (["completed", "cancelled", "rejected"].includes(payload.new.status)) {
-          console.log("🔄 Booking moved to history, fetching new data...");
+          if (
+            ["completed", "cancelled", "rejected"].includes(payload.new.status)
+          ) {
+            console.log("🔄 Booking moved to history, fetching new data...");
+            fetchArchivedBookings();
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "bookings" },
+        (payload) => {
+          console.log("❌ Booking removed from active bookings:", payload.old);
           fetchArchivedBookings();
         }
-      })
-      .on("postgres_changes", { event: "DELETE", schema: "public", table: "bookings" }, (payload) => {
-        console.log("❌ Booking removed from active bookings:", payload.old);
-        fetchArchivedBookings();
-      })
+      )
       .subscribe();
 
     return () => {
       supabase.removeChannel(bookingsSubscription);
     };
   }, []);
+
+  const markAsFeedbackDone = async (bookingId) => {
+    const { error } = await supabase
+      .from("bookings_history")
+      .update({ feedback_done: true })
+      .eq("id", bookingId);
+
+    if (error) {
+      console.error("❌ Error updating booking status:", error);
+    } else {
+      console.log(`✅ Booking ${bookingId} marked feedback as done`);
+
+      fetchArchivedBookings();
+    }
+  };
+
+  const handleCompleteSession = (bookingId) => {
+    setSelectedBookingId(bookingId);
+    setShowFeedbackForm(true);
+    console.log("Feedback Form Active.");
+  };
+
+  const handleCloseFeedback = async () => {
+    if (selectedBookingId) {
+      try {
+        await markAsFeedbackDone(selectedBookingId);
+        console.log("✅ Feedback marked as done");
+      } catch (error) {
+        console.error("❌ Error marking feedback as done:", error);
+      }
+    }
+    setShowFeedbackForm(false);
+    setSelectedBookingId(null);
+    console.log("✅ Feedback Form Closed.");
+  };
 
   return (
     <>
@@ -207,14 +267,35 @@ const BookingHistory = () => {
                     <p>Notes: {booking.notes}</p>
                   </div>
                   <div className="align-right-content">
-                    <p>{booking.date} | {booking.day}</p>
+                    <p>
+                      {booking.date} | {booking.day}
+                    </p>
                     <p>{booking.time}</p>
                     <p>Status: {booking.status}</p>
+
+                    {userRole === "tutor" &&
+                      booking.feedback_done !== true &&
+                      booking.bookingStat === "completed" && (
+                        <button
+                          onClick={() => handleCompleteSession(booking.id)}
+                        >
+                          Give Feedback to Tutee
+                        </button>
+                      )}
                   </div>
                 </div>
               ))
             )}
           </div>
+          {showFeedbackForm && (
+            <FeedbackForm
+              userRole={userRole}
+              sessionId={selectedBookingId}
+              sessionType="booking_history"
+              userId={userId}
+              onClose={handleCloseFeedback}
+            />
+          )}
         </div>
       </div>
     </>

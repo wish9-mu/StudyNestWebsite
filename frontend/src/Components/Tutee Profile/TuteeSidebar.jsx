@@ -36,16 +36,6 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
 
         <button
           className={`sidebar-menu-item ${
-            activeTab === "booking" ? "active" : ""
-          }`}
-          onClick={() => setActiveTab("booking")}
-        >
-          <p className="menu-icon">📅</p>
-          <span>Booking Preferences</span>
-        </button>
-
-        <button
-          className={`sidebar-menu-item ${
             activeTab === "security" ? "active" : ""
           }`}
           onClick={() => setActiveTab("security")}
