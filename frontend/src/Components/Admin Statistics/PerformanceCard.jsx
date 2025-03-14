@@ -5,6 +5,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable"; // 
 import "./PerformanceCard.css";
 
+
 const PerformanceCard = ({ user, onClose }) => {
   if (!user) return null;
 
@@ -61,7 +62,14 @@ const PerformanceCard = ({ user, onClose }) => {
         });
         setCourses(courseMap);
 
-        setTutorCourses(tutorCourseData.data);
+        // Format Tutor Courses course_name using courseMap
+        const formattedTutorCourses = tutorCourseData.data.map(tc => ({
+          course_code: tc.course_code,
+          course_name: courseMap[tc.course_code] || "Unknown",
+        }));
+        setTutorCourses(formattedTutorCourses);
+        console.log("📚 Tutor Courses for User:", formattedTutorCourses);
+
         setClassSchedule(classScheduleData.data);
         setAvailabilitySchedule(availabilityScheduleData.data);
 
@@ -71,18 +79,30 @@ const PerformanceCard = ({ user, onClose }) => {
           participantMap[p.id] = `${p.first_name} ${p.last_name}`;
         });
 
+        // Helper Function to Format Dates (MM/DD/YYYY with no time)
+        const formatDate = (date) => {
+          return new Date(date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          });
+        };
+
         // Helper Function to Format Bookings
         const formatBookings = (bookings, type) => {
           return bookings.map((booking) => ({
             id: booking.id,
-            course: courseMap[booking.course_code] || booking.course_code,
-            participant: participantMap[booking.tutor_id] || participantMap[booking.tutee_id] || "Unknown",
-            date: booking.session_date,
-            time: `${booking.start_time} - ${booking.end_time}`,
+            course: booking.course_code,
+            // Determine participant based on role
+            // If user is tutor, participant is tutee and vice versa
+            participant: user.role === "tutor" ? participantMap[booking.tutee_id] : participantMap[booking.tutor_id],
+            date: formatDate(booking.session_date),
+            start_time: booking.start_time,
+            end_time: booking.end_time,
             notes: booking.notes || "No additional notes.",
             status: booking.status,
-            request_date: booking.request_date,
-            completed_date: booking.completed_at || "N/A",
+            request_date: formatDate(booking.request_date),
+            completed_date: formatDate(booking.completed_at) || "N/A",
             cancelled_by: booking.cancelled_by ? participantMap[booking.cancelled_by] || "Unknown" : "N/A",
           }));
         };
@@ -100,78 +120,6 @@ const PerformanceCard = ({ user, onClose }) => {
     fetchUserInformation();
   }, [user.id, user.role]);
 
-  // // 📥 **Download Report Function (CSV)**
-  // const onDownloadReport = () => {
-  //   console.log("📥 Generating CSV report for:", user.first_name, user.last_name);
-
-  //   let csvContent = [
-  //     `"User Information"`,
-  //     `"First Name","Last Name","Email","Role","Student Number","Program","Year","Mobile","About Me"`,
-  //     `"${user.first_name}","${user.last_name}","${user.email}","${user.role}","${user.student_number}","${user.program}","${user.year}","${user.mobile_number}","${user.about_me}"`,
-  //   ].join("\n");
-
-  //   if (user.role === "tutor") {
-  //     // 🏫 **Tutor Courses**
-  //     const formattedTutorCourses = tutorCourses.length > 0
-  //       ? tutorCourses.map(tc => `"${tc.course_code}","${courses[tc.course_code] || "Unknown"}"`).join("\n")
-  //       : `"No courses assigned","-"`;  
-
-  //     csvContent += `\n\n"Tutor Courses"\n"Course Code","Course Name"\n${formattedTutorCourses}`;
-
-  //     // 📅 **Class Schedule**
-  //     csvContent += `\n\n"Class Schedule"\n"Day","Start Time","End Time","Course"\n` +
-  //       (classSchedule.length > 0
-  //         ? classSchedule.map(cs => `"${cs.day_of_week}","${cs.start_time}","${cs.end_time}","${cs.course_code}"`).join("\n")
-  //         : `"No class schedule","-","-","-"`);
-
-  //     // ⏳ **Availability Schedule**
-  //     csvContent += `\n\n"Availability Schedule"\n"Day","Start Time","End Time"\n` +
-  //       (availabilitySchedule.length > 0
-  //         ? availabilitySchedule.map(av => `"${av.day_of_week}","${av.start_time}","${av.end_time}"`).join("\n")
-  //         : `"No availability schedule","-","-"`);
-
-  //     // ✅ **Accepted Bookings**
-  //     csvContent += `\n\n"Accepted Bookings"\n"ID","Course","Participant","Date","Time","Notes","Request Date"\n` +
-  //       (acceptedBookings.length > 0
-  //         ? acceptedBookings.map(b => `"${b.id}","${b.course}","${b.participant}","${b.date}","${b.time}","${b.notes}","${b.request_date}"`).join("\n")
-  //         : `"No accepted bookings","-","-","-","-","-","-"`);
-
-  //     // ❌ **Rejected Bookings**
-  //     csvContent += `\n\n"Rejected Bookings"\n"ID","Course","Participant","Date","Time","Notes","Request Date","Rejected Date"\n` +
-  //       (rejectedBookings.length > 0
-  //         ? rejectedBookings.map(b => `"${b.id}","${b.course}","${b.participant}","${b.date}","${b.time}","${b.notes}","${b.request_date}","${b.completed_date}"`).join("\n")
-  //         : `"No rejected bookings","-","-","-","-","-","-","-"`);
-  //       }
-
-  //       // 📌 **Pending Bookings (For Both Tutors & Tutees)**
-  //       csvContent += `\n\n"Pending Bookings"\n"ID","Course","Participant","Date","Time","Notes","Request Date"\n` +
-  //       (pendingBookings.length > 0
-  //           ? pendingBookings.map(b => `"${b.id}","${b.course}","${b.participant}","${b.date}","${b.time}","${b.notes}","${b.request_date}"`).join("\n")
-  //           : `"No pending bookings","-","-","-","-","-","-"`);
-
-  //       // 🚫 **Cancelled Bookings (For Both Tutors & Tutees)**
-  //       csvContent += `\n\n"Cancelled Bookings"\n"ID","Course","Participant","Date","Time","Notes","Request Date","Cancelled Date","Cancelled By"\n` +
-  //       (cancelledBookings.length > 0
-  //           ? cancelledBookings.map(b => `"${b.id}","${b.course}","${b.participant}","${b.date}","${b.time}","${b.notes}","${b.request_date}","${b.completed_date}","${b.cancelled_by}"`).join("\n")
-  //           : `"No cancelled bookings","-","-","-","-","-","-","-","-"`);
-
-  //       // 🏆 **Completed Bookings (For Both Tutors & Tutees)**
-  //       csvContent += `\n\n"Completed Bookings"\n"ID","Course","Participant","Date","Time","Notes","Request Date","Completion Date"\n` +
-  //       (completedBookings.length > 0
-  //           ? completedBookings.map(b => `"${b.id}","${b.course}","${b.participant}","${b.date}","${b.time}","${b.notes}","${b.request_date}","${b.completed_date}"`).join("\n")
-  //           : `"No completed bookings","-","-","-","-","-","-","-"`);
-
-  //       // 📝 **Generate and Download CSV File**
-  //       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  //       const link = document.createElement("a");
-  //       link.href = URL.createObjectURL(blob);
-  //       link.download = `Report_${user.first_name}_${user.last_name}.csv`;
-  //       document.body.appendChild(link);
-  //       link.click();
-  //       document.body.removeChild(link);
-
-  //       console.log("✅ CSV report generated successfully!");
-  //   };
 
   const prepareReportData = () => {
     // Define report sections (tables)
@@ -234,11 +182,11 @@ const PerformanceCard = ({ user, onClose }) => {
         { 
           title: "Accepted Bookings",
           headers: [
-            { label: "ID", key: "id" },
             { label: "Course", key: "course" },
             { label: "Participant", key: "participant" },
             { label: "Date", key: "date" },
-            { label: "Time", key: "time" },
+            { label: "Start Time", key: "start_time" },
+            { label: "End Time", key: "end_time" },
             { label: "Notes", key: "notes" },
             { label: "Request Date", key: "request_date" },
           ],
@@ -247,11 +195,11 @@ const PerformanceCard = ({ user, onClose }) => {
         {
           title: "Rejected Bookings",
           headers: [
-            { label: "ID", key: "id" },
             { label: "Course", key: "course" },
             { label: "Participant", key: "participant" },
             { label: "Date", key: "date" },
-            { label: "Time", key: "time" },
+            { label: "Start Time", key: "start_time" },
+            { label: "End Time", key: "end_time" },
             { label: "Notes", key: "notes" },
             { label: "Request Date", key: "request_date" },
             { label: "Rejected Date", key: "completed_date" },
@@ -261,11 +209,11 @@ const PerformanceCard = ({ user, onClose }) => {
         {
           title: "Pending Bookings",
           headers: [
-            { label: "ID", key: "id" },
             { label: "Course", key: "course" },
             { label: "Participant", key: "participant" },
             { label: "Date", key: "date" },
-            { label: "Time", key: "time" },
+            { label: "Start Time", key: "start_time" },
+            { label: "End Time", key: "end_time" },
             { label: "Notes", key: "notes" },
             { label: "Request Date", key: "request_date" },
           ],
@@ -274,11 +222,11 @@ const PerformanceCard = ({ user, onClose }) => {
         { 
           title: "Cancelled Bookings",
           headers: [
-            { label: "ID", key: "id" },
             { label: "Course", key: "course" },
             { label: "Participant", key: "participant" },
             { label: "Date", key: "date" },
-            { label: "Time", key: "time" },
+            { label: "Start Time", key: "start_time" },
+            { label: "End Time", key: "end_time" },
             { label: "Notes", key: "notes" },
             { label: "Request Date", key: "request_date" },
             { label: "Cancelled Date", key: "completed_date" },
@@ -289,11 +237,11 @@ const PerformanceCard = ({ user, onClose }) => {
         {
           title: "Completed Bookings",
           headers: [
-            { label: "ID", key: "id" },
             { label: "Course", key: "course" },
             { label: "Participant", key: "participant" },
             { label: "Date", key: "date" },
-            { label: "Time", key: "time" },
+            { label: "Start Time", key: "start_time" },
+            { label: "End Time", key: "end_time" },
             { label: "Notes", key: "notes" },
             { label: "Request Date", key: "request_date" },
             { label: "Completion Date", key: "completed_date" },
@@ -329,11 +277,11 @@ const PerformanceCard = ({ user, onClose }) => {
         {
           title: "Pending Bookings",
           headers: [
-            { label: "ID", key: "id" },
             { label: "Course", key: "course" },
             { label: "Participant", key: "participant" },
             { label: "Date", key: "date" },
-            { label: "Time", key: "time" },
+            { label: "Start Time", key: "start_time" },
+            { label: "End Time", key: "end_time" },
             { label: "Notes", key: "notes" },
             { label: "Request Date", key: "request_date" },
           ],
@@ -342,11 +290,11 @@ const PerformanceCard = ({ user, onClose }) => {
         { 
           title: "Cancelled Bookings",
           headers: [
-            { label: "ID", key: "id" },
             { label: "Course", key: "course" },
             { label: "Participant", key: "participant" },
             { label: "Date", key: "date" },
-            { label: "Time", key: "time" },
+            { label: "Start Time", key: "start_time" },
+            { label: "End Time", key: "end_time" },
             { label: "Notes", key: "notes" },
             { label: "Request Date", key: "request_date" },
             { label: "Cancelled Date", key: "completed_date" },
@@ -357,11 +305,11 @@ const PerformanceCard = ({ user, onClose }) => {
         {
           title: "Completed Bookings",
           headers: [
-            { label: "ID", key: "id" },
             { label: "Course", key: "course" },
             { label: "Participant", key: "participant" },
             { label: "Date", key: "date" },
-            { label: "Time", key: "time" },
+            { label: "Start Time", key: "start_time" },
+            { label: "End Time", key: "end_time" },
             { label: "Notes", key: "notes" },
             { label: "Request Date", key: "request_date" },
             { label: "Completion Date", key: "completed_date" },
@@ -378,22 +326,36 @@ const PerformanceCard = ({ user, onClose }) => {
   };
 
   const generatePDF = () => {
-    const doc = new jsPDF();
-    autoTable(doc);
+      const doc = new jsPDF();
 
-    let yOffset = 20;
-    reportData.forEach((section) => {
-      doc.text(section.title, 14, yOffset);
-      doc.autoTable({
-        head: [section.headers.map(header => header.label)],
-        body: section.data.map(row => section.headers.map(header => row[header.key] || "-")),
-        startY: yOffset + 10,
+      // Ensure autoTable is attached to jsPDF
+      if (!doc.autoTable) {
+          console.error("🚨 autoTable is not attached to jsPDF!");
+          return;
+      }
+
+      // Add Title
+      doc.text(`User Report: ${user.first_name} ${user.last_name}`, 14, 15);
+
+      // Generate tables for each report section
+      reportData.forEach((section, index) => {
+          const tableColumn = section.headers.map(header => header.label);
+          const tableRows = section.data.map(row => section.headers.map(header => row[header.key] || "-"));
+
+          // Move table down to avoid overlapping
+          const startY = index === 0 ? 25 : doc.previousAutoTable.finalY + 10;
+
+          doc.autoTable({
+              head: [tableColumn],
+              body: tableRows,
+              startY: startY,
+          });
       });
-      yOffset = doc.lastAutoTable.finalY + 15;
-    });
 
-    doc.save(`User_Report_${user.first_name}_${user.last_name}.pdf`);
+      // Save the PDF
+      doc.save(`User_Report_${user.first_name}_${user.last_name}.pdf`);
   };
+
 
 
   return (
@@ -429,32 +391,40 @@ const PerformanceCard = ({ user, onClose }) => {
                 </tr>
               </thead>
               <tbody>
-                {reportData[currentPage].data.map((row, index) => (
-                  <tr key={index}>
-                    {reportData[currentPage].headers.map(header => (
-                      <td key={header.key}>{row[header.key] || "-"}</td>
-                    ))}
-                  </tr>
-                ))}
+                {/* Display first 7 rows */}
+                  {reportData[currentPage].data.slice(0, 7).map((row, index) => (
+                    <tr key={index}>
+                      {reportData[currentPage].headers.map(header => (
+                        <td key={header.key}>{row[header.key] || "-"}</td>
+                      ))}
+                    </tr>
+                  ))}
               </tbody>
             </table>
 
-            {/* Navigation Buttons */}
-            <div className="modal-navigation">
-              <button
-                disabled={currentPage === 0}
-                onClick={() => setCurrentPage(prev => prev - 1)}
-              >
-                ⬅ Back
-              </button>
-              <button
-                disabled={currentPage === reportData.length - 1}
-                onClick={() => setCurrentPage(prev => prev + 1)}
-              >
-                Next ➡
-              </button>
-            </div>
+            <p> Showing first 7 rows... </p>
 
+            {/* Table Navigation */}
+            <div className="modal-navigation">
+              {currentPage > 0 && (
+                <label  
+                  className="nav-btn" 
+                  onClick={() => setCurrentPage(prev => prev - 1)}
+                >
+                  ← Back
+                </label>
+              )}
+              
+              {currentPage < reportData.length - 1 && (
+                <label 
+                  className="nav-btn" 
+                  onClick={() => setCurrentPage(prev => prev + 1)}
+                >
+                  Next →
+                </label>
+              )}
+            </div>
+            
             {/* Footer Buttons */}
             <div className="modal-footer">
               <CSVLink
