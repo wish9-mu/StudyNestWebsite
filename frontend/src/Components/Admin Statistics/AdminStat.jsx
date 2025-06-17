@@ -4,6 +4,7 @@ import PerformanceCard from "./PerformanceCard";
 import GenerateReport from "./GenerateReport";
 import { supabase } from "../../supabaseClient";
 import AdminNav from "../Nav/AdminNav";
+import defaultAvatar from "../../assets/default-avatar.png";
 
 const AdminStat = () => {
   const [tutorList, setTutorList] = useState([]);
@@ -178,7 +179,7 @@ const AdminStat = () => {
           {/* Section divider for visual separation */}
 
           <div className="tutors-display">
-            <h1 className="">Instructors</h1>
+            {/* <h1 className="">Instructors</h1> */}
             <PerformanceCard tutorList={tutorList} />
           </div>
         </div>
@@ -278,7 +279,7 @@ const AdminStat = () => {
               >
                 <div className="profile-img">
                   <img
-                    src={tutor.profile_picture || "/default-avatar.png"}
+                    src={tutor.profile_picture || defaultAvatar}
                     alt="Profile"
                     className="profile-img"
                   />
@@ -299,7 +300,11 @@ const AdminStat = () => {
               >
                 <div className="profile-img">
                   <img
-                    src={tutee.profile_picture || "/default-avatar.png"}
+                    src={
+                      tutee.profile_picture
+                        ? tutee.profile_picture
+                        : defaultAvatar
+                    }
                     alt="Profile"
                     className="profile-img"
                   />

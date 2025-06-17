@@ -164,6 +164,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  overflow:hidden;
 }
 
 /* Modal Card */
@@ -177,6 +178,24 @@
   position: relative;
   overflow: hidden; /* Hide overflow for the header bar */
 } 
+
+.performance-card p {
+  /* Prevent text from overflowing */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  margin: 8px 0;
+}
+
+/* Show Email when hover*/
+.performance-card p:hover {
+  overflow: visible;
+  white-space: normal;
+  word-break: break-all;
+  background-color: #f8f8f8; 
+  z-index: 1; 
+}
 
 /* Close Button - Updated positioning */
 .close-btn {

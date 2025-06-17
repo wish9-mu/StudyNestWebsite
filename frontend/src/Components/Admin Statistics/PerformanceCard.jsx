@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { CSVLink } from "react-csv";
 import { supabase } from "../../supabaseClient";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable"; // 
+import autoTable from "jspdf-autotable"; //
 import "./PerformanceCard.css";
-
+import defaultAvatar from "../../assets/default-avatar.png";
 
 const PerformanceCard = ({ user, onClose }) => {
   if (!user) return null;
@@ -28,7 +28,11 @@ const PerformanceCard = ({ user, onClose }) => {
 
   useEffect(() => {
     const fetchUserInformation = async () => {
-      console.log("🔍 Fetching all details for:", user.first_name, user.last_name);
+      console.log(
+        "🔍 Fetching all details for:",
+        user.first_name,
+        user.last_name
+      );
 
       try {
         const [
@@ -41,18 +45,43 @@ const PerformanceCard = ({ user, onClose }) => {
           rejectedBookingsData,
           cancelledBookingsData,
           completedBookingsData,
-          participantData
+          participantData,
         ] = await Promise.all([
           supabase.from("courses").select("course_code, course_name"),
-          user.role === "tutor" ? supabase.from("tutor_courses").select("*").eq("tutor_id", user.id) : Promise.resolve({ data: [] }),
+          user.role === "tutor"
+            ? supabase.from("tutor_courses").select("*").eq("tutor_id", user.id)
+            : Promise.resolve({ data: [] }),
           supabase.from("class_schedule").select("*").eq("user_id", user.id),
-          supabase.from("availability_schedule").select("*").eq("user_id", user.id),
-          supabase.from("bookings").select("*").eq(user.role === "tutee" ? "tutee_id" : "tutor_id", user.id).eq("status", "pending"),
-          supabase.from("bookings").select("*").eq(user.role === "tutee" ? "tutee_id" : "tutor_id", user.id).eq("status", "accepted"),
-          supabase.from("bookings_history").select("*").eq(user.role === "tutee" ? "tutee_id" : "tutor_id", user.id).eq("status", "rejected"),
-          supabase.from("bookings_history").select("*").eq(user.role === "tutee" ? "tutee_id" : "tutor_id", user.id).eq("status", "cancelled"),
-          supabase.from("bookings_history").select("*").eq(user.role === "tutee" ? "tutee_id" : "tutor_id", user.id).eq("status", "completed"),
-          supabase.from("profiles").select("id, first_name, last_name")
+          supabase
+            .from("availability_schedule")
+            .select("*")
+            .eq("user_id", user.id),
+          supabase
+            .from("bookings")
+            .select("*")
+            .eq(user.role === "tutee" ? "tutee_id" : "tutor_id", user.id)
+            .eq("status", "pending"),
+          supabase
+            .from("bookings")
+            .select("*")
+            .eq(user.role === "tutee" ? "tutee_id" : "tutor_id", user.id)
+            .eq("status", "accepted"),
+          supabase
+            .from("bookings_history")
+            .select("*")
+            .eq(user.role === "tutee" ? "tutee_id" : "tutor_id", user.id)
+            .eq("status", "rejected"),
+          supabase
+            .from("bookings_history")
+            .select("*")
+            .eq(user.role === "tutee" ? "tutee_id" : "tutor_id", user.id)
+            .eq("status", "cancelled"),
+          supabase
+            .from("bookings_history")
+            .select("*")
+            .eq(user.role === "tutee" ? "tutee_id" : "tutor_id", user.id)
+            .eq("status", "completed"),
+          supabase.from("profiles").select("id, first_name, last_name"),
         ]);
 
         // Store Courses as { course_code: course_name }
@@ -63,7 +92,7 @@ const PerformanceCard = ({ user, onClose }) => {
         setCourses(courseMap);
 
         // Format Tutor Courses course_name using courseMap
-        const formattedTutorCourses = tutorCourseData.data.map(tc => ({
+        const formattedTutorCourses = tutorCourseData.data.map((tc) => ({
           course_code: tc.course_code,
           course_name: courseMap[tc.course_code] || "Unknown",
         }));
@@ -95,7 +124,10 @@ const PerformanceCard = ({ user, onClose }) => {
             course: booking.course_code,
             // Determine participant based on role
             // If user is tutor, participant is tutee and vice versa
-            participant: user.role === "tutor" ? participantMap[booking.tutee_id] : participantMap[booking.tutor_id],
+            participant:
+              user.role === "tutor"
+                ? participantMap[booking.tutee_id]
+                : participantMap[booking.tutor_id],
             date: formatDate(booking.session_date),
             start_time: booking.start_time,
             end_time: booking.end_time,
@@ -103,15 +135,25 @@ const PerformanceCard = ({ user, onClose }) => {
             status: booking.status,
             request_date: formatDate(booking.request_date),
             completed_date: formatDate(booking.completed_at) || "N/A",
-            cancelled_by: booking.cancelled_by ? participantMap[booking.cancelled_by] || "Unknown" : "N/A",
+            cancelled_by: booking.cancelled_by
+              ? participantMap[booking.cancelled_by] || "Unknown"
+              : "N/A",
           }));
         };
 
         setPendingBookings(formatBookings(pendingBookingsData.data, "Pending"));
-        setAcceptedBookings(formatBookings(acceptedBookingsData.data, "Accepted"));
-        setRejectedBookings(formatBookings(rejectedBookingsData.data, "Rejected"));
-        setCancelledBookings(formatBookings(cancelledBookingsData.data, "Cancelled"));
-        setCompletedBookings(formatBookings(completedBookingsData.data, "Completed"));
+        setAcceptedBookings(
+          formatBookings(acceptedBookingsData.data, "Accepted")
+        );
+        setRejectedBookings(
+          formatBookings(rejectedBookingsData.data, "Rejected")
+        );
+        setCancelledBookings(
+          formatBookings(cancelledBookingsData.data, "Cancelled")
+        );
+        setCompletedBookings(
+          formatBookings(completedBookingsData.data, "Completed")
+        );
       } catch (error) {
         console.error("❌ Error Fetching User Details:", error);
       }
@@ -119,7 +161,6 @@ const PerformanceCard = ({ user, onClose }) => {
 
     fetchUserInformation();
   }, [user.id, user.role]);
-
 
   const prepareReportData = () => {
     // Define report sections (tables)
@@ -179,7 +220,7 @@ const PerformanceCard = ({ user, onClose }) => {
           ],
           data: availabilitySchedule || [],
         },
-        { 
+        {
           title: "Accepted Bookings",
           headers: [
             { label: "Course", key: "course" },
@@ -219,7 +260,7 @@ const PerformanceCard = ({ user, onClose }) => {
           ],
           data: pendingBookings || [],
         },
-        { 
+        {
           title: "Cancelled Bookings",
           headers: [
             { label: "Course", key: "course" },
@@ -233,7 +274,7 @@ const PerformanceCard = ({ user, onClose }) => {
             { label: "Cancelled By", key: "cancelled_by" },
           ],
           data: cancelledBookings || [],
-        },  
+        },
         {
           title: "Completed Bookings",
           headers: [
@@ -287,7 +328,7 @@ const PerformanceCard = ({ user, onClose }) => {
           ],
           data: pendingBookings || [],
         },
-        { 
+        {
           title: "Cancelled Bookings",
           headers: [
             { label: "Course", key: "course" },
@@ -301,7 +342,7 @@ const PerformanceCard = ({ user, onClose }) => {
             { label: "Cancelled By", key: "cancelled_by" },
           ],
           data: cancelledBookings || [],
-        },  
+        },
         {
           title: "Completed Bookings",
           headers: [
@@ -317,55 +358,63 @@ const PerformanceCard = ({ user, onClose }) => {
           data: completedBookings || [],
         },
       ];
-    };
+    }
 
-    setCsvHeaders(pages.map(page => page.headers)); // Store headers for CSV
+    setCsvHeaders(pages.map((page) => page.headers)); // Store headers for CSV
     setReportData(pages);
     setShowReportModal(true);
     setCurrentPage(0); // Reset to first page
   };
 
   const generatePDF = () => {
-      const doc = new jsPDF();
+    const doc = new jsPDF();
 
-      // Ensure autoTable is attached to jsPDF
-      if (!doc.autoTable) {
-          console.error("🚨 autoTable is not attached to jsPDF!");
-          return;
-      }
+    // Ensure autoTable is attached to jsPDF
+    if (!doc.autoTable) {
+      console.error("🚨 autoTable is not attached to jsPDF!");
+      return;
+    }
 
-      // Add Title
-      doc.text(`User Report: ${user.first_name} ${user.last_name}`, 14, 15);
+    // Add Title
+    doc.text(`User Report: ${user.first_name} ${user.last_name}`, 14, 15);
 
-      // Generate tables for each report section
-      reportData.forEach((section, index) => {
-          const tableColumn = section.headers.map(header => header.label);
-          const tableRows = section.data.map(row => section.headers.map(header => row[header.key] || "-"));
+    // Generate tables for each report section
+    reportData.forEach((section, index) => {
+      const tableColumn = section.headers.map((header) => header.label);
+      const tableRows = section.data.map((row) =>
+        section.headers.map((header) => row[header.key] || "-")
+      );
 
-          // Move table down to avoid overlapping
-          const startY = index === 0 ? 25 : doc.previousAutoTable.finalY + 10;
+      // Move table down to avoid overlapping
+      const startY = index === 0 ? 25 : doc.previousAutoTable.finalY + 10;
 
-          doc.autoTable({
-              head: [tableColumn],
-              body: tableRows,
-              startY: startY,
-          });
+      doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: startY,
       });
+    });
 
-      // Save the PDF
-      doc.save(`User_Report_${user.first_name}_${user.last_name}.pdf`);
+    // Save the PDF
+    doc.save(`User_Report_${user.first_name}_${user.last_name}.pdf`);
   };
-
-
 
   return (
     <div className="overlay">
       <div className="performance-card">
-        <button className="close-btn" onClick={onClose}>✖</button>
+        <button className="close-btn" onClick={onClose}>
+          ✖
+        </button>
         <div className="profile-img">
-          <img src={user.profile_picture || "/default-avatar.png"} alt="Profile" className="profile-img" />
+          <img
+            src={user.profile_picture || defaultAvatar}
+            alt="Profile"
+            className="profile-img"
+          />
         </div>
-        <h2>{user.first_name} {user.last_name}</h2>
+        <h2>
+          {user.first_name} {user.last_name}
+        </h2>
         <p>User Role: {user.role}</p>
         <p>Email: {user.email}</p>
         <p>Student Number: {user.student_number}</p>
@@ -378,27 +427,32 @@ const PerformanceCard = ({ user, onClose }) => {
       {showReportModal && (
         <div className="modal-overlay">
           <div className="modal">
-            <button className="close-btn" onClick={() => setShowReportModal(false)}>✖</button>
+            <button
+              className="close-btn"
+              onClick={() => setShowReportModal(false)}
+            >
+              ✖
+            </button>
             <h3>{reportData[currentPage].title}</h3>
 
             {/* Table Preview */}
             <table className="preview-table">
               <thead>
                 <tr>
-                  {reportData[currentPage].headers.map(header => (
+                  {reportData[currentPage].headers.map((header) => (
                     <th key={header.key}>{header.label}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {/* Display first 7 rows */}
-                  {reportData[currentPage].data.slice(0, 7).map((row, index) => (
-                    <tr key={index}>
-                      {reportData[currentPage].headers.map(header => (
-                        <td key={header.key}>{row[header.key] || "-"}</td>
-                      ))}
-                    </tr>
-                  ))}
+                {reportData[currentPage].data.slice(0, 7).map((row, index) => (
+                  <tr key={index}>
+                    {reportData[currentPage].headers.map((header) => (
+                      <td key={header.key}>{row[header.key] || "-"}</td>
+                    ))}
+                  </tr>
+                ))}
               </tbody>
             </table>
 
@@ -407,24 +461,24 @@ const PerformanceCard = ({ user, onClose }) => {
             {/* Table Navigation */}
             <div className="modal-navigation">
               {currentPage > 0 && (
-                <label  
-                  className="nav-btn" 
-                  onClick={() => setCurrentPage(prev => prev - 1)}
+                <label
+                  className="nav-btn"
+                  onClick={() => setCurrentPage((prev) => prev - 1)}
                 >
                   ← Back
                 </label>
               )}
-              
+
               {currentPage < reportData.length - 1 && (
-                <label 
-                  className="nav-btn" 
-                  onClick={() => setCurrentPage(prev => prev + 1)}
+                <label
+                  className="nav-btn"
+                  onClick={() => setCurrentPage((prev) => prev + 1)}
                 >
                   Next →
                 </label>
               )}
             </div>
-            
+
             {/* Footer Buttons */}
             <div className="modal-footer">
               <CSVLink

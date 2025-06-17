@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from "react";
 import "../Modal/Modal.css";
-import ActiveBookings from "./ActiveBookings";
+import { supabase } from "../../supabaseClient";
 
-const FeedbackForm = ({ userRole, onClose }) => {
+const FeedbackForm = ({
+  userRole,
+  sessionId,
+  sessionType,
+  userId,
+  onClose,
+}) => {
   const [responses, setResponses] = useState({});
   const [comments, setComments] = useState("");
   const [pageNum, setPageNum] = useState(1);
   const [validationError, setValidationError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     console.log("Current responses:", responses);
   }, [responses]);
 
   const handleResponseChange = (questionId, value) => {
-    setResponses((prev) => ({ ...prev, [questionId]: value }));
+    setResponses((prev) => ({ ...prev, [questionId]: parseInt(value, 10) }));
     if (validationError) {
       setValidationError("");
     }
@@ -23,20 +30,63 @@ const FeedbackForm = ({ userRole, onClose }) => {
     setComments(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validatePage("webapp")) {
       return;
     }
 
-    const feedbackData = { responses, comments, userRole };
+    if (!sessionId || !sessionType || !userId) {
+      setValidationError(
+        "Missing session information. Please try again later."
+      );
+      return;
+    }
 
-    console.log("Feedback Submitted:", feedbackData);
+    setIsSubmitting(true);
 
-    onClose();
+    try {
+      const userResponses = {};
+      const webappResponses = {};
 
-    //no backend yet
+      Object.entries(responses).forEach(([key, value]) => {
+        if (key.startsWith("webapp")) {
+          webappResponses[key] = value;
+        } else {
+          userResponses[key] = value;
+        }
+      });
+
+      const feedbackData = {
+        session_id: sessionId,
+        session_type: sessionType,
+        user_id: userId,
+        user_role: userRole,
+        comments: comments,
+        responses: userResponses,
+        webapp_responses: webappResponses,
+      };
+
+      console.log("Submitting feedback to Supabase:", feedbackData);
+
+      const { data, error } = await supabase
+        .from("feedback")
+        .insert([feedbackData]);
+
+      if (error) {
+        console.error("❌ Error submitting feedback:", error);
+        setValidationError("Failed to submit feedback. Please try again.");
+      } else {
+        console.log("✅ Feedback submitted successfully:", data);
+        onClose();
+      }
+    } catch (err) {
+      console.error("❌ Exception submitting feedback:", err);
+      setValidationError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const tuteeQuestions = [
@@ -93,7 +143,7 @@ const FeedbackForm = ({ userRole, onClose }) => {
     },
   ];
 
-  const questions = userRole === "Tutee" ? tuteeQuestions : tutorQuestions;
+  const questions = userRole === "tutee" ? tuteeQuestions : tutorQuestions;
 
   const webAppQuestions = [
     {
@@ -156,11 +206,13 @@ const FeedbackForm = ({ userRole, onClose }) => {
     <>
       <div className="modal-overlay">
         <div className="modal-content feedbackform">
-          <div className="feedback-container">
-            <h1>Session Evaluation</h1>
-            <p>Please rate the following aspects of the tutoring session:</p>
-            <form onSubmit={handleSubmit}>
-              {pageNum === 1 && (
+          <form onSubmit={handleSubmit}>
+            {pageNum === 1 && (
+              <div className="feedback-container">
+                <h1>Tutorial Session Evaluation</h1>
+                <p>
+                  Please rate the following aspects of the tutoring session:
+                </p>
                 <div className="form-group">
                   {questions.map((q) => (
                     <div key={q.id} className="form-group">
@@ -190,9 +242,15 @@ const FeedbackForm = ({ userRole, onClose }) => {
                     Next
                   </button>
                 </div>
-              )}
+              </div>
+            )}
 
-              {pageNum === 2 && (
+            {pageNum === 2 && (
+              <div className="feedback-container">
+                <h1>StudyNest Website Evaluation</h1>
+                <p>
+                  Please rate the following aspects of the StudyNest website:
+                </p>
                 <div className="form-group">
                   {webAppQuestions.map((q) => (
                     <div key={q.id} className="form-group">
@@ -234,15 +292,18 @@ const FeedbackForm = ({ userRole, onClose }) => {
                     <button
                       type="button"
                       onClick={() => setPageNum(pageNum - 1)}
+                      disabled={isSubmitting}
                     >
                       Previous
                     </button>
-                    <button type="submit">Submit</button>
+                    <button type="submit" disabled={isSubmitting}>
+                      {isSubmitting ? "Submitting..." : "Submit"}
+                    </button>
                   </div>
                 </div>
-              )}
-            </form>
-          </div>
+              </div>
+            )}
+          </form>
         </div>
       </div>
     </>

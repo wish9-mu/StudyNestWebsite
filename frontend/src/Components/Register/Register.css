@@ -45,7 +45,7 @@ body {
 
 
 
-label {
+.label-radial {
   display: flex;
   flex-direction: column;
   align-items: center; /* Center-aligns both the text and the radio button */
@@ -168,4 +168,4 @@ button:hover {
 
 .role-options input[type="radio"] {
   margin: 0; /* Remove default margin */
-}
+}   
