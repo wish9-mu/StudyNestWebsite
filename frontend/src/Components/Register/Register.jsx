@@ -62,17 +62,17 @@ const Register = () => {
       newErrors.mobileNumber = "Enter a valid 10-digit PH mobile number";
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
-    }
-
     // if (!formData.email.trim()) {
     //   newErrors.email = "Email is required";
-    // } else if (!/^[a-zA-Z0-9._%+-]+@mymail\.mapua\.edu\.ph$/.test(formData.email)) {
-    //   newErrors.email = "Please enter a valid Mapua email (@mymail.mapua.edu.ph)";
+    // } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    //   newErrors.email = "Please enter a valid email";
     // }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[a-zA-Z0-9._%+-]+@mymail\.mapua\.edu\.ph$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid Mapua email (@mymail.mapua.edu.ph)";
+    }
 
     if (!formData.password) {
       newErrors.password = "Password is required";
