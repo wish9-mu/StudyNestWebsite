@@ -48,9 +48,8 @@ const AppRoutes = ({ session, userRole, loading }) => {
     if (!loading && session && userRole) {
       const currentPath = location.pathname;
 
-      const isLandingOrLogin = ["/", "/login"].includes(currentPath);
-
-      if (isLandingOrLogin || !redirected) {
+      // Only auto-redirect from "/" or "/login" (safe pages)
+      if ((currentPath === "/" || currentPath === "/login") && !redirected) {
         switch (userRole) {
           case "admin":
             navigate("/adminhome");
@@ -67,12 +66,8 @@ const AppRoutes = ({ session, userRole, loading }) => {
         setRedirected(true);
       }
     }
-
-    if (!loading && !session && !redirected) {
-      // Allow visitor to access landing page
-      setRedirected(true);
-    }
   }, [session, userRole, loading, location.pathname, navigate, redirected]);
+
 
   useEffect(() => {
     setRedirected(false); // allow re-evaluation on userRole change
@@ -105,61 +100,61 @@ const AppRoutes = ({ session, userRole, loading }) => {
 
       {/* Admin Routes */}
       <Route path="/adminprofile" element={
-        <ProtectedRoute allowedRoles={["admin"]} userRole={userRole}>
+        <ProtectedRoute allowedRoles={["admin"]} userRole={userRole} session={session}>
           <AdminProfile />
         </ProtectedRoute>
       } />
       <Route path="/adminstats" element={
-        <ProtectedRoute allowedRoles={["admin"]} userRole={userRole}>
+        <ProtectedRoute allowedRoles={["admin"]} userRole={userRole} session={session}>
           <AdminStats />
         </ProtectedRoute>
       } />
       <Route path="/adminhome" element={
-        <ProtectedRoute allowedRoles={["admin"]} userRole={userRole}>
+        <ProtectedRoute allowedRoles={["admin"]} userRole={userRole} session={session}>
           <AdminHome />
         </ProtectedRoute>
       } />
 
       {/* Tutor Routes */}
       <Route path="/tutorprofile" element={
-        <ProtectedRoute allowedRoles={["tutor"]} userRole={userRole}>
+        <ProtectedRoute allowedRoles={["tutor"]} userRole={userRole} session={session}>
           <TutorProfile />
         </ProtectedRoute>
       } />
       <Route path="/tutorbookings" element={
-        <ProtectedRoute allowedRoles={["tutor"]} userRole={userRole}>
+        <ProtectedRoute allowedRoles={["tutor"]} userRole={userRole} session={session}>
           <TutorBookings />
         </ProtectedRoute>
       } />
       <Route path="/tutoractivity" element={
-        <ProtectedRoute allowedRoles={["tutor"]} userRole={userRole}>
+        <ProtectedRoute allowedRoles={["tutor"]} userRole={userRole} session={session}>
           <TutorActivity />
         </ProtectedRoute>
       } />
       <Route path="/tutorhome" element={
-        <ProtectedRoute allowedRoles={["tutor"]} userRole={userRole}>
+        <ProtectedRoute allowedRoles={["tutor"]} userRole={userRole} session={session}>
           <TutorHome />
         </ProtectedRoute>
       } />
 
       {/* Tutee Routes */}
       <Route path="/request" element={
-        <ProtectedRoute allowedRoles={["tutee"]} userRole={userRole}>
+        <ProtectedRoute allowedRoles={["tutee"]} userRole={userRole} session={session}>
           <Request />
         </ProtectedRoute>
       } />
       <Route path="/tuteeprofile" element={
-        <ProtectedRoute allowedRoles={["tutee"]} userRole={userRole}>
+        <ProtectedRoute allowedRoles={["tutee"]} userRole={userRole} session={session}>
           <TuteeProfile />
         </ProtectedRoute>
       } />
       <Route path="/tuteeactivity" element={
-        <ProtectedRoute allowedRoles={["tutee"]} userRole={userRole}>
+        <ProtectedRoute allowedRoles={["tutee"]} userRole={userRole} session={session}>
           <TuteeActivity />
         </ProtectedRoute>
       } />
       <Route path="/tuteehome" element={
-        <ProtectedRoute allowedRoles={["tutee"]} userRole={userRole}>
+        <ProtectedRoute allowedRoles={["tutee"]} userRole={userRole} session={session}>
           <TuteeHome />
         </ProtectedRoute>
       } />
