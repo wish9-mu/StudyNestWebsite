@@ -1,18 +1,25 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Nav.css";
 import logo from "../../assets/SNHome.png";
 import userImage from "../../assets/user.png";
 import { supabase } from "../../supabaseClient";
-import { useAuth } from "../Login/AuthContext";
 import Notifications from "../Notifications/Notifications";
+import { useSession } from "../../SessionContext";
 
 const TuteeNav = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [userId, setUserID] = useState(null);
-  const { user, setUser } = useAuth();
+  const [userId, setUserId] = useState(null);
+
+  const { session } = useSession();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (session && session.user) {
+      setUserId(session.user.id);
+    }
+  }, [session]);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -22,32 +29,10 @@ const TuteeNav = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  // Get the user ID
-  useEffect(() => {
-    if (!user?.email) return; // Ensure `user.email` exists before fetching
-
-    const fetchUser = async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("email", user.email)
-        .single();
-
-      if (error) {
-        console.error("Error fetching user:", error);
-      } else {
-        setUserID(data.id);
-      }
-    };
-
-    fetchUser();
-  }, [user]); // Depend on `user`
-
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) console.error("Log out error:", error);
     else {
-      setUser(null);
       navigate("/login");
     }
   };

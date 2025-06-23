@@ -1,14 +1,15 @@
-import React from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "./supabaseClient";
+import { SessionContext } from "./SessionContext";
+import ProtectedRoute from "./ProtectedRoutes";
+
 import {
   BrowserRouter as Router,
   Routes,
   Route,
+  useNavigate,
   useLocation,
 } from "react-router-dom";
-import { AuthProvider, useAuth } from "./Components/Login/AuthContext";
-import ProtectedRoute from "./Components/Login/ProtectedRoute";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 // Components import
 import HomePage from "./Components/HomePage/HomePage";
@@ -31,73 +32,127 @@ import UpdateYourPassword from "./Components/ResetPassword/UpdateYourPassword";
 import TutorActivity from "./Components/TutorActivity/TutorActivity";
 import GuestRequest from "./Components/Request/GuestRequest";
 import AdminStats from "./Components/Admin Statistics/AdminStat";
-import ClassSchedule from "./Components/ProfileContent/ClassSchedule";
+import EP_403 from "./Components/ErrorPages/EP_403";
+import EP_404 from "./Components/ErrorPages/EP_404";
 
-const AppRoutes = () => {
-  const { user, loading } = useAuth();
+
+const AppRoutes = ({ session, userRole, loading }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [redirected, setRedirected] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) {
-      // Redirect logged-in users to the correct dashboard if they visit "/"
-      if (location.pathname === "/") {
-        if (user.role === "admin") navigate("/adminhome");
-        else if (user.role === "tutor") navigate("/tutorhome");
-        else if (user.role === "tutee") navigate("/tuteehome");
+    if (!loading && session && userRole) {
+      const currentPath = location.pathname;
+
+      const isLandingOrLogin = ["/", "/login"].includes(currentPath);
+
+      if (isLandingOrLogin || !redirected) {
+        switch (userRole) {
+          case "admin":
+            navigate("/adminhome");
+            break;
+          case "tutor":
+            navigate("/tutorhome");
+            break;
+          case "tutee":
+            navigate("/tuteehome");
+            break;
+          default:
+            navigate("/EP_403");
+        }
+        setRedirected(true);
       }
     }
-  }, [user, loading, location, navigate]);
 
-  if (loading) return <p>Loading session...</p>;
+    if (!loading && !session && !redirected) {
+      // Allow visitor to access landing page
+      setRedirected(true);
+    }
+  }, [session, userRole, loading, location.pathname, navigate, redirected]);
+
+  useEffect(() => {
+    setRedirected(false); // allow re-evaluation on userRole change
+  }, [userRole]);
+
+  const roleStillLoading = session && userRole === null;
+  if (loading || roleStillLoading) return <div>Loading...</div>;
+
 
   return (
     <Routes>
+      {/* General Routes */}
       <Route path="/" element={<HomePage />} />
       <Route path="/about" element={<About />} />
-      <Route path="/request" element={<Request />} />
+      <Route path="/guestrequest" element={<GuestRequest />} />
       <Route path="/developers" element={<Developers />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/tutorprofile" element={<TutorProfile />} />
-      <Route path="/logout" element={<HomePage />} />
-      <Route path="/tuteeprofile" element={<TuteeProfile />} />
-      <Route path="/tutorbookings" element={<TutorBookings />} />
-      <Route path="/tuteeactivity" element={<TuteeActivity />} />
-      <Route path="/adminprofile" element={<AdminProfile />} />
-      <Route path="/visionmission" element={<VisionMissionSection />} />
       <Route path="/updateyourpassword" element={<UpdateYourPassword />} />
       <Route path="/forgotpassword" element={<ForgotPassword />} />
-      <Route path="/tutoractivity" element={<TutorActivity />} />
-      <Route path="/guestrequest" element={<GuestRequest />} />
-      <Route path="/adminstats" element={<AdminStats />} />
-      <Route path="/classschedule" element={<ClassSchedule />} />
+      <Route path="/EP_403" element={<EP_403 />} />
+      <Route path="*" element={<EP_404 />} />
 
-      {/* Protected Routes */}
-      <Route
-        path="/tutorhome"
-        element={
-          <ProtectedRoute role="tutor">
-            <TutorHome />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/adminhome"
-        element={
-          <ProtectedRoute role="admin">
-            <AdminHome />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/tuteehome"
-        element={
-          <ProtectedRoute role="tutee">
-            <TuteeHome />
-          </ProtectedRoute>
-        }
-      />
+      {/* Admin Routes */}
+      <Route path="/adminprofile" element={
+        <ProtectedRoute allowedRoles={["admin"]} userRole={userRole}>
+          <AdminProfile />
+        </ProtectedRoute>
+      } />
+      <Route path="/adminstats" element={
+        <ProtectedRoute allowedRoles={["admin"]} userRole={userRole}>
+          <AdminStats />
+        </ProtectedRoute>
+      } />
+      <Route path="/adminhome" element={
+        <ProtectedRoute allowedRoles={["admin"]} userRole={userRole}>
+          <AdminHome />
+        </ProtectedRoute>
+      } />
+
+      {/* Tutor Routes */}
+      <Route path="/tutorprofile" element={
+        <ProtectedRoute allowedRoles={["tutor"]} userRole={userRole}>
+          <TutorProfile />
+        </ProtectedRoute>
+      } />
+      <Route path="/tutorbookings" element={
+        <ProtectedRoute allowedRoles={["tutor"]} userRole={userRole}>
+          <TutorBookings />
+        </ProtectedRoute>
+      } />
+      <Route path="/tutoractivity" element={
+        <ProtectedRoute allowedRoles={["tutor"]} userRole={userRole}>
+          <TutorActivity />
+        </ProtectedRoute>
+      } />
+      <Route path="/tutorhome" element={
+        <ProtectedRoute allowedRoles={["tutor"]} userRole={userRole}>
+          <TutorHome />
+        </ProtectedRoute>
+      } />
+
+      {/* Tutee Routes */}
+      <Route path="/request" element={
+        <ProtectedRoute allowedRoles={["tutee"]} userRole={userRole}>
+          <Request />
+        </ProtectedRoute>
+      } />
+      <Route path="/tuteeprofile" element={
+        <ProtectedRoute allowedRoles={["tutee"]} userRole={userRole}>
+          <TuteeProfile />
+        </ProtectedRoute>
+      } />
+      <Route path="/tuteeactivity" element={
+        <ProtectedRoute allowedRoles={["tutee"]} userRole={userRole}>
+          <TuteeActivity />
+        </ProtectedRoute>
+      } />
+      <Route path="/tuteehome" element={
+        <ProtectedRoute allowedRoles={["tutee"]} userRole={userRole}>
+          <TuteeHome />
+        </ProtectedRoute>
+      } />
     </Routes>
   );
 };
@@ -112,7 +167,7 @@ const FooterWithRouteCheck = () => {
     "/tutorprofile",
   ];
 
-  if (noFooterPaths.some((path) => location.pathname === path)) {
+  if (noFooterPaths.includes(location.pathname)) {
     return null;
   }
 
@@ -120,18 +175,73 @@ const FooterWithRouteCheck = () => {
 };
 
 const App = () => {
+  const [session, setSession] = useState(null);
+  const [userRole, setUserRole] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Phase 1: Load session
+  useEffect(() => {
+    const init = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+    };
+
+    init();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session); // this triggers phase 2
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  // Phase 2: Once session exists, fetch user role
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (session?.user?.id) {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single();
+
+        if (error) {
+          console.error("❌ Failed to fetch role:", error.message);
+        } else {
+          setUserRole(data.role);
+        }
+      }
+
+      setLoading(false); // session is ready, role is fetched
+    };
+
+    fetchUserRole();
+  }, [session]);
+
+  // Debug
+  useEffect(() => {
+    console.log("✅ Session:", session);
+    console.log("✅ Role:", userRole);
+  }, [session, userRole]);
+
+  // Wait for both session and role to be ready
+  if (loading) return <div>Loading...</div>;
+
   return (
-    <AuthProvider>
+    <SessionContext.Provider value={{ session, userRole }}>
       <Router>
         <div className="app-container">
           <div className="content">
-            <AppRoutes />
+            <AppRoutes session={session} userRole={userRole} loading={loading} />
           </div>
           <FooterWithRouteCheck />
         </div>
       </Router>
-    </AuthProvider>
+    </SessionContext.Provider>
   );
 };
+
 
 export default App;

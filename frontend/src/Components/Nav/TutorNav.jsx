@@ -4,53 +4,38 @@ import "./TutorNav.css";
 import userImage from "../../assets/user.png";
 import logo from "../../assets/SNHome.png";
 import { supabase } from "../../supabaseClient";
-import { useAuth } from "../Login/AuthContext";
 import Notifications from "../Notifications/Notifications";
+import { useSession } from "../../SessionContext";
 
 const TutorNav = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [userId, setUserID] = useState(null);
-  const [userName, setUserName] = useState(null);
-  const { user, setUser } = useAuth();
+  const [userId, setUserId] = useState(null);
+
+  const { session } = useSession();
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) console.error("Log out error:", error);
-    else {
-      setUser(null);
-      navigate("/login");
+  useEffect(() => {
+    if (session && session.user) {
+      setUserId(session.user.id);
     }
-  };
+  }, [session]);
 
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  // Get the user ID
-  useEffect(() => {
-    if (!user?.email) return; // Ensure `user.email` exists before fetching
-
-    const fetchUser = async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, first_name, last_name")
-        .eq("email", user.email)
-        .single();
-
-      if (error) {
-        console.error("Error fetching user:", error);
-      } else {
-        setUserID(data.id);
-        setUserName(data.first_name + " " + data.last_name);
-      }
-    };
-
-    fetchUser();
-  }, [user]); // Depend on `user`
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error("Log out error:", error);
+    else {
+      navigate("/login");
+    }
+  };
 
   return (
     <nav className="nav nav-colored">

@@ -43,6 +43,7 @@ const Nav = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [location]); // Re-run effect when location changes
+  
   return (
     <nav className={`nav ${navBackground ? "nav-colored" : ""}`}>
       <div className="container">
