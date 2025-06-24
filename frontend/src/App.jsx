@@ -77,7 +77,7 @@ const AppRoutes = ({ session, userRole, loading }) => {
   }, [userRole]);
 
   const roleStillLoading = session && userRole === null;
-  if (loading || roleStillLoading) return <div>Loading...</div>;
+  if (loading || roleStillLoading) return <Loading/>;
 
 
   return (
@@ -237,7 +237,7 @@ const App = () => {
   }, [session, userRole]);
 
   // Wait for both session and role to be ready
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading/>;
 
   return (
     <SessionContext.Provider value={{ session, userRole }}>
