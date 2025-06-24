@@ -3,7 +3,6 @@ import "./Loading.css";
 
 export default function LoadingPage() {
   const [loadingText, setLoadingText] = useState("Loading");
-  const [progress, setProgress] = useState(0);
 
   // Animated loading text with dots
   useEffect(() => {
