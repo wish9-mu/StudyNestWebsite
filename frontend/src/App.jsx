@@ -32,8 +32,9 @@ import UpdateYourPassword from "./Components/ResetPassword/UpdateYourPassword";
 import TutorActivity from "./Components/TutorActivity/TutorActivity";
 import GuestRequest from "./Components/Request/GuestRequest";
 import AdminStats from "./Components/Admin Statistics/AdminStat";
-import EP_403 from "./Components/ErrorPages/EP_403";
-import EP_404 from "./Components/ErrorPages/EP_404";
+import Forbidden from "./Components/Error Pages/Forbidden";
+import NotFound from "./Components/Error Pages/NotFound";
+import Loading from "./Components/Loading Page/Loading"
 
 
 const AppRoutes = ({ session, userRole, loading }) => {
@@ -58,7 +59,7 @@ const AppRoutes = ({ session, userRole, loading }) => {
             navigate("/tuteehome");
             break;
           default:
-            navigate("/EP_403");
+            navigate("/forbidden");
         }
         setRedirected(true);
       }
@@ -85,8 +86,8 @@ const AppRoutes = ({ session, userRole, loading }) => {
       <Route path="/register" element={<Register />} />
       <Route path="/updateyourpassword" element={<UpdateYourPassword />} />
       <Route path="/forgotpassword" element={<ForgotPassword />} />
-      <Route path="/EP_403" element={<EP_403 />} />
-      <Route path="*" element={<EP_404 />} />
+      <Route path="/forbidden" element={<Forbidden />} />
+      <Route path="*" element={<NotFound />} />
 
       {/* Admin Routes */}
       <Route path="/adminprofile" element={

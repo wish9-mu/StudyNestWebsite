@@ -124,14 +124,12 @@ const AdminStat = () => {
         if (tutorError) {
           console.error("❌ Error fetching top tutors:", tutorError);
         } else {
-          console.log("✅ Top Tutors Data:", topTutorsData);
           setTopTutors(topTutorsData);
         }
 
         if (tuteeError) {
           console.error("❌ Error fetching top tutees:", tuteeError);
         } else {
-          console.log("✅ Top Tutees Data:", topTuteesData);
           setTopTutees(topTuteesData);
         }
       } catch (error) {
@@ -144,7 +142,6 @@ const AdminStat = () => {
 
   // Handle opening the PerformanceCard modal
   const handleCardClick = (user) => {
-    console.log("Selected User:", user);
     setSelectedUser(user);
   };
 

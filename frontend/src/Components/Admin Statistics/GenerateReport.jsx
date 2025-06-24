@@ -55,7 +55,6 @@ const GenerateReport = () => {
   const generateReport = async (type) => {
     setLoading((prev) => ({ ...prev, [type]: true }));
     setShowModal(false);
-    console.log(`Generating ${type} report...`);
 
     try {
       let data, error;

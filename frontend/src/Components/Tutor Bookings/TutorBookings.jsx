@@ -28,7 +28,6 @@ const TutorBookings = () => {
         console.error("❌ Error fetching user:", error || "User not found");
         return;
       }
-      console.log("✅ User ID fetched:", userData.user.id);
       setUserId(userData.user.id);
     };
     fetchUser();
@@ -50,8 +49,6 @@ const TutorBookings = () => {
       data.forEach((course) => {
         courseMap[course.course_code] = course.course_name;
       });
-
-      console.log("📚 Courses fetched:", courseMap);
       setCourses(courseMap);
     };
 
@@ -75,8 +72,6 @@ const TutorBookings = () => {
       return;
     }
 
-    console.log("✅ Pending bookings fetched:", bookings);
-
     // Fetch tutee names
     const tuteeIds = bookings.map((b) => b.tutee_id);
     const { data: tuteeData, error: tuteeError } = await supabase
@@ -88,8 +83,6 @@ const TutorBookings = () => {
       console.error("❌ Error fetching tutee names:", tuteeError);
       return;
     }
-
-    console.log("👤 Tutee names fetched:", tuteeData);
 
     const tuteeMap = {};
     tuteeData.forEach((t) => {
@@ -110,7 +103,6 @@ const TutorBookings = () => {
       notes: booking.notes || "No additional notes.",
     }));
 
-    console.log("📌 Formatted bookings:", formattedBookings);
     setPendingBookings(formattedBookings);
   };
 
@@ -136,7 +128,6 @@ const TutorBookings = () => {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "bookings" },
         (payload) => {
-          console.log("🆕 New pending booking detected:", payload.new);
           fetchPendingBookings(); // Refetch bookings
         }
       )
@@ -144,7 +135,6 @@ const TutorBookings = () => {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "bookings" },
         (payload) => {
-          console.log("🔄 Pending booking status updated:", payload.new);
 
           if (["accepted", "rejected"].includes(payload.new.status)) {
             // ✅ Remove from UI if status is changed

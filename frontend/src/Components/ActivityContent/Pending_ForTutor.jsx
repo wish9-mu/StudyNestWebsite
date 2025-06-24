@@ -17,7 +17,6 @@ const Pending_ForTutor = () => {
         console.error("❌ Error fetching user:", error || "User not found");
         return;
       }
-      console.log("✅ User ID fetched:", userData.user.id);
       setUserId(userData.user.id);
     };
     fetchUser();
@@ -38,8 +37,6 @@ const Pending_ForTutor = () => {
         console.error("❌ Error fetching user role:", error);
         return;
       }
-
-      console.log("✅ User role fetched:", data.role);
       setUserRole(data.role);
     };
     fetchUserRole();
@@ -62,7 +59,6 @@ const Pending_ForTutor = () => {
         courseMap[course.course_code] = course.course_name;
       });
 
-      console.log("📚 Courses fetched:", courseMap);
       setCourses(courseMap);
     };
 
@@ -90,14 +86,10 @@ const Pending_ForTutor = () => {
       return;
     }
 
-    console.log("✅ Active bookings fetched:", bookings);
-
     // Fetch participant names
     const participantIds = bookings
       .map((b) => (userRole === "tutee" ? b.tutor_id : b.tutee_id))
       .filter((id) => id); // Remove null values
-
-    console.log("👤 Fetching participant names for IDs:", participantIds);
 
     const { data: participantData, error: participantError } = await supabase
       .from("profiles")
@@ -108,8 +100,6 @@ const Pending_ForTutor = () => {
       console.error("❌ Error fetching participant name:", participantError);
       return;
     }
-
-    console.log("👤 Participant names fetched:", participantData);
 
     const participantMap = {};
     participantData.forEach((p) => {
@@ -153,7 +143,7 @@ const Pending_ForTutor = () => {
           "postgres_changes",
           { event: "UPDATE", schema: "public", table: "bookings" },
           (payload) => {
-            console.log("🔄 [Active] Booking status updated:", payload.new);
+
   
             const updatedBooking = payload.new;
   
@@ -198,8 +188,6 @@ const Pending_ForTutor = () => {
       console.error("❌ Invalid booking ID:", bookingId);
       return;
     }
-
-    console.log("🚀 Cancelling booking:", bookingId);
 
     try {
       const { error } = await supabase

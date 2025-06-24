@@ -62,12 +62,6 @@ const Register = () => {
       newErrors.mobileNumber = "Enter a valid 10-digit PH mobile number";
     }
 
-    // if (!formData.email.trim()) {
-    //   newErrors.email = "Email is required";
-    // } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-    //   newErrors.email = "Please enter a valid email";
-    // }
-
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/^[a-zA-Z0-9._%+-]+@mymail\.mapua\.edu\.ph$/.test(formData.email)) {
@@ -142,8 +136,6 @@ const Register = () => {
           password: formData.password,
         });
 
-        console.log("Supabase response:", { data, error }); // Debugging
-
         if (error) {
           console.error("Registration error:", error.message);
           setErrors({ email: error.message });
@@ -151,7 +143,6 @@ const Register = () => {
         }
 
         if (data.user) {
-          console.log("User created successfully:", data.user);
 
           // Insert additional user data into Supabase database
           const { error: dbError } = await supabase.from("profiles").insert([

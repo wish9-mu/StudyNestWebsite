@@ -27,7 +27,6 @@ const LoginPage = () => {
 
     // Authenticate user
     try {
-      console.log("Login attempted with:", formData);
 
       // Sign in with email and password
       const { data: authData, error: authError } =
@@ -42,7 +41,7 @@ const LoginPage = () => {
         );
         return;
       } else {
-        console.log("Login successful:", authData.user);
+        console.log("Login successful");
       }
 
       const userId = authData.user.id;
@@ -61,10 +60,8 @@ const LoginPage = () => {
             (profileError?.message || "Profile not found")
         );
         return;
-      } else {
-        console.log("Profile data:", profileData);
-      }
-
+      } 
+      
     } catch (error) {
       console.error("Unexpected error:", error);
       setError("An unexpected error occurred. Please try again.");

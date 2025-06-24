@@ -105,10 +105,7 @@ const AvailableCourses = () => {
           ])
           .select();
 
-        console.log("Supabase response:", { data, error: supabaseError }); // Debugging
-
         if (!supabaseError) {
-          console.log("Course added successfully:", data);
           setMessage(`${formData.course_code} added successfully!`);
           setVisibleMessage(true);
 

@@ -20,7 +20,6 @@ const TutorActivity = () => {
           
         </div>
       </main>
-      {/* Footer is rendered elsewhere in your app structure */}
     </div>
   );
 };

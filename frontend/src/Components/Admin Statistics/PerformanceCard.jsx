@@ -9,8 +9,6 @@ import defaultAvatar from "../../assets/default-avatar.png";
 const PerformanceCard = ({ user, onClose }) => {
   if (!user) return null;
 
-  console.log("📌 Opening Performance Card for:", user);
-
   const [courses, setCourses] = useState({});
   const [tutorCourses, setTutorCourses] = useState([]);
   const [classSchedule, setClassSchedule] = useState([]);
@@ -28,11 +26,6 @@ const PerformanceCard = ({ user, onClose }) => {
 
   useEffect(() => {
     const fetchUserInformation = async () => {
-      console.log(
-        "🔍 Fetching all details for:",
-        user.first_name,
-        user.last_name
-      );
 
       try {
         const [
@@ -97,7 +90,6 @@ const PerformanceCard = ({ user, onClose }) => {
           course_name: courseMap[tc.course_code] || "Unknown",
         }));
         setTutorCourses(formattedTutorCourses);
-        console.log("📚 Tutor Courses for User:", formattedTutorCourses);
 
         setClassSchedule(classScheduleData.data);
         setAvailabilitySchedule(availabilityScheduleData.data);
