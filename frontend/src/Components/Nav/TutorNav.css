@@ -126,6 +126,23 @@
     color: #fff;
     font-size: 1.1rem;
   }
+
+  /*FOR SEARCH BAR*/
+  .nav-search-item.tutee-result {
+    background: #f6faff;
+    color: #1a3a5a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-search-item.tutee-result:hover {
+    background: #e0f0ff;
+    cursor: pointer;
+  }
+  .nav-search-item .tutee-icon {
+    font-size: 1.2rem;
+    margin-right: 6px;
+  }
   
   /* Media Queries for Responsiveness */
   @media (max-width: 768px) {

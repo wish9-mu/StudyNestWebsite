@@ -32,6 +32,10 @@ import TutorActivity from "./Components/TutorActivity/TutorActivity";
 import GuestRequest from "./Components/Request/GuestRequest";
 import AdminStats from "./Components/Admin Statistics/AdminStat";
 import ClassSchedule from "./Components/ProfileContent/ClassSchedule";
+import CourseInfo from "./Components/CourseInfo/CourseInfo";
+import TutorPublicProfile from "./Components/TutorPublicProfile/TutorPublicProfile";
+import TuteePublicProfile from "./Components/TuteePublicProfile/TuteePublicProfile";
+
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
@@ -72,6 +76,9 @@ const AppRoutes = () => {
       <Route path="/guestrequest" element={<GuestRequest />} />
       <Route path="/adminstats" element={<AdminStats />} />
       <Route path="/classschedule" element={<ClassSchedule />} />
+      <Route path="/courseinfo/:course_code" element={<CourseInfo />} />
+      <Route path="/tutorinfo/:id" element={<TutorPublicProfile />} />
+      <Route path="/tuteeinfo/:id" element={<TuteePublicProfile />} />
 
       {/* Protected Routes */}
       <Route

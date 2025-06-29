@@ -15,6 +15,13 @@ const TutorNav = () => {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
 
+  //search bar states
+  const [search, setSearch] = useState("");
+  const [courses, setCourses] = useState([]);
+  const [tutees, setTutees] = useState([]);
+  const [filteredResults, setFilteredResults] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) console.error("Log out error:", error);
@@ -52,6 +59,71 @@ const TutorNav = () => {
     fetchUser();
   }, [user]); // Depend on `user`
 
+  //Search functionality
+  // Fetch courses and tutees on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      // Fetch courses
+      const { data: courseData, error: courseError } = await supabase
+        .from("courses")
+        .select("course_code, course_name");
+      if (!courseError && courseData) setCourses(courseData);
+
+      // Fetch tutees
+      const { data: tuteeData, error: tuteeError } = await supabase
+        .from("profiles")
+        .select("id, first_name, last_name, email")
+        .eq("role", "tutee");
+      if (!tuteeError && tuteeData) setTutees(tuteeData);
+    };
+    fetchData();
+  }, []);
+
+
+  useEffect(() => {
+    if (search.trim() === "") {
+      setFilteredResults([]);
+      setShowDropdown(false);
+      return;
+    }
+
+    // Filter courses
+    const filteredCourses = courses.filter(
+      (c) =>
+        c.course_code.toLowerCase().includes(search.toLowerCase()) ||
+        c.course_name.toLowerCase().includes(search.toLowerCase())
+    );
+
+    // Filter tutees
+    const filteredTutees = tutees.filter(
+      (t) =>
+        t.first_name.toLowerCase().includes(search.toLowerCase()) ||
+        t.last_name.toLowerCase().includes(search.toLowerCase()) ||
+        `${t.first_name} ${t.last_name}`.toLowerCase().includes(search.toLowerCase())
+    );
+
+    // Combine results with a type field
+    const results = [
+      ...filteredCourses.map((c) => ({ type: "course", ...c })),
+      ...filteredTutees.map((t) => ({ type: "tutee", ...t })),
+    ];
+
+    setFilteredResults(results);
+    setShowDropdown(results.length > 0);
+  }, [search, courses, tutees]);
+
+  const handleCourseClick = (course) => {
+    setSearch("");
+    setShowDropdown(false);
+    navigate(`/courseinfo/${encodeURIComponent(course.course_code)}`);
+  };
+
+  const handleTuteeClick = (tutee) => {
+    setSearch("");
+    setShowDropdown(false);
+    navigate(`/tuteeinfo/${tutee.id}`); // You need to create this page if you want
+  };
+
   return (
     <nav className="nav nav-colored">
       <div className="container">
@@ -60,6 +132,67 @@ const TutorNav = () => {
           <Link to="/tutorhome">
             <img src={logo} alt="Logo" className="logo" />
           </Link>
+
+          {/* --- Search Bar --- */}
+          <div style={{ position: "relative", width: "250px", marginLeft: "20px" }}>
+            <input
+              type="text"
+              className="nav-search-bar"
+              placeholder="Search courses or tutees..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onFocus={() => setShowDropdown(filteredResults.length > 0)}
+              onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+              style={{
+                width: "100%",
+                padding: "8px 12px",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+                fontSize: "1rem"
+              }}
+            />
+            {showDropdown && (
+              <div
+                className="nav-search-dropdown"
+                style={{
+                  position: "absolute",
+                  top: "110%",
+                  left: 0,
+                  right: 0,
+                  background: "#fff",
+                  border: "1px solid #eee",
+                  borderRadius: "4px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                  zIndex: 1000,
+                  maxHeight: "200px",
+                  overflowY: "auto"
+                }}
+              >
+                {filteredResults.map((item) =>
+                  item.type === "course" ? (
+                    <div
+                      key={`course-${item.course_code}`}
+                      className="nav-search-item"
+                      onMouseDown={() => handleCourseClick(item)}
+                    >
+                      <strong>{item.course_code}</strong> - {item.course_name}
+                    </div>
+                  ) : (
+                    <div
+                      key={`tutee-${item.id}`}
+                      className="nav-search-item tutee-result"
+                      onMouseDown={() => handleTuteeClick(item)}
+                    >
+                      <span className="tutee-icon" role="img" aria-label="Tutee">👤</span>{" "}
+                      {item.first_name} {item.last_name}
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+          </div>
+          {/* --- End Search Bar --- */}
+
 
           {/* Hamburger Menu Button */}
           <button onClick={toggleMobileMenu} className="mobile-menu-button">

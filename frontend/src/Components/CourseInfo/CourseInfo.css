@@ -1,0 +1,88 @@
+.course-info-container {
+  max-width: 500px;
+  margin: 120px auto 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 2.5rem 2rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.course-info-image {
+  display: block;
+  max-width: 100%;
+  max-height: 220px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #fff7e6 0%, #ffe6e6 100%);
+  border: 2px solid #383735;
+  box-shadow: 0 4px 16px rgba(192,0,15,0.10), 0 1.5px 8px rgba(0,0,0,0.07);
+  transition: 
+    box-shadow 0.2s,
+    transform 0.2s,
+    filter 0.2s;
+  filter: brightness(0.97) saturate(1.05);
+}
+
+.course-info-image:hover {
+  box-shadow: 0 8px 32px rgba(192,0,15,0.18), 0 3px 16px rgba(0,0,0,0.10);
+  transform: scale(1.025);
+  filter: brightness(1) saturate(1.1);
+}
+
+.course-info-title {
+  color: #c0000f;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.course-info-details {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.course-info-details strong {
+  display: block;
+  margin-top: 1rem;
+  color: #c0000f;
+  font-size: 1.05rem;
+}
+
+.course-info-details p {
+  margin: 0.5rem 0 0.5rem 0;
+  color: #222;
+  font-size: 1rem;
+}
+
+.request-tutor-button {
+  width: 100%;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  padding: 14px 0;
+  border-radius: 8px;
+  background: #c0000f;
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.request-tutor-button:hover {
+  background: #a0000f;
+}
+
+body.course-info-bg {
+  background-image: url("../../assets/study.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}

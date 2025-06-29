@@ -8,6 +8,7 @@ import TutorHome from "./Components/Tutor Home/TutorHome";
 import AdminHome from "./Components/Admin Home/AdminHome";
 import TuteeHome from "./Components/Tutee Home/TuteeHome";
 
+
 const routes = [
   { path: "/", element: <Home /> },
   { path: "/about", element: <About /> },
@@ -18,6 +19,7 @@ const routes = [
   { path: "/tutorhome", element: <TutorHome /> },
   { path: "/adminhome", element: <AdminHome /> },
   { path: "/tuteehome", element: <TuteeHome /> },
+
 ];
 
 export default routes;

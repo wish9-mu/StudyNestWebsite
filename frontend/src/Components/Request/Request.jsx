@@ -3,11 +3,12 @@ import TuteeNav from "../Nav/TuteeNav";
 import "./Request.css";
 import Select from "react-select";
 import { supabase } from "../../supabaseClient";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "../Modal/Modal.css";
 
 const Request = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [userId, setUserId] = useState(null);
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -20,6 +21,20 @@ const Request = () => {
   const [loadingTutors, setLoadingTutors] = useState(false); // Track if tutors are being fetched
   const [showModal, setShowModal] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
+  
+
+  //FOR SEARCH BAR////////////////
+
+  // Pre-select course from query param
+  useEffect(() => {
+    const courseParam = searchParams.get("course");
+    if (courseParam && courses.length > 0) {
+      const found = courses.find((c) => c.value === courseParam);
+      if (found) setSelectedCourse(found);
+    }
+  }, [searchParams, courses]);
+
+  ////////////////////////////////
 
   // 🔹 Fetch User ID
   useEffect(() => {

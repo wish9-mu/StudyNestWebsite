@@ -2,7 +2,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
     "dotenv": "^16.4.7",
-    "jspdf": "^3.0.0",
+    "jspdf": "^3.0.1",
     "jspdf-autotable": "^3.0.4",
     "lucide-react": "^0.475.0",
     "nodemon": "^3.1.9",

@@ -1,0 +1,50 @@
+.tutor-profile-container {
+  max-width: 500px;
+  margin: 120px auto 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 2.5rem 2rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tutor-profile-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1.5rem;
+  border: 2px solid #c0000f;
+}
+
+.tutor-profile-container h1 {
+  color: #c0000f;
+  margin-bottom: 0.5rem;
+}
+
+.tutor-profile-container p {
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.tutor-profile-container h3 {
+  color: #c0000f;
+  margin-bottom: 0.5rem;
+}
+
+.tutor-profile-container ul {
+  width: 100%;
+  padding-left: 0;
+}
+
+.tutor-profile-container li {
+  list-style: none;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+.tutor-profile-container li:last-child {
+  margin-bottom: 0;
+}
