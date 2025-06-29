@@ -20,6 +20,7 @@ const PerformanceCard = ({ user, onClose }) => {
   const [rejectedBookings, setRejectedBookings] = useState([]);
   const [cancelledBookings, setCancelledBookings] = useState([]);
   const [completedBookings, setCompletedBookings] = useState([]);
+  const [feedbackAverage, setFeedbackAverage] = useState(null);
 
   const [showReportModal, setShowReportModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(0); // 🔹 Track current table page
@@ -154,6 +155,72 @@ const PerformanceCard = ({ user, onClose }) => {
         setCompletedBookings(
           formatBookings(completedBookingsData.data, "Completed")
         );
+
+        // Fetch all feedback given to this user DIRECTLY
+        // 1️⃣ Fetch all feedbacks
+        const { data: feedbacks, error: feedbackError } = await supabase
+          .from("feedback")
+          .select("id, session_id, user_id, responses");
+
+        if (feedbackError) {
+          console.error("❌ Error fetching feedback:", feedbackError);
+          return;
+        }
+
+        // 2️⃣ Sessions joined by session_id
+        const sessionIds = feedbacks.map(f => f.session_id).filter(Boolean);
+        const { data: sessions, error: sessionsError } = await supabase
+          .from("bookings_history")
+          .select("id, tutor_id, tutee_id")
+          .in("id", sessionIds);
+
+        if (sessionsError) {
+          console.error("❌ Error fetching sessions:", sessionsError);
+          return;
+        }
+
+        // 3️⃣ Map sessions for quick lookup
+        const sessionMap = {};
+        sessions.forEach(s => {
+          sessionMap[s.id] = s;
+        });
+
+        // 4️⃣ Filter feedback that was RECEIVED by this user
+        const relevantFeedbacks = feedbacks.filter(f => {
+          const session = sessionMap[f.session_id];
+          if (!session) return false;
+
+          if (user.role === "tutor") {
+            // Must be tutor's session, but feedback written by someone else
+            return (
+              session.tutor_id === user.id &&
+              f.user_id !== user.id // Giver must not be same person
+            );
+          } else {
+            return (
+              session.tutee_id === user.id &&
+              f.user_id !== user.id
+            );
+          }
+        });
+
+        // 5️⃣ Average `responses`
+        const allScores = relevantFeedbacks.flatMap(f => {
+          if (f.responses && typeof f.responses === "object") {
+            return Object.values(f.responses).map(Number);
+          }
+          return [];
+        });
+
+        const feedbackAverage =
+          allScores.length > 0
+            ? (allScores.reduce((a, b) => a + b, 0) / allScores.length).toFixed(1)
+            : null;
+
+        console.log("✅ Corrected received feedback average:", feedbackAverage);
+
+        setFeedbackAverage(feedbackAverage);
+
       } catch (error) {
         console.error("❌ Error Fetching User Details:", error);
       }
@@ -161,6 +228,25 @@ const PerformanceCard = ({ user, onClose }) => {
 
     fetchUserInformation();
   }, [user.id, user.role]);
+
+  const renderStars = () => {
+    if (feedbackAverage === null) return "N/A";
+
+    const rounded = Math.floor(Number(feedbackAverage)); // Round down
+    const maxStars = 5;
+
+    // Create an array [1, 2, 3, 4, 5]
+    const stars = [];
+    for (let i = 0; i < maxStars; i++) {
+      if (i < rounded) {
+        stars.push(<span key={i}>⭐</span>); // Full star
+      } else {
+        stars.push(<span key={i}> </span>); // Empty star
+      }
+    }
+
+    return stars;
+  };
 
   const prepareReportData = () => {
     // Define report sections (tables)
@@ -418,6 +504,9 @@ const PerformanceCard = ({ user, onClose }) => {
         <p>User Role: {user.role}</p>
         <p>Email: {user.email}</p>
         <p>Student Number: {user.student_number}</p>
+        <h2>{renderStars()}
+          <br /> Rating: {feedbackAverage === null ? "N/A" : `${feedbackAverage} / 5`}
+        </h2>
         <button className="download-btn" onClick={prepareReportData}>
           Generate User Report
         </button>
