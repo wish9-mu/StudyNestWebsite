@@ -1,13 +1,7 @@
-import React from "react";
 import "./AdminProfile.css";
-import { Link } from "react-router-dom"; // Assuming you're using React Router
 import AvailableCourses from "./AvailableCourses";
-import { useAuth } from "../Login/AuthContext";
-import { supabase } from "../../supabaseClient";
 import AdminNav from "../Nav/AdminNav";
-
 const AdminProfile = () => {
-  const { user } = useAuth();
 
   return (
     <div className="admin-profile-page">

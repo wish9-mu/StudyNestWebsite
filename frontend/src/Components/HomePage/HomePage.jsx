@@ -15,8 +15,7 @@ const HomePage = () => {
 
       <main>
         <Hero />
-
-        {/*hi*/}
+        
         <section className="fullscreen-section">
           <div className="content-container">
             <h1>STUDYNEST IS THE KEY TO YOUR SUCCESS</h1>
