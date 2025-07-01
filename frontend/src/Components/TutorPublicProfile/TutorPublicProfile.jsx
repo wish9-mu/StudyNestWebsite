@@ -20,13 +20,12 @@ const TutorPublicProfile = () => {
         .single();
       if (!error && data) {
         setTutor(data);
-        // If you have a profile_picture field, use it:
-        if (data.profile_picture) setImgSrc(data.profile_picture);
+        // Always reset to default first
+        setImgSrc(data.profile_picture ? data.profile_picture : defaultTutorImg);
       }
     };
 
     const fetchCourses = async () => {
-      // If you have a tutor_courses join table:
       const { data, error } = await supabase
         .from("tutor_courses")
         .select("course_code, courses(course_name)")

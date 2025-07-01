@@ -21,6 +21,8 @@ const Request = () => {
   const [loadingTutors, setLoadingTutors] = useState(false); // Track if tutors are being fetched
   const [showModal, setShowModal] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
+  const [showWaitlistConfirm, setShowWaitlistConfirm] = useState(false);
+  const [pendingWaitlistData, setPendingWaitlistData] = useState(null);
   
 
   //FOR SEARCH BAR////////////////
@@ -181,11 +183,17 @@ const Request = () => {
       );
 
       if (availableTutors.length === 0) {
-        console.warn(
-          "⚠️ No available tutors left after filtering booked tutors."
-        );
-        setModalMsg("No more tutors available");
-        setShowModal(true);
+        // Prepare waitlist data and show confirmation modal
+        setPendingWaitlistData({
+          tutee_id: userId,
+          course_code: selectedCourse.value,
+          session_date,
+          start_time,
+          end_time,
+          notes,
+          status: "waiting"
+        });
+        setShowWaitlistConfirm(true);
         setTutors([]);
         return;
       }
@@ -288,6 +296,52 @@ const Request = () => {
       resetForm();
     } catch (error) {
       console.error("Error submitting request:", error);
+    }
+  };
+
+  // 🔹 Handle Waitlist Confirmation
+  const handleWaitlistConfirm = async (proceed) => {
+    setShowWaitlistConfirm(false);
+    if (proceed && pendingWaitlistData) {
+      try {
+        // Check current waitlist count for this slot
+        const { count, error: countError } = await supabase
+          .from("waitlist")
+          .select("*", { count: "exact", head: true })
+          .eq("course_code", pendingWaitlistData.course_code)
+          .eq("session_date", pendingWaitlistData.session_date)
+          .eq("start_time", pendingWaitlistData.start_time)
+          .eq("end_time", pendingWaitlistData.end_time)
+          .eq("status", "waiting");
+
+        if (countError) {
+          setModalMsg("Could not check waitlist: " + countError.message);
+          setShowModal(true);
+          setPendingWaitlistData(null);
+          return;
+        }
+
+        if (count >= 3) {
+          setModalMsg("The waitlist for this slot is full. You cannot join the waitlist.");
+          setShowModal(true);
+          setPendingWaitlistData(null);
+          return;
+        }
+
+        // Proceed to insert if not full
+        const { error } = await supabase.from("waitlist").insert([pendingWaitlistData]);
+        if (error) {
+          setModalMsg("Could not add to waitlist: " + error.message);
+        } else {
+          setModalMsg("You have been added to the waitlist.");
+        }
+      } catch (err) {
+        setModalMsg("Could not add to waitlist: " + err.message);
+      }
+      setShowModal(true);
+      setPendingWaitlistData(null);
+    } else {
+      setPendingWaitlistData(null);
     }
   };
 
@@ -434,7 +488,25 @@ const Request = () => {
             </button>
           </form>
         </div>
-
+        {showWaitlistConfirm && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h2>All tutors are fully booked. Would you like to join the waitlist?</h2>
+              <button
+                className="accept"
+                onClick={() => handleWaitlistConfirm(true)}
+              >
+                Yes
+              </button>
+              <button
+                className="reject"
+                onClick={() => handleWaitlistConfirm(false)}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        )}
         <>
           {showModal && (
             <div className="modal-overlay">
