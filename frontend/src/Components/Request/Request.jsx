@@ -100,7 +100,6 @@ const Request = () => {
       const sessionDay = new Date(session_date).toLocaleString("en-us", {
         weekday: "long",
       });
-      console.log("🔹 Converted session date to weekday:", sessionDay);
 
       // Fetch tutor availability
       const { data: availabilityData, error: availabilityError } =
@@ -117,8 +116,6 @@ const Request = () => {
         throw availabilityError;
       }
 
-      console.log("✅ Tutor availability data fetched:", availabilityData);
-
       if (!availabilityData || availabilityData.length === 0) {
         setTutors([]); // No tutors available
         console.log("No tutors available for the selected time slot.");
@@ -129,7 +126,6 @@ const Request = () => {
 
       // Extract tutor IDs
       const tutorIds = availabilityData.map((row) => row.user_id);
-      console.log("🆔 Tutor IDs matching availability:", tutorIds);
 
       if (tutorIds.length === 0) {
         console.warn("⚠️ No tutor IDs were extracted.");
@@ -149,7 +145,6 @@ const Request = () => {
         showModal(true);
         throw courseError;
       }
-      console.log("📚 Tutors who teach this course:", tutorsTeachingCourse);
 
       const finalTutorIds = tutorsTeachingCourse.map((t) => t.tutor_id);
 
@@ -174,7 +169,6 @@ const Request = () => {
         setShowModal(true);
         throw bookedError;
       }
-      console.log("🚫 Tutors who are already booked:", bookedTutors);
 
       // Remove booked tutors from the available list
       const bookedTutorIds = bookedTutors.map((b) => b.tutor_id);
@@ -210,7 +204,6 @@ const Request = () => {
         showModal(true);
         throw tutorError;
       }
-      console.log("✅ Tutors fetched after filtering:", tutorData);
 
       // Convert tutor data to react-select format
       const formattedTutors = tutorData.map((tutor) => ({
@@ -235,7 +228,6 @@ const Request = () => {
       setShowModal(true);
       return;
     }
-    console.log("🎯 Selected Tutor:", selectedTutor);
     setSelectedTutor(selectedTutor); // Store only the tutor ID
   };
 
@@ -281,7 +273,6 @@ const Request = () => {
     };
 
     try {
-      console.log("📤 Submitting new booking:", newBooking);
 
       const { error } = await supabase.from("bookings").insert([newBooking]);
 

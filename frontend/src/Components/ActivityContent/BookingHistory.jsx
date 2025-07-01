@@ -20,7 +20,6 @@ const BookingHistory = () => {
         console.error("❌ Error fetching user:", error || "User not found");
         return;
       }
-      console.log("✅ User ID fetched:", userData.user.id);
       setUserId(userData.user.id);
     };
     fetchUser();
@@ -41,8 +40,6 @@ const BookingHistory = () => {
         console.error("❌ Error fetching user role:", error);
         return;
       }
-
-      console.log("✅ User role fetched:", data.role);
       setUserRole(data.role);
     };
     fetchUserRole();
@@ -65,7 +62,6 @@ const BookingHistory = () => {
         courseMap[course.course_code] = course.course_name;
       });
 
-      console.log("📚 Courses fetched:", courseMap);
       setCourses(courseMap);
     };
 
@@ -102,8 +98,6 @@ const BookingHistory = () => {
       return;
     }
 
-    console.log("✅ Archived bookings fetched:", bookings);
-
     // Fetch participant + canceller names
     const participantIds = bookings
       .map((b) => (userRole === "tutee" ? b.tutor_id : b.tutee_id))
@@ -112,8 +106,6 @@ const BookingHistory = () => {
     const cancellerIds = bookings.map((b) => b.cancelled_by).filter(Boolean);
 
     const uniqueUserIds = [...new Set([...participantIds, ...cancellerIds])];
-
-    console.log("👤 Fetching names for IDs:", uniqueUserIds);
 
     const { data: userData, error: userError } = await supabase
       .from("profiles")
@@ -127,8 +119,6 @@ const BookingHistory = () => {
       );
       return;
     }
-
-    console.log("👤 Participant & Canceller names fetched:", userData);
 
     const nameMap = {};
     userData.forEach((p) => {
@@ -159,8 +149,6 @@ const BookingHistory = () => {
       bookingStat: booking.status,
       feedback_done: booking.feedback_done,
     }));
-
-    console.log("📌 Formatted bookings:", formattedBookings);
     setArchivedBookings(formattedBookings);
   };
 
@@ -179,7 +167,7 @@ const BookingHistory = () => {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "bookings" },
         (payload) => {
-          console.log("📌 Booking status changed:", payload.new);
+          console.log("📌 Booking status changed");
 
           if (
             ["completed", "cancelled", "rejected"].includes(payload.new.status)
@@ -193,7 +181,6 @@ const BookingHistory = () => {
         "postgres_changes",
         { event: "DELETE", schema: "public", table: "bookings" },
         (payload) => {
-          console.log("❌ Booking removed from active bookings:", payload.old);
           fetchArchivedBookings();
         }
       )
@@ -213,7 +200,7 @@ const BookingHistory = () => {
     if (error) {
       console.error("❌ Error updating booking status:", error);
     } else {
-      console.log(`✅ Booking ${bookingId} marked feedback as done`);
+      console.log(`✅ Booking marked feedback as done`);
 
       fetchArchivedBookings();
     }
@@ -229,14 +216,12 @@ const BookingHistory = () => {
     if (selectedBookingId) {
       try {
         await markAsFeedbackDone(selectedBookingId);
-        console.log("✅ Feedback marked as done");
       } catch (error) {
         console.error("❌ Error marking feedback as done:", error);
       }
     }
     setShowFeedbackForm(false);
     setSelectedBookingId(null);
-    console.log("✅ Feedback Form Closed.");
   };
 
   return (

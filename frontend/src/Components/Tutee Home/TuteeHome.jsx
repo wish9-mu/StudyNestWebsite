@@ -1,12 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./TuteeHome.css";
 import TuteeNav from "../Nav/TuteeNav";
+import { data, useNavigate } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
 
 const TuteeHome = () => {
-  const handleBoxClick = (boxNumber) => {
-    alert(`Box ${boxNumber} clicked!`);
-    // You can replace the alert with any action you want
-  };
 
   return (
     <>

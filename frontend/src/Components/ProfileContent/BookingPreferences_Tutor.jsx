@@ -16,7 +16,6 @@ const BookingPreferences = () => {
         console.error("❌ Error fetching user:", error || "User not found");
         return;
       }
-      console.log("✅ User ID:", userData.user.id);
       setUserId(userData.user.id);
     };
 
@@ -33,7 +32,6 @@ const BookingPreferences = () => {
       if (error) {
         console.error("❌ Error fetching courses:", error);
       } else {
-        console.log("✅ Courses loaded:", data);
         setCourses(
           data.map((course) => ({
             value: course.course_code,
@@ -59,7 +57,6 @@ const BookingPreferences = () => {
       if (error) {
         console.error("❌ Error fetching tutor courses:", error);
       } else {
-        console.log("✅ Tutor's preferred courses:", data);
         setSelectedCourses(
           data.map((entry) => ({
             value: entry.course_code,
@@ -100,8 +97,9 @@ const BookingPreferences = () => {
       const { error } = await supabase.from("tutor_courses").insert([
         { tutor_id: userId, course_code: courseCode },
       ]);
-      if (error) console.error(`❌ Error adding course ${courseCode}:`, error);
-      else console.log(`✅ Added course ${courseCode}`);
+      if (error) {
+        console.error(`❌ Error adding course ${courseCode}:`, error);
+      }
     }
 
     // 🔹 Delete unselected courses
@@ -112,7 +110,7 @@ const BookingPreferences = () => {
         .eq("tutor_id", userId)
         .eq("course_code", courseCode);
       if (error) console.error(`❌ Error deleting course ${courseCode}:`, error);
-      else console.log(`✅ Removed course ${courseCode}`);
+      else console.log("✅ Removed course");
     }
   };
 

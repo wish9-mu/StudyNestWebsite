@@ -1,16 +1,24 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Nav.css";
 import logo from "../../assets/SNHome.png";
 import userImage from "../../assets/user.png";
-import { useAuth } from "../Login/AuthContext";
 import { supabase } from "../../supabaseClient";
+import { useSession } from "../../SessionContext";
 
 const AdminNav = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, setUser } = useAuth();
+  const [userId, setUserId] = useState(null);
+
+  const { session } = useSession();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (session && session.user) {
+      setUserId(session.user.id);
+    }
+  }, [session]);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -24,7 +32,6 @@ const AdminNav = () => {
     const { error } = await supabase.auth.signOut();
     if (error) console.error("Log out error:", error);
     else {
-      setUser(null);
       navigate("/login");
     }
   };

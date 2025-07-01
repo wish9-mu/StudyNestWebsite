@@ -21,8 +21,6 @@ const SignInSecurity = () => {
         return;
       }
 
-      console.log("🔹 User email retrieved:", userData.user.email);
-
       const { data, error } = await supabase
         .from("profiles")
         .select("session_history")
@@ -43,7 +41,6 @@ const SignInSecurity = () => {
   }, []);
 
   const handlePasswordReset = async () => {
-    console.log("🔄 Attempting password reset for:", securityInfo.email);
 
     if (!securityInfo.email) {
       console.error("❌ Error: Email is missing.");
@@ -59,7 +56,7 @@ const SignInSecurity = () => {
       console.error("❌ Failed to send reset email:", error.message);
       alert("Failed to send password reset email. Please try again.");
     } else {
-      console.log("✅ Password reset email sent to:", securityInfo.email);
+      console.log("✅ Password reset email sent to:");
       alert("Password reset link sent to your email.");
     }
   };

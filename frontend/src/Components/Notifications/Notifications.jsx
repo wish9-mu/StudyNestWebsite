@@ -26,8 +26,6 @@ const Notifications = ({ userId }) => {
     };
 
     fetchNotifications();
-
-    console.log("🔔 Fetched Notifications for User ID:", userId, notifications);
   }, [userId]);
 
   // Listen for real-time notifications
@@ -38,7 +36,6 @@ const Notifications = ({ userId }) => {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "notifications" },
         (payload) => {
-          console.log("🔔 New Notification:", payload.new);
 
           setNotifications((prev) => {
             // Prevent duplicate notifications

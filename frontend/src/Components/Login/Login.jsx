@@ -1,13 +1,11 @@
-import React, { useState } from "react";
+  import React, { useState } from "react";
 import { data, useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import "./Login.css";
 import Nav from "../Nav/Nav";
-import { useAuth } from "./AuthContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { setUser } = useAuth();
   const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
@@ -29,7 +27,6 @@ const LoginPage = () => {
 
     // Authenticate user
     try {
-      console.log("Login attempted with:", formData);
 
       // Sign in with email and password
       const { data: authData, error: authError } =
@@ -44,7 +41,7 @@ const LoginPage = () => {
         );
         return;
       } else {
-        console.log("Login successful:", authData.user);
+        console.log("Login successful");
       }
 
       const userId = authData.user.id;
@@ -63,25 +60,8 @@ const LoginPage = () => {
             (profileError?.message || "Profile not found")
         );
         return;
-      } else {
-        console.log("Profile data:", profileData);
-      }
-
-      // Redirect user based on role
-      const userRole = profileData.role;
-
-      // Save user session
-      setUser({ id: userId, email: formData.email, role: userRole });
-
-      if (userRole === "admin") {
-        navigate("/adminhome");
-      } else if (userRole === "tutor") {
-        navigate("/tutorhome");
-      } else if (userRole === "tutee") {
-        navigate("/tuteehome");
-      } else {
-        alert("Invalid role. Contact support.");
-      }
+      } 
+      
     } catch (error) {
       console.error("Unexpected error:", error);
       setError("An unexpected error occurred. Please try again.");
