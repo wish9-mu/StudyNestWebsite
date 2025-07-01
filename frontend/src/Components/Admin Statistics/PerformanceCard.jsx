@@ -21,6 +21,26 @@ const PerformanceCard = ({ user, onClose }) => {
   const [cancelledBookings, setCancelledBookings] = useState([]);
   const [completedBookings, setCompletedBookings] = useState([]);
   const [feedbackAverage, setFeedbackAverage] = useState(null);
+  const [feedbackBreakdown, setFeedbackBreakdown] = useState({});
+
+  const feedbackLabels = {
+  // Tutee-to-Tutor
+  knowledge: "Subject Knowledge",
+  explanations: "Clarity of Explanations",
+  patience: "Patience and Support",
+  examples: "Use of Examples",
+  environment: "Learning Environment",
+  needs: "Addressed Tutee Needs",
+  satisfaction: "Overall Satisfaction",
+
+  // Tutor-to-Tutee
+  punctuality: "Punctuality",
+  engagement: "Engagement",
+  progress: "Progress in Session",
+  timeManagement: "Time Management",
+  sessionSatisfaction: "Session Satisfaction",
+};
+
 
   const [showReportModal, setShowReportModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(0); // 🔹 Track current table page
@@ -212,6 +232,8 @@ const PerformanceCard = ({ user, onClose }) => {
           return [];
         });
 
+        
+
         const feedbackAverage =
           allScores.length > 0
             ? (allScores.reduce((a, b) => a + b, 0) / allScores.length).toFixed(1)
@@ -220,6 +242,32 @@ const PerformanceCard = ({ user, onClose }) => {
         console.log("✅ Corrected received feedback average:", feedbackAverage);
 
         setFeedbackAverage(feedbackAverage);
+
+        // 6️⃣ Detailed breakdown of average per response key
+        const breakdown = {};
+
+        relevantFeedbacks.forEach((f) => {
+          if (f.responses && typeof f.responses === "object") {
+            for (const [key, value] of Object.entries(f.responses)) {
+              if (!breakdown[key]) {
+                breakdown[key] = [];
+              }
+              breakdown[key].push(Number(value));
+            }
+          }
+        });
+
+        // Compute average per feedback key
+        const breakdownAverages = {};
+        for (const [key, values] of Object.entries(breakdown)) {
+          const avg =
+            values.length > 0
+              ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(1)
+              : "N/A";
+          breakdownAverages[key] = avg;
+        }
+
+        setFeedbackBreakdown(breakdownAverages);
 
       } catch (error) {
         console.error("❌ Error Fetching User Details:", error);
@@ -230,7 +278,7 @@ const PerformanceCard = ({ user, onClose }) => {
   }, [user.id, user.role]);
 
   const renderStars = () => {
-    if (feedbackAverage === null) return "N/A";
+    if (feedbackAverage === null) return "";
 
     const rounded = Math.floor(Number(feedbackAverage)); // Round down
     const maxStars = 5;
@@ -505,8 +553,22 @@ const PerformanceCard = ({ user, onClose }) => {
         <p>Email: {user.email}</p>
         <p>Student Number: {user.student_number}</p>
         <h2>{renderStars()}
-          <br /> Rating: {feedbackAverage === null ? "N/A" : `${feedbackAverage} / 5`}
+          <br /> {feedbackAverage === null ? "No feedback rating yet." : `Rating: ${feedbackAverage} / 5`}
         </h2>
+
+        {feedbackBreakdown && Object.keys(feedbackBreakdown).length > 0 && (
+          <div className="feedback-breakdown">
+            <h3>Rating Overview</h3>
+            <ul>
+              {Object.entries(feedbackBreakdown).map(([key, avg]) => (
+                <li key={key}>
+                  <strong>{feedbackLabels[key]}:</strong> {avg} / 5
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <button className="download-btn" onClick={prepareReportData}>
           Generate User Report
         </button>
