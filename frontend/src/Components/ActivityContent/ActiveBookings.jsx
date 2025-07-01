@@ -25,7 +25,6 @@ const ActiveBookings = () => {
         console.error("❌ Error fetching user:", error || "User not found");
         return;
       }
-      console.log("✅ User ID fetched:", userData.user.id);
       setUserId(userData.user.id);
     };
     fetchUser();
@@ -47,7 +46,6 @@ const ActiveBookings = () => {
         return;
       }
 
-      console.log("✅ User role fetched:", data.role);
       setUserRole(data.role);
     };
     fetchUserRole();
@@ -70,7 +68,6 @@ const ActiveBookings = () => {
         courseMap[course.course_code] = course.course_name;
       });
 
-      console.log("📚 Courses fetched:", courseMap);
       setCourses(courseMap);
     };
 
@@ -98,14 +95,10 @@ const ActiveBookings = () => {
       return;
     }
 
-    console.log("✅ Active bookings fetched:", bookings);
-
     // Fetch participant names
     const participantIds = bookings
       .map((b) => (userRole === "tutee" ? b.tutor_id : b.tutee_id))
       .filter((id) => id); // Remove null values
-
-    console.log("👤 Fetching participant names for IDs:", participantIds);
 
     const { data: participantData, error: participantError } = await supabase
       .from("profiles")
@@ -116,8 +109,6 @@ const ActiveBookings = () => {
       console.error("❌ Error fetching participant name:", participantError);
       return;
     }
-
-    console.log("👤 Participant names fetched:", participantData);
 
     const participantMap = {};
     participantData.forEach((p) => {
@@ -142,8 +133,7 @@ const ActiveBookings = () => {
       notes: booking.notes || "No additional notes.",
       status: booking.status,
     }));
-
-    console.log("📌 Formatted bookings:", formattedBookings);
+    
     setActiveBookings(formattedBookings);
   };
 
@@ -176,7 +166,7 @@ const ActiveBookings = () => {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "bookings" },
         (payload) => {
-          console.log("🔄 [Active] Booking status updated:", payload.new);
+          console.log("🔄 [Active] Booking status updated");
 
           const updatedBooking = payload.new;
 
@@ -231,11 +221,11 @@ const ActiveBookings = () => {
   // 🔹 Handle Cancel Booking
   const handleCancelBooking = async (bookingId) => {
     if (!bookingId) {
-      console.error("❌ Invalid booking ID:", bookingId);
+      console.error("❌ Invalid booking ID");
       return;
     }
 
-    console.log("🚀 Cancelling booking:", bookingId);
+    console.log("🚀 Cancelling booking");
 
     try {
       const { error } = await supabase
@@ -276,8 +266,6 @@ const ActiveBookings = () => {
     if (error) {
       console.error("❌ Error updating booking status:", error);
     } else {
-      console.log(`✅ Booking ${bookingId} marked as completed`);
-
       fetchActiveBookings();
     }
   };

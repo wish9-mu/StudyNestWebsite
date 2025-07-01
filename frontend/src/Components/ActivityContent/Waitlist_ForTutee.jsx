@@ -16,7 +16,6 @@ const Waitlist_ForTutee = () => {
         console.error("❌ Error fetching user:", error || "User not found");
         return;
       }
-      console.log("✅ User ID fetched:", userData.user.id);
       setUserId(userData.user.id);
     };
     fetchUser();
@@ -38,8 +37,6 @@ const Waitlist_ForTutee = () => {
       data.forEach((course) => {
         courseMap[course.course_code] = course.course_name;
       });
-
-      console.log("📚 Courses fetched:", courseMap);
       setCourses(courseMap);
     };
 
@@ -72,8 +69,6 @@ const Waitlist_ForTutee = () => {
       return;
     }
 
-    console.log("✅ Pending bookings fetched:", bookings);
-
     // Fetch tutor names
     const tutorIds = bookings.map((b) => b.tutor_id);
     const { data: tutorData, error: tutorError } = await supabase
@@ -85,8 +80,6 @@ const Waitlist_ForTutee = () => {
       console.error("❌ Error fetching tutor names:", tutorError);
       return;
     }
-
-    console.log("👤 Tutor names fetched:", tutorData);
 
     const tutorMap = {};
     tutorData.forEach((t) => {
@@ -105,7 +98,6 @@ const Waitlist_ForTutee = () => {
       notes: booking.notes || "No additional notes.",
     }));
 
-    console.log("📌 Formatted bookings:", formattedBookings);
     setPendingBookings(formattedBookings);
   };
 
@@ -124,7 +116,6 @@ const Waitlist_ForTutee = () => {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "bookings" },
         (payload) => {
-          console.log("🆕 New pending booking detected:", payload.new);
           
           // Add new pending booking to the UI without refetching everything
           setPendingBookings((prevBookings) => [
@@ -163,7 +154,6 @@ const Waitlist_ForTutee = () => {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "bookings" },
         (payload) => {
-          console.log("🆕 Pending booking status updated:", payload.new);
 
           // Remove from UI if status changes from "pending" to "accepted" or "rejected"
           if (["rejected"].includes(payload.new.status)) {
@@ -187,8 +177,6 @@ const Waitlist_ForTutee = () => {
       console.error("❌ Invalid booking ID:", bookingId);
       return;
     }
-
-    console.log("🚀 Cancelling booking:", bookingId);
 
     try {
       const { error } = await supabase

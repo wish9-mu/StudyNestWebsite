@@ -68,7 +68,7 @@ const FeedbackForm = ({
         webapp_responses: webappResponses,
       };
 
-      console.log("Submitting feedback to Supabase:", feedbackData);
+      console.log("Submitting feedback to Supabase.");
 
       const { data, error } = await supabase
         .from("feedback")
@@ -78,7 +78,6 @@ const FeedbackForm = ({
         console.error("❌ Error submitting feedback:", error);
         setValidationError("Failed to submit feedback. Please try again.");
       } else {
-        console.log("✅ Feedback submitted successfully:", data);
         onClose();
       }
     } catch (err) {

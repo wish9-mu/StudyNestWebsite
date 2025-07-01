@@ -47,9 +47,7 @@ const AccountInformation = () => {
         return;
       }
 
-      const userId = userData.user.id; // ✅ Store user ID safely
-      console.log("🔹 Retrieved user ID:", userId);
-
+      const userId = userData.user.id; 
       // ✅ Now, safely query the profiles table
       const { data, error } = await supabase
         .from("profiles")
@@ -61,7 +59,6 @@ const AccountInformation = () => {
         console.error("❌ Error fetching user profile:", error);
       } else {
         setUserData(data);
-        console.log("✅ User profile loaded:", data);
       }
 
       setLoading(false);
@@ -112,8 +109,6 @@ const AccountInformation = () => {
     const fileExt = file.name.split(".").pop();
     const filePath = `avatars/${user?.id}.${fileExt}`;
 
-    console.log("🚀 Uploading file:", filePath);
-
     // Upload to Supabase Storage (Upsert: Overwrites existing file)
     const { data, error: uploadError } = await supabase.storage
       .from("avatars")
@@ -124,8 +119,6 @@ const AccountInformation = () => {
       setUploading(false);
       return;
     }
-
-    console.log("✅ File successfully uploaded:", data);
 
     // Get the public URL of the uploaded file
     const { data: publicData, error: urlError } = supabase.storage
@@ -139,7 +132,6 @@ const AccountInformation = () => {
     }
 
     const publicURL = publicData.publicUrl;
-    console.log("🔗 Public URL of uploaded file:", publicURL);
 
     // Update profile_picture in Supabase `profiles` table
     const { error: updateError } = await supabase
@@ -155,8 +147,6 @@ const AccountInformation = () => {
       setUploading(false);
       return;
     }
-
-    console.log("✅ Profile picture updated in database:", publicURL);
     setUserData({ ...userData, profile_picture: publicURL });
 
     setUploading(false);
