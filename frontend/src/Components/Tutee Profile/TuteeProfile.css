@@ -3,19 +3,20 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f7fafc;
+  background-color: #000000;
+
 }
 
 .profile-layout {
   display: flex;
   position: relative;
   min-height: calc(100vh - 100px);
-  margin-top: 100px; /* For the nav */
+  margin-top: 50px; /* For the nav */
+    margin-left: 100px;
 }
 
 .tutee-profile-content {
   flex: 1;
-  margin-left: 250px; /* Sidebar width */
   padding: 2rem;
   margin-bottom: 2rem;
 }
@@ -29,13 +30,13 @@
   border-bottom: 2px solid #e2e8f0;
 }
 
-.profile-section {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  animation: fadeIn 0.3s ease-in-out;
-  margin-bottom: 1.5rem;
+.tutee-profile-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  margin-bottom: 2rem;
 }
 
 @keyframes fadeIn {

@@ -66,7 +66,6 @@ const SignInSecurity = () => {
 
   return (
     <div className="profile-section">
-      <h2>Sign-In & Security</h2>
       <button onClick={handlePasswordReset}>Reset Password</button>
 
       <h3>Session History:</h3>

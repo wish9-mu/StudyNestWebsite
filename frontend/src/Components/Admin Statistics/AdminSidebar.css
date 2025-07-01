@@ -1,5 +1,5 @@
 /* Sidebar.css */
-.sidebar {
+.admin-sidebar {
     width: 250px;
     height: calc(100vh - 60px); /* Adjusted for top navbar */
     background-color: #ffffff;
@@ -13,41 +13,12 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
   
-  .sidebar-profile {
+  .admin-sidebar-profile {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 2rem 1rem;
     border-bottom: 1px solid #e2e8f0;
-  }
-  
-  .profile-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin-bottom: 1rem;
-    border: 2px solid #ffffff;
-    box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .profile-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  } 
-  
-  .profile-name {
-    margin: 0;
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #2d3748;
-  }
-  
-  .profile-status {
-    margin: 0.25rem 0 0;
-    font-size: 0.875rem;
-    color: #718096;
   }
   
   .sidebar-menu {
@@ -124,15 +95,6 @@
     
     .sidebar-profile {
       padding: 1rem 0.5rem;
-    }
-    
-    .profile-avatar {
-      width: 50px;
-      height: 50px;
-    }
-    
-    .profile-name, .profile-status {
-      display: none;
     }
     
     .sidebar:hover .profile-name,

@@ -8,8 +8,8 @@ import { supabase } from "../../supabaseClient";
 
 const AdminSidebar = ({ activeTab, setActiveTab }) => {
   return (
-    <div className="sidebar">
-      <div className="sidebar-profile">
+    <div className="admin-sidebar">
+      <div className="admin-sidebar-profile">
         <div className="profile-avatar">
           <img src={logo} alt="Logo" />
         </div>
@@ -18,7 +18,9 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
 
       <div className="sidebar-menu">
         <button
-          className={`sidebar-menu-item ${activeTab === "studynest" ? "active" : ""}`}
+          className={`sidebar-menu-item ${
+            activeTab === "studynest" ? "active" : ""
+          }`}
           onClick={() => setActiveTab("studynest")}
         >
           <p className="menu-icon">📈</p>
@@ -26,7 +28,9 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
         </button>
 
         <button
-          className={`sidebar-menu-item ${activeTab === "people" ? "active" : ""}`}
+          className={`sidebar-menu-item ${
+            activeTab === "people" ? "active" : ""
+          }`}
           onClick={() => setActiveTab("people")}
         >
           <p className="menu-icon">👥</p>
@@ -36,6 +40,5 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
     </div>
   );
 };
-
 
 export default AdminSidebar;

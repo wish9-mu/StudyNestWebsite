@@ -12,7 +12,7 @@ const TuteeProfile = () => {
   const [activeTab, setActiveTab] = useState("account");
 
   return (
-    <div className="tutee-profile-container">
+    <div>
       <TuteeNav />
 
       <div className="profile-layout">

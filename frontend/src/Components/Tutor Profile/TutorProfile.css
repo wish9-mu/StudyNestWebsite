@@ -15,9 +15,12 @@
 
 .tutor-profile-content {
   flex: 1;
-  margin-left: 250px; /* Sidebar width */
-  padding: 2rem;
-  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;        /* center horizontally */
+  align-items: flex-start;        /* align to top */
+  padding: 40px 0;                /* balanced vertical space */
+  min-height: calc(100vh - 60px); /* if you have a 60px navbar */
+  background: none;               /* transparent, card provides color */
 }
 
 .section-title {
@@ -29,15 +32,16 @@
   border-bottom: 2px solid #e2e8f0;
 }
 
-.profile-section {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  animation: fadeIn 0.3s ease-in-out;
-  margin-bottom: 1.5rem;
+.tutee-profile-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  margin-bottom: 2rem;
 }
 
+/* Animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -50,23 +54,37 @@
 }
 
 /* Responsive styles */
+@media (max-width: 1200px) {
+  .profile-section {
+    max-width: 95vw;
+    padding: 2rem 1rem;
+  }
+}
+@media (max-width: 900px) {
+  .profile-section {
+    max-width: 100vw;
+    padding: 1.25rem 0.25rem;
+  }
+}
+
 @media (max-width: 768px) {
   .tutor-profile-content {
-    margin-left: 70px; /* Collapsed sidebar width */
-    padding: 1.5rem 1rem;
+    padding: 1.5rem 0.25rem;
+    justify-content: flex-start;
   }
-  
   .section-title {
     font-size: 1.25rem;
+  }
+  .profile-section {
+    padding: 1rem 0.5rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .tutor-profile-content {
-    padding: 1rem 0.75rem;
-  }
-  
   .profile-section {
-    padding: 1rem;
+    padding: 0.5rem 0.2rem;
+    min-width: unset;
   }
 }
