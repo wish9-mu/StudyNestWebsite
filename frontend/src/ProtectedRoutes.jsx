@@ -5,13 +5,13 @@ const ProtectedRoute = ({ allowedRoles, userRole, children }) => {
 
   // If not logged in (userRole is undefined or false)
   if (!userRole) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login"/>;
   }
 
   // If logged in but role not allowed
   return allowedRoles.includes(userRole)
     ? children
-    : <Navigate to="/forbidden" replace />;
+    : <Navigate to="/EP_403"/>;
 };
 
 export default ProtectedRoute;

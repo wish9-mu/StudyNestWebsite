@@ -62,7 +62,7 @@ const AppRoutes = ({ session, userRole, loading }) => {
             navigate("/tuteehome");
             break;
           default:
-            navigate("/forbidden");
+            navigate("/EP_403");
         }
         setRedirected(true);
       }
