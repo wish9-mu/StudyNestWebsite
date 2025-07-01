@@ -19,6 +19,7 @@ import {
   LabelList,
   Legend
 } from "recharts";
+import logo from "../../assets/SNHome.png";
 
 const GenerateReport = ({ monthlyStats }) => {
   const [loading, setLoading] = useState({
@@ -184,50 +185,114 @@ const GenerateReport = ({ monthlyStats }) => {
     </div>
   );
 
+  const getBase64FromImage = (imgPath) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "Anonymous"; // Needed for local assets
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        const dataURL = canvas.toDataURL("image/png");
+        resolve(dataURL);
+      };
+      img.onerror = reject;
+      img.src = imgPath;
+    });
+  };
+
   const generatePDF = async () => {
     const doc = new jsPDF();
-    let currentY = 20;
     const titleMap = {
       profiles: "User Report",
       bookings: "Bookings Report",
       bookings_history: "Archived Bookings Report",
     };
 
-    doc.setFontSize(16);
-    doc.text(titleMap[reportType] || "Report", 14, currentY);
-    currentY += 10;
+    const title = titleMap[reportType] || "Report";
+    const dateStr = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    const fileName = `${dateStr}_${title}.pdf`;
 
-    if (monthlyStats && reportType === "bookings") {
-      const chart = document.getElementById("monthly-bookings-chart");
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    // 📷 Load logo as base64
+    const logoBase64 = await getBase64FromImage(logo);
+
+    // 🔴 Red header background
+    doc.setFillColor("#e53e3e");
+    doc.rect(0, 0, pageWidth, 25, "F");
+
+    // 🖼 Expanded logo (wider)
+    doc.addImage(logoBase64, "PNG", 10, 6, 60, 15); // Wider, thinner
+
+
+    // 📘 Report title (right-aligned)
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    doc.setTextColor("#ffffff");
+    const titleWidth = doc.getTextWidth(title);
+    doc.text(title, pageWidth - titleWidth - 10, 14);
+
+    let currentY = 40; // Ensure space below header
+
+    // 📊 Insert charts if available
+    const insertChart = async (elementId) => {
+      const chart = document.getElementById(elementId);
       if (chart) {
         const canvas = await html2canvas(chart);
-        doc.addImage(canvas.toDataURL("image/png"), "PNG", 15, currentY, 180, 80);
+        doc.addImage(canvas.toDataURL("image/png"), "PNG", 15, currentY, 160, 80);
         currentY += 90;
       }
-    }
+    };
 
-    if (monthlyStats && reportType === "bookings_history") {
-      const chart = document.getElementById("archived-bookings-chart");
-      if (chart) {
-        const canvas = await html2canvas(chart);
-        doc.addImage(canvas.toDataURL("image/png"), "PNG", 15, currentY, 180, 80);
-        currentY += 90;
-      }
-    }
+    if (monthlyStats && reportType === "bookings") await insertChart("monthly-bookings-chart");
+    if (monthlyStats && reportType === "bookings_history") await insertChart("archived-bookings-chart");
+    if (monthlyStats && reportType !== "profiles") await insertChart("booking-status-ratio-chart");
 
-    if (monthlyStats && reportType !== "profiles") {
-      const pie = document.getElementById("booking-status-ratio-chart");
-      if (pie) {
-        const canvas = await html2canvas(pie);
-        doc.addImage(canvas.toDataURL("image/png"), "PNG", 15, currentY, 180, 80);
-        currentY += 90;
-      }
-    }
-
+    // 🧾 Table
     const tableColumn = csvHeaders.map((h) => h.label);
     const tableRows = csvData.map((row) => csvHeaders.map((h) => row[h.key]));
-    doc.autoTable({ head: [tableColumn], body: tableRows, startY: currentY });
-    doc.save(`${reportType}_report.pdf`);
+
+    if (currentY < 40) currentY = 40;
+    currentY += 5;
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: currentY,
+      margin: { top: 35, bottom: 20 },
+      didDrawPage: () => {
+        const page = doc.internal.getCurrentPageInfo().pageNumber;
+        const totalPages = doc.internal.getNumberOfPages();
+
+        // 🔴 Red header background
+        doc.setFillColor("#e53e3e");
+        doc.rect(0, 0, pageWidth, 25, "F");
+
+        // 🖼 Expanded logo
+        doc.addImage(logoBase64, "PNG", 10, 6, 50, 12);
+
+        // 📘 Report title (right-aligned)
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(12);
+        doc.setTextColor("#ffffff");
+        const titleWidth = doc.getTextWidth(title);
+        doc.text(title, pageWidth - titleWidth - 10, 14);
+
+        // 🦶 Footer
+        doc.setFontSize(9);
+        doc.setTextColor("#666666");
+        const footerText = `Generated on ${dateStr} | Page ${page} of ${totalPages}`;
+        const footerWidth = doc.getTextWidth(footerText);
+        doc.text(footerText, (pageWidth - footerWidth) / 2, pageHeight - 10);
+      },
+    });
+
+    // 💾 Save the file
+    doc.save(fileName);
   };
 
   return (
