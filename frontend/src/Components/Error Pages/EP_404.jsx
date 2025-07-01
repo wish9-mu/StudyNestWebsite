@@ -2,15 +2,15 @@ import React from "react";
 import "./ErrorPages.css";
 import SNError from "../../assets/SNError.png";
 
-const Forbidden = () => {
+const EP_404 = () => {
   return (
     <div className="notfound-container">
       <div className="notfound-content">
         <img src={SNError} alt="Not Found" className="notfound-image" />
-        <h1 className="notfound-code">403</h1>
-        <h1 className="notfound-heading">Forbidden</h1>
+        <h1 className="notfound-code">404</h1>
+        <h1 className="notfound-heading">Page not Found</h1>
         <p className="notfound-message">
-          You don't have permission to access this resource.
+          Oops! The page you're looking for doesn't exist.
         </p>
         <a href="/" className="notfound-link">
           Go back home
@@ -20,4 +20,4 @@ const Forbidden = () => {
   );
 };
 
-export default Forbidden;
+export default EP_404;
