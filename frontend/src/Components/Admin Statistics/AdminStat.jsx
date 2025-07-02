@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import "./AdminStat.css";
 import PerformanceCard from "./PerformanceCard";
 import GenerateReport from "./GenerateReport";
+import ReportedIssues from "./ReportedIssues";
 import { supabase } from "../../supabaseClient";
 import AdminNav from "../Nav/AdminNav";
 import AdminSidebar from "./AdminSideBar";
 import "./AdminSideBar.css";
 import defaultAvatar from "../../assets/default-avatar.png";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, PieChart, Pie, Legend, Cell } from 'recharts';
+
 
 const AdminStat = () => {
   const [tutorList, setTutorList] = useState([]);
@@ -63,8 +65,6 @@ const AdminStat = () => {
       rejected: totalRejected,
     },
   ];
-
-
 
   useEffect(() => {
     const fetchTutors = async () => {
@@ -245,6 +245,7 @@ const AdminStat = () => {
 
   const handleCardClick = (user) => setSelectedUser(user);
   const closePerformanceCard = () => setSelectedUser(null);
+  const closeReportCard = () => setSelectedUser(null);
 
   const chartData = Object.entries(webappBreakdown).map(([key, avg]) => ({
     category: webappLabels[key] || key,
@@ -264,6 +265,7 @@ const AdminStat = () => {
     };
   });
 
+  console.log("🧭 Current active tab:", activeTab);
   return (
     <>
       <AdminNav />
@@ -418,6 +420,10 @@ const AdminStat = () => {
                   ))}
                 </div>
               </div>
+            )}
+
+            {activeTab === "reports" && (
+              <ReportedIssues />
             )}
           </div>
         </div>

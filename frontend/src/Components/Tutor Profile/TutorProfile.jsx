@@ -6,6 +6,7 @@ import BookingPreferences from "../ProfileContent/BookingPreferences_Tutor";
 import SignInSecurity from "../ProfileContent/SignInSecurity";
 import AvailabilitySchedule from "../ProfileContent/AvailabilitySchedule";
 import ClassSchedule from "../ProfileContent/ClassSchedule";
+import ReportIssue from "../ProfileContent/ReportIssue";
 import TutorSidebar from "./TutorSidebar";
 import "./TutorProfile.css";
 
@@ -43,6 +44,14 @@ const TutorProfile = () => {
                 <SignInSecurity />
               </section>
             )}
+
+            {activeTab === "report" && (
+              <section className="profile-section security-section">
+                <h2 className="section-title">Report Issue</h2>
+                <ReportIssue />
+              </section>
+            )}
+
           </div>
         </div>
       </div>

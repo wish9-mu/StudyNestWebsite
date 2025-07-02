@@ -33,9 +33,15 @@ const ReportIssue = () => {
       return;
     }
 
-    const { error } = await supabase.from("issue_reports").insert([
+    // Ensure userId is valid before submitting
+    if (!userId) {
+      setStatusMessage("⚠️ User not logged in.");
+      return;
+    }
+
+    const { error } = await supabase.from("reports").insert([
       {
-        tutee_id: userId,
+        user_id: userId,
         title,
         description,
         status: "pending", // optional since it has default, but good for clarity
@@ -46,22 +52,28 @@ const ReportIssue = () => {
       console.error("❌ Error submitting report:", error);
       setStatusMessage("❌ Failed to submit issue. Please try again.");
     } else {
+      console.log("✅ Report submitted:", { title, description });
       setStatusMessage("✅ Your issue has been submitted.");
       setTitle("");
       setDescription("");
     }
+
+    // ⏱️ Clear message after 3 seconds
+    setTimeout(() => {
+      console.log("⏳ Clearing status message...");
+      setStatusMessage("");
+    }, 3000);
   };
 
   return (
     <div className="report-issue-container">
-      <h2>Report an Issue</h2>
       <form onSubmit={handleSubmit} className="report-form">
         <label>
-          Issue Title:
+          Issue:
           <input
             type="text"
             placeholder="e.g. Can't book a session"
-            value={title}
+            value={title || ""} // Ensure the value is never undefined
             onChange={(e) => setTitle(e.target.value)}
             required
           />
@@ -71,7 +83,7 @@ const ReportIssue = () => {
           Description:
           <textarea
             placeholder="Describe the issue in detail..."
-            value={description}
+            value={description || ""} // Ensure the value is never undefined
             onChange={(e) => setDescription(e.target.value)}
             required
           />

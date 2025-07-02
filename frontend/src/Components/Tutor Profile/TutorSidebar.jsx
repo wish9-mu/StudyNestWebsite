@@ -56,7 +56,19 @@ const TutorSidebar = ({ activeTab, setActiveTab }) => {
           <p className="menu-icon">🔒</p>
           <span>Sign-In & Security</span>
         </button>
+        
+        <button
+          className={`sidebar-menu-item ${
+            activeTab === "report" ? "active" : ""
+          }`}
+          onClick={() => setActiveTab("report")}
+        >
+          <p className="menu-icon">📝</p>
+          <span>Report Issue</span>
+        </button>
       </div>
+
+      
 
       {/* <div className="sidebar-footer">
         <button onClick={handleLogout} className="sidebar-logout">

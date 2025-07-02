@@ -36,6 +36,16 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
           <p className="menu-icon">👥</p>
           <span>User Metrics</span>
         </button>
+
+        <button
+          className={`sidebar-menu-item ${
+            activeTab === "reports" ? "active" : ""
+          }`}
+          onClick={() => setActiveTab("reports")}
+        >
+          <p className="menu-icon">🛠️</p>
+          <span>Issue Reports</span>
+        </button>
       </div>
     </div>
   );
