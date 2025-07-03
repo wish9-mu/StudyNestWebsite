@@ -169,8 +169,8 @@
   border-top-right-radius: 10px;
   top: 10px;
   right: 15px;
-  background: #e53e3e;
-  color: white;
+  background: #e53e3e !important;
+  color: white !important;
   border: none;
   font-size: 18px;
   width: 30px;

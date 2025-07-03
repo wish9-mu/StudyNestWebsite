@@ -7,6 +7,7 @@ import SignInSecurity from "../ProfileContent/SignInSecurity";
 import AvailabilitySchedule from "../ProfileContent/AvailabilitySchedule";
 import ClassSchedule from "../ProfileContent/ClassSchedule";
 import ReportIssue from "../ProfileContent/ReportIssue";
+import ViewReportIssue from "../ProfileContent/ViewReportIssue";
 import TutorSidebar from "./TutorSidebar";
 import "./TutorProfile.css";
 
@@ -49,6 +50,13 @@ const TutorProfile = () => {
               <section className="profile-section security-section">
                 <h2 className="section-title">Report Issue</h2>
                 <ReportIssue />
+              </section>
+            )}
+
+            {activeTab === "viewreport" && (
+              <section className="profile-section security-section">
+                <h2 className="section-title">View Reported Issues</h2>
+                <ViewReportIssue />
               </section>
             )}
 

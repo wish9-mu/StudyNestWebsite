@@ -53,6 +53,16 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
           <p className="menu-icon">📝</p>
           <span>Report Issue</span>
         </button>
+
+        <button
+          className={`sidebar-menu-item ${
+            activeTab === "viewreport" ? "active" : ""
+          }`}
+          onClick={() => setActiveTab("viewreport")}
+        >
+          <p className="menu-icon">📈</p>
+          <span>View Reported Issues</span>
+        </button>
       </div>
 
       {/* <div className="sidebar-footer">

@@ -6,8 +6,10 @@ import SignInSecurity from "../ProfileContent/SignInSecurity";
 import ClassSchedule from "../ProfileContent/ClassSchedule";
 import AvailabilitySchedule from "../ProfileContent/AvailabilitySchedule";
 import ReportIssue from "../ProfileContent/ReportIssue";
+import ViewReportIssue from "../ProfileContent/ViewReportIssue";
 import Sidebar from "./TuteeSidebar";
 import "./TuteeProfile.css";
+
 
 const TuteeProfile = () => {
   const [activeTab, setActiveTab] = useState("account");
@@ -44,9 +46,16 @@ const TuteeProfile = () => {
             )}
 
             {activeTab === "report" && (
-              <section className="profile-section security-section">
+              <section className="profile-section report-section">
                 <h2 className="section-title">Report Issue</h2>
                 <ReportIssue />
+              </section>
+            )}
+
+            {activeTab === "viewreport" && (
+              <section className="profile-section security-section">
+                <h2 className="section-title">View Reported Issues</h2>
+                <ViewReportIssue />
               </section>
             )}
           </div>
