@@ -1,5 +1,5 @@
   import React, { useState } from "react";
-import { data, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import "./Login.css";
 import Nav from "../Nav/Nav";
@@ -27,22 +27,60 @@ const LoginPage = () => {
 
     // Authenticate user
     try {
+      // Step 1: Fetch user's profile by email
+      const { data: profile, error: profileFetchError } = await supabase
+        .from("profiles")
+        .select("id, failed_attempts, lock_until")
+        .eq("email", formData.email)
+        .single();
 
-      // Sign in with email and password
-      const { data: authData, error: authError } =
-        await supabase.auth.signInWithPassword({
-          email: formData.email,
-          password: formData.password,
-        });
+      if (profileFetchError || !profile) {
+        setError("Email not registered.");
+        return;
+      }
+
+      const now = new Date();
+      const isLocked = profile.lock_until && new Date(profile.lock_until) > now;
+
+      if (isLocked) {
+        setError("Too many failed attempts. Try again later.");
+        return;
+      }
+
+      // Step 2: Attempt login
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
 
       if (authError || !authData.user) {
-        setError(
-          "Login failed: " + (authError?.message || "Invalid credentials")
-        );
+        // Step 3: Increment failed_attempts
+        const newAttempts = (profile.failed_attempts || 0) + 1;
+        const updates = { failed_attempts: newAttempts };
+
+        if (newAttempts >= 5) {
+          const lockUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+          updates.lock_until = lockUntil.toISOString();
+        }
+
+        await supabase
+          .from("profiles")
+          .update(updates)
+          .eq("email", formData.email);
+
+        setError("Login failed. Please check your credentials.");
         return;
-      } else {
-        console.log("Login successful");
       }
+
+      // Step 4: Reset attempts on success
+      await supabase
+        .from("profiles")
+        .update({ failed_attempts: 0, lock_until: null })
+        .eq("id", authData.user.id);
+
+      console.log("Login successful");
+
+      await trackUserSession(authData.user.id);
 
       const userId = authData.user.id;
       await trackUserSession(userId);
