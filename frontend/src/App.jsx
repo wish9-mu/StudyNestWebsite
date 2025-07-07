@@ -43,36 +43,29 @@ import Loading from "./Components/Loading Page/Loading"
 const AppRoutes = ({ session, userRole, loading }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [redirected, setRedirected] = useState(false);
 
   useEffect(() => {
     if (!loading && session && userRole) {
       const currentPath = location.pathname;
 
-      // Only auto-redirect from "/" or "/login" (safe pages)
-      if ((currentPath === "/" || currentPath === "/login") && !redirected) {
+      // Only auto-redirect if currently on "/" or "/login"
+      if (currentPath === "/" || currentPath === "/login") {
         switch (userRole) {
           case "admin":
-            navigate("/adminhome");
+            navigate("/adminhome", { replace: true });
             break;
           case "tutor":
-            navigate("/tutorhome");
+            navigate("/tutorhome", { replace: true });
             break;
           case "tutee":
-            navigate("/tuteehome");
+            navigate("/tuteehome", { replace: true });
             break;
           default:
-            navigate("/EP_403");
+            navigate("/EP_403", { replace: true });
         }
-        setRedirected(true);
       }
     }
-  }, [session, userRole, loading, location.pathname, navigate, redirected]);
-
-
-  useEffect(() => {
-    setRedirected(false); // allow re-evaluation on userRole change
-  }, [userRole]);
+  }, [session, userRole, loading, location.pathname, navigate]);
 
   const roleStillLoading = session && userRole === null;
   if (loading || roleStillLoading) return <Loading/>;
@@ -185,7 +178,6 @@ const App = () => {
   const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Phase 1: Load session
   useEffect(() => {
     const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -195,7 +187,7 @@ const App = () => {
     init();
 
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session); // this triggers phase 2
+      setSession(session); 
     });
 
     return () => {
@@ -203,7 +195,7 @@ const App = () => {
     };
   }, []);
 
-  // Phase 2: Once session exists, fetch user role
+
   useEffect(() => {
     const fetchUserRole = async () => {
       if (session?.user?.id) {
