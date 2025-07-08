@@ -3,6 +3,7 @@ import "./AdminStat.css";
 import PerformanceCard from "./PerformanceCard";
 import GenerateReport from "./GenerateReport";
 import ReportedIssues from "./ReportedIssues";
+import AdminBackup from "./AdminBackup";
 import { supabase } from "../../supabaseClient";
 import AdminNav from "../Nav/AdminNav";
 import AdminSidebar from "./AdminSideBar";
@@ -426,6 +427,10 @@ const AdminStat = () => {
 
             {activeTab === "reports" && (
               <ReportedIssues />
+            )}
+
+            {activeTab === "backup" && (
+              <AdminBackup />
             )}
           </div>
         </div>
