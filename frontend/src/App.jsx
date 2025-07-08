@@ -39,6 +39,7 @@ import TuteePublicProfile from "./Components/TuteePublicProfile/TuteePublicProfi
 import EP_403 from "./Components/Error Pages/EP_403";
 import EP_404 from "./Components/Error Pages/EP_404";
 import Loading from "./Components/Loading Page/Loading"
+import ReminderService from "./Components/Notifications/ReminderService";
 
 const AppRoutes = ({ session, userRole, loading }) => {
   const navigate = useNavigate();
@@ -234,6 +235,7 @@ const App = () => {
           <div className="content">
             <AppRoutes session={session} userRole={userRole} loading={loading} />
           </div>
+          <ReminderService />
           <FooterWithRouteCheck />
         </div>
       </Router>
