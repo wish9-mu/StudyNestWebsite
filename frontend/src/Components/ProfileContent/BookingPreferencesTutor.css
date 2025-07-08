@@ -1,0 +1,101 @@
+/* ===== Container “card” ===== */
+.booking-preferences {
+  box-sizing: border-box;               /* include padding in width */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;                            /* vertical space between items */
+  padding: 1rem;                        /* inner padding */
+  max-width: 600px;                     /* your desired card width */
+  width: 100%;                          /* so it shrinks on mobile */
+  margin: 0 auto;                       /* center on page */
+  background-color: #fff;               /* white background */
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== Section Title ===== */
+.booking-preferences h2 {
+  margin: 0 0 0.5rem;                   /* tighter bottom margin */
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* ===== Field wrapper ===== */
+.booking-preferences .field {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;                          /* fill the container */
+}
+
+/* ===== Label ===== */
+.booking-preferences .field label {
+  margin: 0 0 0.5rem;                   /* space to the Select */
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* ===== React-Select overrides ===== */
+/* outer wrapper + control must stretch 100% */
+.booking-select,
+.booking-select .booking__control {
+  width: 100% !important;               /* force full-width */
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* restyle the control box */
+.booking-preferences .booking-select .booking__control {
+  min-height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+/* focus ring */
+.booking-preferences
+  .booking-select
+  .booking__control--is-focused {
+  border-color: #2684ff;
+  box-shadow: 0 0 0 2px rgba(38, 132, 255, 0.3);
+}
+
+/* value container padding */
+.booking-preferences
+  .booking-select
+  .booking__value-container {
+  padding: 2px 8px;
+}
+
+/* pills */
+.booking-preferences
+  .booking-select
+  .booking__multi-value {
+  background: #f0f0f0;
+  border-radius: 2px;
+  margin: 2px;
+}
+
+/* pill label */
+.booking-preferences
+  .booking-select
+  .booking__multi-value__label {
+  padding: 0 4px;
+  font-size: 0.9rem;
+}
+
+/* pill “×” */
+.booking-preferences
+  .booking-select
+  .booking__multi-value__remove {
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+/* placeholder text color */
+.booking-preferences
+  .booking-select
+  .booking__placeholder {
+  color: #888;
+}

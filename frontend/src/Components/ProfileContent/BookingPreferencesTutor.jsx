@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { supabase } from "../../supabaseClient";
+import "./BookingPreferencesTutor.css"; // Import your CSS styles
 
 const BookingPreferences = () => {
   const [selectedCourses, setSelectedCourses] = useState([]); // Selected courses
@@ -89,14 +90,18 @@ const BookingPreferences = () => {
     const existingCourses = existingData.map((entry) => entry.course_code);
 
     // 🔹 Determine which courses to ADD and DELETE
-    const coursesToAdd = selectedCourseCodes.filter((code) => !existingCourses.includes(code));
-    const coursesToDelete = existingCourses.filter((code) => !selectedCourseCodes.includes(code));
+    const coursesToAdd = selectedCourseCodes.filter(
+      (code) => !existingCourses.includes(code)
+    );
+    const coursesToDelete = existingCourses.filter(
+      (code) => !selectedCourseCodes.includes(code)
+    );
 
     // 🔹 Insert new selected courses
     for (const courseCode of coursesToAdd) {
-      const { error } = await supabase.from("tutor_courses").insert([
-        { tutor_id: userId, course_code: courseCode },
-      ]);
+      const { error } = await supabase
+        .from("tutor_courses")
+        .insert([{ tutor_id: userId, course_code: courseCode }]);
       if (error) {
         console.error(`❌ Error adding course ${courseCode}:`, error);
       }
@@ -109,24 +114,27 @@ const BookingPreferences = () => {
         .delete()
         .eq("tutor_id", userId)
         .eq("course_code", courseCode);
-      if (error) console.error(`❌ Error deleting course ${courseCode}:`, error);
+      if (error)
+        console.error(`❌ Error deleting course ${courseCode}:`, error);
       else console.log("✅ Removed course");
     }
   };
 
   return (
-    <div className="profile-section">
-      <h2>Booking Preferences</h2>
-
-      {/* 🔹 Preferred Courses Dropdown with Auto-Suggestions */}
-      <label>Preferred Courses:</label>
-      <Select
-        isMulti
-        options={courses} // Use Supabase courses
-        value={selectedCourses}
-        onChange={handleCourseChange}
-        placeholder="Search and select courses..."
-      />
+    <div className="booking-preferences">
+      <div className="field">
+        <label htmlFor="course-select">Preferred Courses:</label>
+        <Select
+          inputId="course-select"
+          className="booking-select"
+          classNamePrefix="booking"
+          isMulti
+          options={courses}
+          value={selectedCourses}
+          onChange={handleCourseChange}
+          placeholder="Search and select courses..."
+        />
+      </div>
     </div>
   );
 };

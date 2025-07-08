@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import TutorNav from "../Nav/TutorNav";
 import AccountInformation from "../ProfileContent/AccountInformation";
-import BookingPreferences from "../ProfileContent/BookingPreferences_Tutor";
+import BookingPreferences from "../ProfileContent/BookingPreferencesTutor";
 import SignInSecurity from "../ProfileContent/SignInSecurity";
 import AvailabilitySchedule from "../ProfileContent/AvailabilitySchedule";
 import ClassSchedule from "../ProfileContent/ClassSchedule";
@@ -21,17 +21,17 @@ const TutorProfile = () => {
       <div className="profile-layout">
         <TutorSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <div className="tutor-profile-content">
+        <div>
           <div className="profile-sections">
             {activeTab === "account" && (
-              <section className="profile-section account-section">
+              <section>
                 <h2 className="section-title">Account Information</h2>
                 <AccountInformation />
               </section>
             )}
 
             {activeTab === "booking" && (
-              <section className="profile-section booking-section">
+              <section>
                 <h2 className="section-title">Booking Preferences</h2>
                 <BookingPreferences />
                 <ClassSchedule />
@@ -40,7 +40,7 @@ const TutorProfile = () => {
             )}
 
             {activeTab === "security" && (
-              <section className="profile-section security-section">
+              <section>
                 <h2 className="section-title">Sign-In & Security</h2>
                 <SignInSecurity />
               </section>

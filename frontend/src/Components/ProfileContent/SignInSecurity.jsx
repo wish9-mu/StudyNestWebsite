@@ -41,7 +41,6 @@ const SignInSecurity = () => {
   }, []);
 
   const handlePasswordReset = async () => {
-
     if (!securityInfo.email) {
       console.error("❌ Error: Email is missing.");
       alert("Error: No email found. Please log in again.");
@@ -62,20 +61,25 @@ const SignInSecurity = () => {
   };
 
   return (
-    <div className="profile-section">
-      <button onClick={handlePasswordReset}>Reset Password</button>
-
-      <h3>Session History:</h3>
-      <ul>
-        {securityInfo.session_history?.map((session, index) => (
-          <li key={index}>
-            <strong>Login Time:</strong>{" "}
-            {new Date(session.login_time).toLocaleString()} <br />
-            <strong>Device:</strong> {session.device}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <section className="profile-section">
+      <div className="left">
+        <h2></h2>
+        <button onClick={handlePasswordReset}>Reset Password</button>
+      </div>
+      <div className="right">
+        <h3>Session History:</h3>
+        <ul>
+          {securityInfo.session_history?.map((session, i) => (
+            <li key={i}>
+              <strong>Login Time:</strong>{" "}
+              {new Date(session.login_time).toLocaleString()}
+              <br />
+              <strong>Device:</strong> {session.device}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
   );
 };
 

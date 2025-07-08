@@ -66,7 +66,7 @@ const ReportIssue = () => {
   };
 
   return (
-    <div className="report-issue-container">
+    <div>
       <form onSubmit={handleSubmit} className="report-form">
         <label>
           Issue:

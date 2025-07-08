@@ -1,7 +1,7 @@
 :root {
   --sidebar-width: 240px;
   --gap: 1rem;
-  --primary: #2c3e50;
+  --primary: #3498db;
   --secondary: #3498db;
   --light-bg: #f9fafb;
   --border: #e2e8f0;
@@ -18,6 +18,21 @@
 .profile-layout {
   display: flex;
   flex: 1;
+}
+
+.profile-layout {
+  max-width: 1200px;        /* don’t grow wider than this */
+  width: 100%;              /* but scale down on small viewports */
+  margin: 2rem auto;        /* center horizontally with top/bottom space */
+  display: flex;            
+  gap: 1.5rem;              /* space between sidebar & content */
+  align-items: flex-start;  /* align top edges */
+  padding-left: 10rem;
+  padding-top: 5rem;
+
+   /* add this: center the two children as a group */
+  justify-content: center;
+  align-items: flex-start;
 }
 
 /* Sidebar */
@@ -61,21 +76,8 @@
 .section-title {
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  border-bottom: 2px solid var(--border);
   padding-bottom: 0.5rem;
 }
-
-/* AccountInformation styles */
-.account-info-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--gap);
-  background: rgb(0, 0, 0);
-  padding: var(--gap);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
 
 /* Profile picture column */
 .profile-pic {

@@ -14,7 +14,7 @@ const TuteeProfile = () => {
   const [activeTab, setActiveTab] = useState("account");
 
   return (
-    <div className="tutee-profile-container">
+    <div>
       <TuteeNav />
 
       <div className="profile-layout">
@@ -23,7 +23,7 @@ const TuteeProfile = () => {
         <div className="tutee-profile-content">
           <div className="profile-sections">
             {activeTab === "account" && (
-              <section className="profile-section account-section">
+              <section>
                 <h2 className="section-title">Account Information</h2>
                 <AccountInformation />
               </section>
@@ -36,11 +36,12 @@ const TuteeProfile = () => {
               </section>
             )}
             {activeTab === "security" && (
-              <section className="profile-section security-section">
-                <h2 className="section-title">Sign-In & Security</h2>
+              <section>
+                <h2>Sign-in & Security</h2>
                 <SignInSecurity />
               </section>
             )}
+
             {activeTab === "report" && (
               <section className="profile-section report-section">
                 <h2 className="section-title">Report Issue</h2>
