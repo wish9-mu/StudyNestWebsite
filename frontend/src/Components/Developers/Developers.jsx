@@ -5,6 +5,7 @@ import sofia from "../../assets/Dsofia.png";
 import rayleen from "../../assets/Drayleen.png";
 import luis from "../../assets/Dluis.jpg";
 import rafael from "../../assets/Drafael.png";
+import ralf from "../../assets/RalfD.jpg";
 
 const Developers = () => {
   const developers = [
@@ -35,6 +36,13 @@ const Developers = () => {
       description:
         "As the Quality Assurance (QA) specialist, Rafael ensures software reliability and functionality by conducting thorough testing, identifying bugs, and improving system stability.",
       image: rafael,
+    },
+    {
+      name: "Ralf Zabala",
+      role: "Quality Assurance (QA)",
+      description:
+        "As the Quality Assurance (QA) specialist, Rafael ensures software reliability and functionality by conducting thorough testing, identifying bugs, and improving system stability.",
+      image: ralf,
     },
   ];
 

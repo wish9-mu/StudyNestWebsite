@@ -1,4 +1,4 @@
-  import React, { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import "./Login.css";
@@ -48,19 +48,38 @@ const LoginPage = () => {
       }
 
       // Step 2: Attempt login
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-      });
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
+
+      const MAX_ATTEMPTS = 5;
+      const LOCK_DURATION_MIN = 15;
 
       if (authError || !authData.user) {
         // Step 3: Increment failed_attempts
         const newAttempts = (profile.failed_attempts || 0) + 1;
         const updates = { failed_attempts: newAttempts };
 
-        if (newAttempts >= 5) {
-          const lockUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+        // tries remain?
+        const attemptsLeft = MAX_ATTEMPTS - newAttempts;
+
+        let message;
+        if (newAttempts >= MAX_ATTEMPTS) {
+          // lock account
+          const lockUntil = new Date(
+            Date.now() + LOCK_DURATION_MIN * 60 * 1000
+          );
           updates.lock_until = lockUntil.toISOString();
+          message = `Your account is locked for ${LOCK_DURATION_MIN} minute${
+            LOCK_DURATION_MIN > 1 ? "s" : ""
+          }.`;
+        } else {
+          // attempts left
+          message = `Login failed. You have ${attemptsLeft} attempt${
+            attemptsLeft > 1 ? "s" : ""
+          } remaining before your account is locked.`;
         }
 
         await supabase
@@ -68,7 +87,7 @@ const LoginPage = () => {
           .update(updates)
           .eq("email", formData.email);
 
-        setError("Login failed. Please check your credentials.");
+        setError(message);
         return;
       }
 
@@ -98,8 +117,7 @@ const LoginPage = () => {
             (profileError?.message || "Profile not found")
         );
         return;
-      } 
-      
+      }
     } catch (error) {
       console.error("Unexpected error:", error);
       setError("An unexpected error occurred. Please try again.");
@@ -177,6 +195,9 @@ const LoginPage = () => {
             />
           </div>
 
+          {/*Error message */}
+          {error && <div className="error-message">{error}</div>}
+
           <div className="form-footer">
             <span className="register-link" onClick={handleRegisterClick}>
               Not yet registered?
@@ -184,7 +205,10 @@ const LoginPage = () => {
           </div>
 
           <div className="form-footer">
-            <span className="register-link" onClick={() => navigate("/forgotpassword")}>
+            <span
+              className="register-link"
+              onClick={() => navigate("/forgotpassword")}
+            >
               Forgot your password?
             </span>
           </div>

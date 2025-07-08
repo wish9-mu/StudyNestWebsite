@@ -47,7 +47,7 @@ const AccountInformation = () => {
         return;
       }
 
-      const userId = userData.user.id; 
+      const userId = userData.user.id;
       // ✅ Now, safely query the profiles table
       const { data, error } = await supabase
         .from("profiles")

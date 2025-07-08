@@ -1,20 +1,18 @@
 /* AccountInformation.css */
+.accountInfoContainer {
+  max-width: 480px;       /* constrain width */
+  margin: 0 auto;         /* center horizontally */
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+}
 .account-info-container {
-    max-width: flex;
-    width: 100%;
-    background: rgb(255, 255, 255);
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-  }
+  width: 90vw;
+  max-width: 1000px;
   
-  .account-info-container h2 {
-    font-size: 1.25rem;
-    color: #2d3748;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #e2e8f0;
-  }
+
+}
   
   /* Profile picture section */
   .profile-pic {
@@ -24,6 +22,10 @@
     margin-bottom: 2rem;
   }
   
+  img { 
+  max-width: 100%; 
+  height: auto; 
+}
   .profile-image {
     width: 100px;
     height: 100px;

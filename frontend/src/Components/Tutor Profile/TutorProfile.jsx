@@ -15,7 +15,7 @@ const TutorProfile = () => {
   const [activeTab, setActiveTab] = useState("account");
 
   return (
-    <div className="tutor-profile-container">
+    <div>
       <TutorNav />
 
       <div className="profile-layout">
@@ -59,7 +59,6 @@ const TutorProfile = () => {
                 <ViewReportIssue />
               </section>
             )}
-
           </div>
         </div>
       </div>
