@@ -7,7 +7,7 @@ on:
     branches: [main, dev]
   workflow_dispatch:
   schedule:
-    - cron: "35 12 * * *" # Runs every day at midnight
+    - cron: "0 0 * * *" # Runs every day at midnight
 
 env:
   BACKUP_ENABLED: true
@@ -41,11 +41,10 @@ jobs:
       - name: Create timestamp folder
         if: env.BACKUP_ENABLED == 'true'
         run: mkdir -p prisma/backups
-
-      # Skip role-only backup until you're on Supabase Pro or self-hosted
+        
       - name: Backup roles
-        if: false
-        run: echo "Skipping role-only backup due to network restriction"
+        if: env.BACKUP_ENABLED == 'true'
+        run: supabase db dump --db-url "$SUPABASE_DB_URL" -f prisma/backups/roles.sql --role-only
 
       - name: Backup schema
         if: env.BACKUP_ENABLED == 'true'
