@@ -281,23 +281,6 @@ const TutorBookings = () => {
     };
   }, []);
 
-  const handleRejectBooking = async (bookingId) => {
-    if (!bookingId) return;
-    const { error } = await supabase
-      .from("bookings")
-      .update({ status: "rejected" })
-      .eq("id", bookingId)
-      .eq("status", "pending");
-
-    if (error) {
-      alert("Failed to reject the booking. Please try again.");
-      return;
-    }
-
-    setPendingBookings((prev) => prev.filter((b) => b.id !== bookingId));
-    showTemporaryMessage("rejected");
-  };
-
   // 🔹 Handle Accept Booking
   const handleAcceptBooking = async (bookingId) => {
     console.log("✔️ Accepting booking:", bookingId);
