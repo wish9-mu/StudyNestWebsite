@@ -227,6 +227,26 @@ const ActiveBookings = () => {
 
     console.log("🚀 Cancelling booking");
 
+    const { data: cancelledBooking, error: fetchError } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("id", bookingId)
+    .single();
+
+    if (fetchError || !cancelledBooking) return;
+
+    const { course_code, session_date, start_time, end_time } = cancelledBooking;
+
+    const { data: waitlisted, error: waitlistError } = await supabase
+    .from("waitlist")
+    .select("tutee_id")
+    .eq("course_code", course_code)
+    .eq("session_date", session_date)
+    .eq("start_time", start_time)
+    .eq("end_time", end_time)
+    .eq("status", "waiting");
+
+
     try {
       const { error } = await supabase
         .from("bookings")
@@ -241,8 +261,19 @@ const ActiveBookings = () => {
       }
 
       console.log("✅ Booking cancelled successfully.");
+
+      // Notify all waitlisted users
+      for (const user of waitlisted || []) {
+        await supabase.from("notifications").insert({
+          user_id: user.tutee_id,
+          message: `A slot has opened up for ${course_code} on ${session_date} at ${start_time}.`,
+          is_read: false,
+        });
+      }
+
       fetchActiveBookings();
       showTemporaryMessage("cancelled");
+
     } catch (error) {
       console.error("❌ Unexpected error cancelling booking:", error);
       alert("An error occurred while cancelling the booking.");
