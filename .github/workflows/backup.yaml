@@ -41,7 +41,7 @@ jobs:
       - name: Create timestamp folder
         if: env.BACKUP_ENABLED == 'true'
         run: mkdir -p prisma/backups
-
+        
       - name: Backup roles
         if: env.BACKUP_ENABLED == 'true'
         run: supabase db dump --db-url "$SUPABASE_DB_URL" -f prisma/backups/roles.sql --role-only
