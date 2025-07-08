@@ -23,6 +23,9 @@ const Request = () => {
   const [modalMsg, setModalMsg] = useState("");
   const [showWaitlistConfirm, setShowWaitlistConfirm] = useState(false);
   const [pendingWaitlistData, setPendingWaitlistData] = useState(null);
+  const [showNoTutorModal, setShowNoTutorModal] = useState(false);
+  const [suggestedTimes, setSuggestedTimes] = useState([]); // Array of objects: { session_date, start_time, end_time }
+  const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   
 
   //FOR SEARCH BAR////////////////
@@ -100,6 +103,7 @@ const Request = () => {
       const sessionDay = new Date(session_date).toLocaleString("en-us", {
         weekday: "long",
       });
+      console.log("🔹 Converted session date to weekday:", sessionDay);
 
       // Fetch tutor availability
       const { data: availabilityData, error: availabilityError } =
@@ -116,6 +120,8 @@ const Request = () => {
         throw availabilityError;
       }
 
+      console.log("✅ Tutor availability data fetched:", availabilityData);
+
       if (!availabilityData || availabilityData.length === 0) {
         setTutors([]); // No tutors available
         console.log("No tutors available for the selected time slot.");
@@ -126,6 +132,7 @@ const Request = () => {
 
       // Extract tutor IDs
       const tutorIds = availabilityData.map((row) => row.user_id);
+      console.log("🆔 Tutor IDs matching availability:", tutorIds);
 
       if (tutorIds.length === 0) {
         console.warn("⚠️ No tutor IDs were extracted.");
@@ -145,6 +152,7 @@ const Request = () => {
         showModal(true);
         throw courseError;
       }
+      console.log("📚 Tutors who teach this course:", tutorsTeachingCourse);
 
       const finalTutorIds = tutorsTeachingCourse.map((t) => t.tutor_id);
 
@@ -169,6 +177,7 @@ const Request = () => {
         setShowModal(true);
         throw bookedError;
       }
+      console.log("🚫 Tutors who are already booked:", bookedTutors);
 
       // Remove booked tutors from the available list
       const bookedTutorIds = bookedTutors.map((b) => b.tutor_id);
@@ -177,17 +186,75 @@ const Request = () => {
       );
 
       if (availableTutors.length === 0) {
-        // Prepare waitlist data and show confirmation modal
-        setPendingWaitlistData({
-          tutee_id: userId,
-          course_code: selectedCourse.value,
-          session_date,
-          start_time,
-          end_time,
-          notes,
-          status: "waiting"
+        // Find alternate available slots for the same course and date
+        // 1. Get all tutors who teach the course and are available on the selected day
+        const { data: allTutors, error: allTutorsError } = await supabase
+          .from("tutor_courses")
+          .select("tutor_id")
+          .eq("course_code", selectedCourse.value);
+
+        if (allTutorsError) {
+          setModalMsg("Could not fetch tutors for suggestions.");
+          setShowModal(true);
+          setTutors([]);
+          return;
+        }
+
+        const allTutorIds = allTutors.map((t) => t.tutor_id);
+
+        // 2. Get all availability slots for these tutors on the same weekday
+        const sessionDay = new Date(session_date).toLocaleString("en-us", {
+          weekday: "long",
         });
-        setShowWaitlistConfirm(true);
+
+        const { data: availSlots, error: availSlotsError } = await supabase
+          .from("availability_schedule")
+          .select("user_id, start_time, end_time")
+          .eq("day_of_week", sessionDay)
+          .in("user_id", allTutorIds);
+
+        if (availSlotsError) {
+          setModalMsg("Could not fetch availability for suggestions.");
+          setShowModal(true);
+          setTutors([]);
+          return;
+        }
+
+        // 3. For each slot, check if the tutor is already booked at that time
+        const suggestions = [];
+        for (const slot of availSlots) {
+          // Check for accepted bookings for this tutor at this date and time
+          const { data: conflicts, error: conflictError } = await supabase
+            .from("bookings")
+            .select("id")
+            .eq("tutor_id", slot.user_id)
+            .eq("session_date", session_date)
+            .eq("status", "accepted")
+            .or(
+              `and(start_time.lte.${slot.end_time},end_time.gte.${slot.start_time})`
+            );
+
+          if (conflictError) continue;
+          if (!conflicts || conflicts.length === 0) {
+            // No conflict, suggest this slot
+            suggestions.push({
+              session_date,
+              start_time: slot.start_time,
+              end_time: slot.end_time,
+            });
+            if (suggestions.length >= 3) break;
+          }
+        }
+
+        if (suggestions.length === 0) {
+          setModalMsg("No alternate times found. Please try another day.");
+          setShowModal(true);
+          setTutors([]);
+          return;
+        }
+
+        setSuggestedTimes(suggestions);
+        setShowNoTutorModal(true);
         setTutors([]);
         return;
       }
@@ -204,6 +271,7 @@ const Request = () => {
         showModal(true);
         throw tutorError;
       }
+      console.log("✅ Tutors fetched after filtering:", tutorData);
 
       // Convert tutor data to react-select format
       const formattedTutors = tutorData.map((tutor) => ({
@@ -228,6 +296,7 @@ const Request = () => {
       setShowModal(true);
       return;
     }
+    console.log("🎯 Selected Tutor:", selectedTutor);
     setSelectedTutor(selectedTutor); // Store only the tutor ID
   };
 
@@ -273,6 +342,7 @@ const Request = () => {
     };
 
     try {
+      console.log("📤 Submitting new booking:", newBooking);
 
       const { error } = await supabase.from("bookings").insert([newBooking]);
 
@@ -295,31 +365,6 @@ const Request = () => {
     setShowWaitlistConfirm(false);
     if (proceed && pendingWaitlistData) {
       try {
-        // Check current waitlist count for this slot
-        const { count, error: countError } = await supabase
-          .from("waitlist")
-          .select("*", { count: "exact", head: true })
-          .eq("course_code", pendingWaitlistData.course_code)
-          .eq("session_date", pendingWaitlistData.session_date)
-          .eq("start_time", pendingWaitlistData.start_time)
-          .eq("end_time", pendingWaitlistData.end_time)
-          .eq("status", "waiting");
-
-        if (countError) {
-          setModalMsg("Could not check waitlist: " + countError.message);
-          setShowModal(true);
-          setPendingWaitlistData(null);
-          return;
-        }
-
-        if (count >= 3) {
-          setModalMsg("The waitlist for this slot is full. You cannot join the waitlist.");
-          setShowModal(true);
-          setPendingWaitlistData(null);
-          return;
-        }
-
-        // Proceed to insert if not full
         const { error } = await supabase.from("waitlist").insert([pendingWaitlistData]);
         if (error) {
           setModalMsg("Could not add to waitlist: " + error.message);
@@ -479,44 +524,73 @@ const Request = () => {
             </button>
           </form>
         </div>
-        {showWaitlistConfirm && (
+        {showNoTutorModal && (
           <div className="modal-overlay">
             <div className="modal-content">
-              <h2>All tutors are fully booked. Would you like to join the waitlist?</h2>
-              <button
-                className="accept"
-                onClick={() => handleWaitlistConfirm(true)}
-              >
-                Yes
-              </button>
-              <button
-                className="reject"
-                onClick={() => handleWaitlistConfirm(false)}
-              >
-                No
-              </button>
-            </div>
-          </div>
-        )}
-        <>
-          {showModal && (
-            <div className="modal-overlay">
-              <div className="modal-content">
-                <h2>{modalMsg}</h2>
+              <h2>No tutors are available for your selected slot.</h2>
+              <p>What would you like to do?</p>
+              <div className="modal-actions">
                 <button
                   className="accept"
-                  onClick={() => {
-                    setShowModal(false);
-                    setModalMsg("");
+                  onClick={async () => {
+                    // Join waitlist
+                    await handleWaitlistConfirm(true);
+                    setShowNoTutorModal(false);
                   }}
                 >
-                  Okay
+                  Join the waitlist
+                </button>
+                <div style={{ margin: "12px 0" }}>
+                  <label>
+                    <span>Rebook for a suggested time:</span>
+                    <select
+                      style={{ marginLeft: "8px" }}
+                      value={selectedSuggestion || ""}
+                      onChange={(e) => {
+                        setSelectedSuggestion(e.target.value);
+                      }}
+                    >
+                      <option value="">Select a time</option>
+                      {suggestedTimes.map((slot, i) => (
+                        <option key={i} value={JSON.stringify(slot)}>
+                          {`${slot.session_date} ${slot.start_time}–${slot.end_time}`}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <button
+                    className="accept"
+                    style={{ marginLeft: "12px" }}
+                    disabled={!selectedSuggestion}
+                    onClick={() => {
+                      if (selectedSuggestion) {
+                        const suggestionObj = JSON.parse(selectedSuggestion);
+                        setSessionDate(suggestionObj.session_date);
+                        setStartTime(suggestionObj.start_time);
+                        setEndTime(suggestionObj.end_time);
+                        setShowNoTutorModal(false);
+                        setSelectedTutor(null);
+                        setSelectedSuggestion(null);
+                        setSuggestedTimes([]);
+                      }
+                    }}
+                  >
+                    Rebook
+                  </button>
+                </div>
+                <button
+                  className="reject"
+                  onClick={() => {
+                    setShowNoTutorModal(false);
+                    setSelectedSuggestion(null);
+                  }}
+                >
+                  Cancel
                 </button>
               </div>
             </div>
-          )}
-        </>
-
+          </div>
+        )}
         <></>
       </div>
     </>

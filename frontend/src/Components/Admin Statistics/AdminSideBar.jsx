@@ -2,9 +2,6 @@
 
 import "../Admin Statistics/AdminSidebar.css";
 import logo from "../../assets/StudyNest_Colored.png";
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../../supabaseClient";
 
 const AdminSidebar = ({ activeTab, setActiveTab }) => {
   return (
@@ -45,6 +42,16 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
         >
           <p className="menu-icon">🛠️</p>
           <span>Issue Reports</span>
+        </button>
+
+        <button
+          className={`sidebar-menu-item ${
+            activeTab === "backup" ? "active" : ""
+          }`}
+          onClick={() => setActiveTab("backup")}
+        >
+          <p className="menu-icon">🔄</p>
+          <span>Backup & Recovery</span>
         </button>
       </div>
     </div>

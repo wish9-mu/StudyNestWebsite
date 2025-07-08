@@ -1,4 +1,3 @@
-// ✅ UPDATED GenerateReport.jsx with conditional chart rendering and titles
 import React, { useState, useEffect } from "react";
 import { CSVLink } from "react-csv";
 import { supabase } from "../../supabaseClient";

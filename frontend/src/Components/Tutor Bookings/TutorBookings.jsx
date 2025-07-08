@@ -84,6 +84,48 @@ const TutorBookings = () => {
     }
   };
 
+    const handleRejectBooking = async (bookingId) => {
+    // Update status in `bookings`
+    const { data: rejectBooking, error: fetchError } = await supabase
+      .from("bookings")
+      .select("*")
+      .eq("id", bookingId)
+      .single();
+
+    if (fetchError || !rejectBooking) {
+      alert("Failed to fetch booking details.");
+      return;
+    }
+
+    const { error: rejectError } = await supabase
+      .from("bookings")
+      .update({ status: "rejected" })
+      .eq("id", bookingId)
+      .eq("status", "pending");
+
+    if (rejectError) {
+      alert("Failed to accept the booking. Please try again.");
+      return;
+    }
+
+
+    // Send notification to tutee
+    const { error: notifError } = await supabase.from("notifications").insert({
+      user_id: booking.tutee_id,
+      message: `Your booking request with ${booking.tutor_name || "the tutor"} was rejected.`,
+      type: "booking_rejected",
+      created_at: new Date(),
+      is_read: false,
+    });
+
+    if (notifError) {
+      console.error("❌ Error sending notification:", notifError.message);
+    }
+
+    fetchPendingBookings(); // Refresh UI list
+  };
+
+
   const handleDeclineWaitlist = async (entry) => {
     await supabase.from("waitlist").update({ status: "declined" }).eq("id", entry.id);
 
@@ -295,6 +337,7 @@ const TutorBookings = () => {
         notes: other.notes,
         status: "waiting"
       }]);
+
       // Remove or update the booking (here we update status)
       await supabase.from("bookings")
         .delete()

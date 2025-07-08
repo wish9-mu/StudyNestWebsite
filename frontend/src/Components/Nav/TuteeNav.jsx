@@ -15,6 +15,12 @@ const TuteeNav = () => {
   const { session } = useSession();
   const navigate = useNavigate();
 
+  useEffect(() => {
+      if (session && session.user) {
+        setUserId(session.user.id);
+      }
+    }, [session]);
+
   // Search Bar States
   const [search, setSearch] = useState("");
   const [courses, setCourses] = useState([]);
